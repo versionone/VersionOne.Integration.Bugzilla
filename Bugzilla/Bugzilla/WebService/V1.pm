@@ -22,32 +22,6 @@ sub Version {
         return "1.0.0.0";
 }
 
-sub Login {
-        my $username = @_[1];
-        my $password = @_[2];
-        my $remember = @_[3];
-
-        if (defined($remember)) {
-                $remember = $remember ? 'on' : '';
-        }
-
-        my $cgi = Bugzilla->cgi;
-
-        $cgi->param('Bugzilla_login', $username);
-        $cgi->param('Bugzilla_password', $password);
-        $cgi->param('Bugzilla_remember', $remember);
-
-        Bugzilla->login;
-
-        return type('int')->value(Bugzilla->user->id);
-}
-
-sub Logout {
-    my $self = shift;
-    Bugzilla->logout;
-    return undef;
-}
-
 sub GetBugs {
         # the first argument passed to us is the name of the saved search
         my $searchname = @_[1];

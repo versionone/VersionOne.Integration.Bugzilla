@@ -15,8 +15,8 @@ $@ && ThrowCodeError('soap_not_installed');
 Bugzilla->usage_mode(Bugzilla::Constants::USAGE_MODE_WEBSERVICE);
 
 my $response = Bugzilla::WebService::XMLRPC::Transport::HTTP::CGI
-    ->dispatch_with(
-                {'V1' => 'Bugzilla::WebService::V1',
-                    })
+    ->dispatch_with( {'V1' => 'Bugzilla::WebService::V1',
+					  'User'     => 'Bugzilla::WebService::User',
+					 })
     ->on_action(\&Bugzilla::WebService::handle_login)
     ->handle;
