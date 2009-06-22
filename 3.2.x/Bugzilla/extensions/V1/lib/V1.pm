@@ -150,6 +150,24 @@ sub _UpdateField {
 	$dbh->bz_commit_transaction();
 }
 
+sub GetFieldValue {
+	my $bugid = $_[1];
+	my $fieldname = $_[2];
+	my $dbh = Bugzilla->dbh;
+
+	if ($fieldname!~/^[a-z0-9_]+$/i) {
+		return "";
+	}
+
+	ValidateBugID($bugid);
+
+	my $fieldValue;
+
+	($fieldValue) = $dbh->selectrow_array("SELECT " . $fieldname . " FROM bugs WHERE bug_id=?", undef, $bugid);
+
+	return SOAP::Data::type('string')->value($fieldValue);
+}
+
 sub _IsCommentRequired {
 	my ($function) = (@_);
 
