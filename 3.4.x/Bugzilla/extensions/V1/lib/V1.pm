@@ -197,12 +197,7 @@ sub ResolveBug {
 	my $bugid = $_[1];
 	my $resolution = $_[2];
 	my $comment = $_[3];
-
-	# system could be setup to required comments
-	if (($comment eq '') && _IsCommentRequired('resolve'))
-	{
-		ThrowUserError("comment_required");
-	}
+	my $bug = new Bugzilla::Bug($bugid);
 
 	# ensure the resolution is a valid one
 	##check_field('resolution', $resolution, Bugzilla::Bug->settable_resolutions);
@@ -222,56 +217,26 @@ sub ResolveBug {
 			);
 		}
 	}
-
-
-	# RESOLVED bugs should have no time remaining
-	_UpdateField($bugid,'remaining_time',0);
-
-	# Change resolution
-	_ChangeResolution($bugid,$resolution);
-
+	
 	# update the status
-	_ChangeStatus($bugid, 'RESOLVED');
+	_ChangeStatus($bug, 'RESOLVED', $resolution);
+
+	$bug->update();
 
 	return SOAP::Data::type('boolean')->value(1);
 }
 
-sub _ChangeResolution {
-	my ($bug_id, $str) = (@_);
-	my $dbh = Bugzilla->dbh;
-	my $cgi = Bugzilla->cgi;
-	my $PrivilegesRequired = 0;
-	my $vars = {};
-
-	# Make sure the user is allowed to change the resolution.
-	# If the user is changing several bugs at once using the UI,
-	# then he has enough privs to do so. In the case he is hacking
-	# the URL, we don't care if he reads --UNKNOWN-- as a resolution
-	# in the error message.
-	my $old_resolution = '-- UNKNOWN --';
-	$old_resolution =
-		$dbh->selectrow_array('SELECT resolution FROM bugs WHERE bug_id = ?',
-			undef, $bug_id);
-	my $bug = new Bugzilla::Bug($bug_id);
-	unless ($bug->check_can_change_field('resolution', $old_resolution, $str,
-		\$PrivilegesRequired))
-	{
-		$vars->{'oldvalue'} = $old_resolution;
-		$vars->{'newvalue'} = $str;
-		$vars->{'field'} = 'resolution';
-		$vars->{'privs'} = $PrivilegesRequired;
-		ThrowUserError("illegal_change", $vars);
-	}
-	_UpdateField($bug_id,'resolution',$str);
-}
-
 sub AcceptBug {
 	my $bugid = $_[1];
+	my $bug = new Bugzilla::Bug($bugid);
+
 	if (Bugzilla->params->{"usetargetmilestone"}  && Bugzilla->params->{"musthavemilestoneonaccept"})
 	{
 		ThrowUserError("milestone_required", { bug_id => $bugid });
 	}
-	_ChangeStatus($bugid,"ASSIGNED");
+	_ChangeStatus($bug,"ASSIGNED");
+	$bug->update();
+
 	return SOAP::Data::type('boolean')->value(1);
 }
 
@@ -280,6 +245,7 @@ my %usercache = ();
 sub ReassignBug {
 	my $bugid = $_[1];
 	my $assignto = $_[2];
+	my $bug = new Bugzilla::Bug($bugid);
 
 	#validate the assign to user
 	my $assignee = login_to_id(trim($assignto), THROW_ERROR);
@@ -300,10 +266,12 @@ sub ReassignBug {
 	}
 
 	# change the assign to field
-	_UpdateField($bugid,'assigned_to',$assignee);
+	#_UpdateField($bugid,'assigned_to',$assignee);
+	$bug->set_assigned_to($assignto);
 
 	# update the status
-	_ChangeStatus($bugid,'NEW');
+	_ChangeStatus($bug,'NEW');
+	$bug->update();
 
 	return SOAP::Data::type('boolean')->value(1);
 }
@@ -328,46 +296,19 @@ sub UpdateBug {
 }
 
 sub _ChangeStatus {
-	my $bugid = $_[0];
+	my $bug = $_[0];
 	my $status = $_[1];
+	my $resolution = $_[2];
 
-	if (Bugzilla::Status::is_open_state($status))
-	{
-		# The logic for this block is:
-		# If the new state is open:
-		#   If the old state was open
-		#     If the bug was confirmed
-		#       - move it to the new state
-		#     Else
-		#       - Set the state to unconfirmed
-		#   Else
-		#     - leave it as it was
-
-
-		my @open_state = map(Bugzilla->dbh->quote($_), BUG_STATE_OPEN);
-		my $open_state = join(", ", @open_state);
-
-		my $sqlvalue = "CASE
-				WHEN bug_status IN($open_state) THEN
-					(CASE WHEN everconfirmed = 1 THEN
-						" . Bugzilla->dbh->quote($status) .
-                        		" ELSE
-						'UNCONFIRMED'
-					END)
-				ELSE
-					bug_status
-				END";
-		# get status value
-		my $status = Bugzilla->dbh->selectrow_array("SELECT " . $sqlvalue . " FROM bugs WHERE bug_id=$bugid");
-
-		_UpdateField($bugid, 'bug_status', $status);
-
-        }
-	else
-	{
-		_UpdateField($bugid, 'bug_status', $status);
+	## test block
+	#my $bug = new Bugzilla::Bug($bugid);
+	my $param;  
+	if ($resolution && $resolution ne "") {
+		$bug->set_remaining_time(0);
+		$param = {'resolution' => $resolution};
+		$bug->add_comment("Resolution has changed to " . $resolution . " by VersionOne");
 	}
-
+	$bug->set_status($status, $param);
 }
 
 sub _SaveToLog
