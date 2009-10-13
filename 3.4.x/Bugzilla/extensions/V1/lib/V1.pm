@@ -300,15 +300,19 @@ sub _ChangeStatus {
 	my $status = $_[1];
 	my $resolution = $_[2];
 
-	## test block
-	#my $bug = new Bugzilla::Bug($bugid);
-	my $param;  
-	if ($resolution && $resolution ne "") {
-		$bug->set_remaining_time(0);
-		$param = {'resolution' => $resolution};
-		$bug->add_comment("Resolution has changed to " . $resolution . " by VersionOne");
+	my @valid_statuses = @{$bug->status()->can_change_to()};
+
+	if ( grep { $_->name eq $status} @valid_statuses ) {	
+		my $param;  
+		if ($resolution && $resolution ne "") {
+			$bug->set_remaining_time(0);
+			$param = {'resolution' => $resolution};
+			$bug->add_comment("Resolution has changed to " . $resolution . " by VersionOne");
+		}
+		$bug->set_status($status, $param);
+	} else {
+		#print "didn't change status to ".$status;
 	}
-	$bug->set_status($status, $param);
 }
 
 sub _SaveToLog
