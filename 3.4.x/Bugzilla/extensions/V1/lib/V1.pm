@@ -310,8 +310,6 @@ sub _ChangeStatus {
 			$bug->add_comment("Resolution has changed to " . $resolution . " by VersionOne");
 		}
 		$bug->set_status($status, $param);
-	} else {
-		#print "didn't change status to ".$status;
 	}
 }
 
