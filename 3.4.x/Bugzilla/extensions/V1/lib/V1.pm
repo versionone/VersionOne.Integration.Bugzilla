@@ -18,12 +18,12 @@ use base qw(Bugzilla::WebService);
 use Time::Zone;
 
 sub Version {
-	return "1.0.0.0";
+	return "1.3.4.2";
 }
 
 sub GetBugs {
 	# the first argument passed to us is the name of the saved search
-	my $searchname = $_[1];
+	my $searchname = $_[1]->{searchphrase};
 
 	# this action requires the user to be logged in
 	Bugzilla->login(LOGIN_REQUIRED);
@@ -103,17 +103,17 @@ sub _GetBug {
 }
 
 sub GetBug {
-	return _GetBug($_[1]);
+	return _GetBug($_[1]->{bugid});
 }
 
 sub GetProduct {
-	my $productid = $_[1];
+	my $productid = $_[1]->{productid};
 	my $project = new Bugzilla::Product($productid);
 	return $project;
 }
 
 sub GetUser {
-	my $userid = $_[1];
+	my $userid = $_[1]->{userid};
 	my $user = new Bugzilla::User($userid);
 
 	my %user;
@@ -164,8 +164,8 @@ sub _SaveHistory {
 }
 
 sub GetFieldValue {
-	my $bugid = $_[1];
-	my $fieldname = $_[2];
+	my $bugid = $_[1]->{bugid};
+	my $fieldname = $_[1]->{fieldname};
 	my $dbh = Bugzilla->dbh;
 
 	if ($fieldname!~/^[a-z0-9_]+$/i) {
@@ -194,9 +194,9 @@ sub _IsCommentRequired {
 }
 
 sub ResolveBug {
-	my $bugid = $_[1];
-	my $resolution = $_[2];
-	my $comment = $_[3];
+	my $bugid = $_[1]->{bugid};
+	my $resolution = $_[1]->{resolution};
+	my $comment = $_[1]->{comment};
 	my $bug = new Bugzilla::Bug($bugid);
 
 	# ensure the resolution is a valid one
@@ -227,7 +227,7 @@ sub ResolveBug {
 }
 
 sub AcceptBug {
-	my $bugid = $_[1];
+	my $bugid = $_[1]->{bugid};
 	my $bug = new Bugzilla::Bug($bugid);
 
 	if (Bugzilla->params->{"usetargetmilestone"}  && Bugzilla->params->{"musthavemilestoneonaccept"})
@@ -243,8 +243,8 @@ sub AcceptBug {
 
 my %usercache = ();
 sub ReassignBug {
-	my $bugid = $_[1];
-	my $assignto = $_[2];
+	my $bugid = $_[1]->{bugid};
+	my $assignto = $_[1]->{assignto};
 	my $bug = new Bugzilla::Bug($bugid);
 
 	#validate the assign to user
@@ -277,9 +277,9 @@ sub ReassignBug {
 }
 
 sub UpdateBug {
-	my $bugid = $_[1];
-	my $field = $_[2];
-	my $value = $_[3];
+	my $bugid = $_[1]->{bugid};
+	my $field = $_[1]->{fieldname};
+	my $value = $_[1]->{fieldvalue};
 
 	my $f = new Bugzilla::Field({name => $field });
 
