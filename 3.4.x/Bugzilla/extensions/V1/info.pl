@@ -9,7 +9,7 @@ use Bugzilla::Constants;
 
 
 {
-	'version' => "1.0.0.0",
+	'version' => "1.3.4.2",
 	'x_name'  => 'Version One integration',
 	'x_description'  => 'The VersionOne Bugzilla Integration (V1Bugzilla) creates defects in VersionOne based on bugs in Bugzilla. Using this integration your organization can manage and triage bugs reported by customers and promote them to VersionOne once you determine a fix is necessary. ',
 
