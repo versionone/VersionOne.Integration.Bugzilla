@@ -99,6 +99,8 @@ sub _GetBug {
         $item{'productid'} = type('int')->value($bug->product_id);
         $item{'componentid'} = type('int')->value($bug->component_id);
         $item{'assignedtoid'} = type('int')->value($bug->assigned_to->id);
+        $item{'priority'} = type('string')->value($bug->priority);
+
         return \%item;
 }
 

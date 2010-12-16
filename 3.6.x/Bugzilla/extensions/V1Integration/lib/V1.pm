@@ -106,6 +106,8 @@ sub _GetBug {
 	$item{'productid'} = SOAP::Data::type('int')->value($bug->product_id);
 	$item{'componentid'} = SOAP::Data::type('int')->value($bug->component_id);
 	$item{'assignedtoid'} = SOAP::Data::type('int')->value($bug->assigned_to->id);
+	$item{'priority'} = SOAP::Data::type('string')->value($bug->priority);
+
 	return \%item;
 }
 
