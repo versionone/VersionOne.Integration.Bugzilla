@@ -2,7 +2,7 @@ package Bugzilla::Extension::V1Integration;
 use strict;
 use base qw(Bugzilla::Extension);
 
-our $VERSION = '1.3.6.1';
+our $VERSION = '1.4.0.1';
 
 sub webservice {
     my ($self, $args) = @_;

@@ -254,7 +254,6 @@ sub ResolveBug {
 	return SOAP::Data::type('boolean')->value(1);
 }
 
-# TODO There is no status ASSIGNED in default 4.0.1 setup
 sub AcceptBug {
 	my $bugid = $_[1]->{bugid};
 	my $bug = new Bugzilla::Bug($bugid);
@@ -263,7 +262,8 @@ sub AcceptBug {
 	{
 		ThrowUserError("milestone_required", { bug_id => $bugid });
 	}
-	_ChangeStatus($bug,"ASSIGNED");
+	# NOTE was: ASSIGNED, this status does not exist in default 4.0.1 setup
+	_ChangeStatus($bug, "VERIFIED");
 	$bug->update();
 
 	return SOAP::Data::type('boolean')->value(1);
@@ -272,7 +272,6 @@ sub AcceptBug {
 
 my %usercache = ();
 
-# TODO There is no bug status NEW in 4.0.1
 sub ReassignBug {
 	my $bugid = $_[1]->{bugid};
 	my $assignto = $_[1]->{assignto};
@@ -299,8 +298,8 @@ sub ReassignBug {
 	# change the assign to field
 	$bug->set_assigned_to($assignto);
 
-	# update the status
-	_ChangeStatus($bug,'NEW');
+	# NOTE was: NEW, this status does not exist in default 4.0.1 setup
+	_ChangeStatus($bug, 'CONFIRMED');
 	$bug->update();
 
 	return SOAP::Data::type('boolean')->value(1);
