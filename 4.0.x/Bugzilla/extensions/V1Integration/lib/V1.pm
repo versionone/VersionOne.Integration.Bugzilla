@@ -263,7 +263,7 @@ sub AcceptBug {
 		ThrowUserError("milestone_required", { bug_id => $bugid });
 	}
 	# NOTE was: ASSIGNED, this status does not exist in default 4.0.1 setup
-	_ChangeStatus($bug, "VERIFIED");
+	_ChangeStatus($bug, "IN_PROGRESS");
 	$bug->update();
 
 	return SOAP::Data::type('boolean')->value(1);
