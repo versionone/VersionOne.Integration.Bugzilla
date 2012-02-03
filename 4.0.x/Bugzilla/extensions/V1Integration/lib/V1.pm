@@ -18,7 +18,7 @@ use base qw(Bugzilla::WebService);
 use Time::Zone;
 
 sub Version {
-	return "1.4.0.1";
+	return "1.4.0.4";
 }
 
 sub GetBugs {
@@ -28,56 +28,65 @@ sub GetBugs {
 	# this action requires the user to be logged in
 	Bugzilla->login(LOGIN_REQUIRED);
 
+	my $url = _FindUserQueryByName($searchname);
+	if (!defined $url) {
+		ThrowCodeError('Search name "' . $searchname . '" doesn\'t exist.', { param => $searchname });
+	}
+
+	$ENV{'REQUEST_METHOD'} = 'GET';
+	my $params = new Bugzilla::CGI($url);
+
+	# define the mapping between sql columns and final dictionary field names
+	my @selectcolumns = ("bug_id");
+	my @selectnames = ("bug_id");
+
+	# ask the Search code to generate some sql for us based on the named search parameters
+	my $search = new Bugzilla::Search(
+		'fields' => \@selectnames,
+		'params' => $params
+	);
+	my $sql = $search->getSQL();
+
+	my $dbh = Bugzilla->switch_to_shadow_db();
+
+	# set the signal handlers to prevent denial-of-service
+	$::SIG{TERM} = 'DEFAULT';
+	$::SIG{PIPE} = 'DEFAULT';
+
+	# prepare the sql statement and execute it
+	my $buglist_sth = $dbh->prepare($sql);
+	$buglist_sth->execute();
+
+	my @bugs = ();
+
+	while (my @row = $buglist_sth->fetchrow_array()) {
+		my $bug = {};
+		foreach my $column (@selectcolumns) {
+		        $bug->{$column} = shift @row;
+		}
+		push(@bugs,$bug->{'bug_id'});
+	}
+	return \@bugs;
+}
+
+sub _FindUserQueryByName {
+	my $queryName = shift;
 	# get all the saved searches this user has
 	my $list = Bugzilla->user->queries();
 	my $size = @$list;
 	my $i = 0;
 
 	# loop over the saved searches finding the one whose name matches searchname
-	for ($i=0;$i<$size;$i++)
-	{
+	for ($i=0;$i<$size;$i++) {
 		my $query = @$list[$i];
 
 		# if this saved search's name matches the one we want
-		if ($query->name eq $searchname)
-		{
-			my $url = $query->url;
-			$ENV{'REQUEST_METHOD'} = 'GET';
-			my $params = new Bugzilla::CGI($url);
-
-			# define the mapping between sql columns and final dictionary field names
-			my @selectcolumns = ("bug_id");
-			my @selectnames = ("bug_id");
-
-			# ask the Search code to generate some sql for us based on the named search parameters
-			my $search = new Bugzilla::Search(
-				'fields' => \@selectnames,
-				'params' => $params
-			);
-			my $sql = $search->getSQL();
-
-			my $dbh = Bugzilla->switch_to_shadow_db();
-
-			# set the signal handlers to prevent denial-of-service
-			$::SIG{TERM} = 'DEFAULT';
-			$::SIG{PIPE} = 'DEFAULT';
-
-			# prepare the sql statement and execute it
-			my $buglist_sth = $dbh->prepare($sql);
-			$buglist_sth->execute();
-
-			my @bugs = ();
-
-			while (my @row = $buglist_sth->fetchrow_array()) {
-				my $bug = {};
-				foreach my $column (@selectcolumns) {
-				        $bug->{$column} = shift @row;
-				}
-				push(@bugs,$bug->{'bug_id'});
-			}
-			return \@bugs;
+		if ($query->name eq $queryName) {
+			return $query->url;
 		}
 	}
+
+	return undef;
 }
 
 
@@ -85,12 +94,12 @@ sub _GetBug {
 	my $bugid = $_[0];
 
 	my $bug = Bugzilla::Bug->check($bugid);
-	my $bug_desc = $bug->comments({ order => 'oldest_to_newest'}); 
+	my $bug_desc = $bug->comments({ order => 'oldest_to_newest'});
 	my $description = $bug_desc->[0]->body_full();
 
 	my %item;
 	$item{'id'} = SOAP::Data::type('int')->value($bug->bug_id);
-	$item{'name'} = SOAP::Data::type('string')->value($bug->short_desc);	
+	$item{'name'} = SOAP::Data::type('string')->value($bug->short_desc);
 	if ($description ne '') {
 		$item{'description'} = SOAP::Data::type('string')->value($description);
 	} else {
@@ -143,18 +152,15 @@ sub _UpdateField {
 	if ($fieldname =~ /^(\w+)$/i) {
 		$fieldname = $1;
 	} else {
-		ThrowCodeError('invalid_field_name', { field => $fieldname }); 
+		ThrowCodeError('invalid_field_name', { field => $fieldname });
 	}
 	if ($fieldvalue =~ /^([\w\d:\.\?\&\/\:\=]+)$/i) {
 		$fieldvalue = $1;
 	} else {
-		ThrowCodeError('param_invalid', { param => $fieldname }); 
+		ThrowCodeError('param_invalid', { param => $fieldname });
 	}
-	if ($bugid =~ /^(\d+)$/) {
-		$bugid = $1;
-	} else {
-		ThrowCodeError('bug_id_does_not_exist', { bug_id => $bugid }); 
-	}
+
+	$bugid = _ValidateBugId($bugid);
 
 	$dbh->bz_start_transaction();
 
@@ -162,15 +168,29 @@ sub _UpdateField {
 			undef,  $bugid);
 
 	# add activity to log
-	if ($oldValue ne $fieldvalue) {	
+	if ($oldValue ne $fieldvalue) {
 		_SaveHistory($bugid, $fieldname,  $oldValue, $fieldvalue, $dbh);
 	}
 
 	$dbh->bz_commit_transaction();
 }
 
+sub _ValidateBugId {
+	my $bugid = shift;
+
+	if ($bugid =~ /^(\d+)$/) {
+		$bugid = $1;
+	} else {
+		ThrowCodeError('bug_id_does_not_exist', { bug_id => $bugid });
+	}
+
+	return $bugid;
+}
+
 sub _SaveHistory {
 	my ($bugid, $fieldname,  $oldValue, $fieldvalue, $dbh) = @_;
+
+	$oldValue = defined $oldValue ? $oldValue : '';
 
 	if ($fieldname eq "assigned_to") {
 		$oldValue = new Bugzilla::User($oldValue)->name;
@@ -196,13 +216,9 @@ sub GetFieldValue {
 	if ($fieldname =~ /^(\w+)$/i) {
 		$fieldname = $1;
 	} else {
-		ThrowCodeError('invalid_field_name', { field => $fieldname }); 
+		ThrowCodeError('invalid_field_name', { field => $fieldname });
 	}
-	if ($bugid =~ /^(\d+)$/) {
-		$bugid = $1;
-	} else {
-		ThrowCodeError('bug_id_does_not_exist', { bug_id => $bugid }); 
-	}
+	$bugid = _ValidateBugId($bugid);
 
 	($fieldValue) = $dbh->selectrow_array("SELECT " . $fieldname . " FROM bugs WHERE bug_id=?", undef, $bugid);
 
@@ -225,6 +241,9 @@ sub ResolveBug {
 	my $bugid = $_[1]->{bugid};
 	my $resolution = $_[1]->{resolution};
 	my $comment = $_[1]->{comment};
+
+	$bugid = _ValidateBugId($bugid);
+
 	my $bug = new Bugzilla::Bug($bugid);
 
 	# ensure the resolution is a valid one
@@ -245,7 +264,7 @@ sub ResolveBug {
 			);
 		}
 	}
-	
+
 	# update the status
 	_ChangeStatus($bug, 'RESOLVED', $resolution);
 
@@ -256,6 +275,9 @@ sub ResolveBug {
 
 sub AcceptBug {
 	my $bugid = $_[1]->{bugid};
+
+	$bugid = _ValidateBugId($bugid);
+
 	my $bug = new Bugzilla::Bug($bugid);
 
 	if (Bugzilla->params->{"usetargetmilestone"}  && Bugzilla->params->{"musthavemilestoneonaccept"})
@@ -275,6 +297,7 @@ my %usercache = ();
 sub ReassignBug {
 	my $bugid = $_[1]->{bugid};
 	my $assignto = $_[1]->{assignto};
+	$bugid = _ValidateBugId($bugid);
 	my $bug = new Bugzilla::Bug($bugid);
 
 	#validate the assign to user
@@ -309,6 +332,7 @@ sub UpdateBug {
 	my $bugid = $_[1]->{bugid};
 	my $field = $_[1]->{fieldname};
 	my $value = $_[1]->{fieldvalue};
+	$bugid = _ValidateBugId($bugid);
 
 	my $f = new Bugzilla::Field({name => $field });
 
@@ -331,8 +355,8 @@ sub _ChangeStatus {
 
 	my @valid_statuses = @{$bug->status()->can_change_to()};
 
-	if ( grep { $_->name eq $status} @valid_statuses ) {	
-		my $param;  
+	if ( grep { $_->name eq $status} @valid_statuses ) {
+		my $param;
 		if ($resolution && $resolution ne "") {
 			$bug->set_remaining_time(0);
 			$param = {'resolution' => $resolution};
