@@ -1,4 +1,4 @@
-# VersionOne Integration for Buy A Feature
+# VersionOne Integration for Bugzilla
 Copyright (c) 2013 VersionOne, Inc.
 All rights reserved.
 
