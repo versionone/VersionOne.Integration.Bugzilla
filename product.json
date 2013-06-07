@@ -1,0 +1,123 @@
+{
+    "id": "VersionOne.V1Bugzilla",
+    "titleSection": {
+        "name": "VersionOne Bugzilla Integration",
+        "shortDescription": "Triage defects and include them in the planning process to balance new work and maintenance.",
+        "pricing": "Free",
+        "support": {
+            "text": "VersionOne",
+            "href": "http://support.versionone.com/home"
+        }
+    },
+    "descriptionSection": {
+        "description": "The VersionOne Bugzilla Integration (V1Bugzilla) creates defects in VersionOne based on bugs in Bugzilla. Using this integration your organization can manage and triage bugs reported by customers and promote them to VersionOne once you determine a fix is necessary."
+    },
+    "linksSection": [
+        {
+            "type": "download",
+            "title": "Download Latest Stable Build",
+            "href": "http://platform.versionone.com.s3.amazonaws.com/downloads/V1BugzillaIntegration.8.3.zip"
+        },
+        {
+            "type": "documentation",
+            "title": "Documentation",
+            "href": "http://community.versionone.com/sdk/DetailedDocumentation/Bugzilla/index.html"
+        }
+    ],
+    "updatesSection": {
+        "updates": [
+            {
+                "date": "2012-05-15T00:00:00.000Z",
+                "description": "Spring 2012",
+                "version": "2042",
+                "releaseNotes": "Added: Support for Bugzilla 4.2",
+                "qualityBand": "mature",
+                "downloadUrl": "http://platform.versionone.com.s3.amazonaws.com/downloads/V1BugzillaIntegration.8.3.zip"
+            },
+            {
+                "date": "2012-03-06T00:00:00.000Z",
+                "releaseNotes": " * Fixed reopen scenario so reopening issues creates new VersionOne workitems with link to previous item \n * Fixed line-endings for Perl scripts for Linux \n * Fixed problem with selecting custom VersionOne field for reference",
+                "version": "1993",
+                "description": "Winter 2012",
+                "qualityBand": "mature"
+            },
+            {
+                "date": "2011-07-01T00:00:00.000Z",
+                "releaseNotes": " * Added: Support for connecting to VersionOne through a proxy. \n * Added: Support for Bugzilla 4.0 \n * Added: Configuration Utility contains help on the various configuration options to enable quicker setup and configuration. \n * Added: Configuration Utility supports a minimum poll interval of one minute for testing. It is not recommended that poll intervals remain this low in a production instance. Update: Source code project was dependent on .NET 3.5. Now source code project depends on the latest .NET SDK. \n * Updated: Integration depends on Log4Net \n * Updated: Poll time interval defaults to 30 minutes \n * Fixed: Configuration Utility allows editing of the VersionOne credential fields when Windows Integrated Authentication is enabled. This enables configuring the integrations to connect to VersionOne as a user other than the local service account when the VersionOne instance is configured for Windows integrated authentication.",
+                "description": "Summer 2011",
+                "version": "1462",
+                "qualityBand": "mature"
+            },
+            {
+                "date": "2011-02-01T00:00:00.000Z",
+                "releaseNotes": "Added support for mapping projects and priority values",
+                "description": "Winter 2011",
+                "version": "1116",
+                "qualityBand": "mature"
+            },
+            {
+                "date": "2010-11-04T00:00:00.000Z",
+                "releaseNotes": "Fixed: Exception when validating the Bugzilla URL in Config tool",
+                "description": "Winter 2010",
+                "version": "931",
+                "qualityBand": "mature"
+            },
+            {
+                "date": "2010-08-30T00:00:00.000Z",
+                "description": "Summer 2010",
+                "releaseNotes": "Added Support for Bugzilla 3.6",
+                "version": "883",
+                "qualityBand": "mature"
+            },
+            {
+                "date": "2010-08-10T00:00:00.000Z",
+                "description": "Summer 2010",
+                "releaseNotes": " * Added GUI Tool for configuration \n * Updated Documentation",
+                "version": "872",
+                "qualityBand": "mature"
+            },
+            {
+                "date": "2009-10-19T00:00:00.000Z",
+                "description": "Winter 2009",
+                "releaseNotes": "Added support for Bugzilla 3.4.x",
+                "version": "543",
+                "qualityBand": "mature"
+            },
+            {
+                "date": "2009-05-27T00:00:00.000Z",
+                "releaseNotes": " * Added support for Bugzilla 3.2.3 \n * Fixed query issue when integration and VersionOne are in different timezones \n * Removed dependency on the older APIClient library.  Integration now depends on APIClient library from SDK",
+                "description": "Spring 2009",
+                "version": "456",
+                "qualityBand": "mature"
+            }
+
+
+        ],
+        "qualityBands": [
+            {
+                "name": "seed",
+                "shortDesc": "The initial idea of a product. No working code.",
+                "href": "https://github.com/versionone/V1TFS/blob/master/CONTRIBUTING.md#seed"
+            },
+            {
+                "name": "sapling",
+                "shortDesc": "The product is undergoing rapid growth. The code works but expect major changes.",
+                "href": "https://github.com/versionone/V1TFS/blob/master/CONTRIBUTING.md#sapling"
+            },
+            {
+                "name": "mature",
+                "shortDesc": "The product is stable. The code will continue to evolve with minimum breaking changes.",
+                "href": "https://github.com/versionone/V1TFS/blob/master/CONTRIBUTING.md#mature"
+            }
+        ]
+    },
+    "mediaSection": [
+        {
+            "title": "Build Integration",
+            "caption": "Triage defects and include them in the planning process to balance new work and maintenance.",
+            "mimetype": "video/x-flv",
+            "href": "http://vtv.v1host.com/permalink/?title=Defect%3A%20Bugzilla&category=Integrations&edition=enterprise&release=undefined",
+            "thumbhref": "http://community.versionone.com/attachments/imagefolder/gettingstarted/video.png"
+        }
+    ]
+}
