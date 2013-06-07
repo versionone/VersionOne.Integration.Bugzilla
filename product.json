@@ -21,7 +21,7 @@
         {
             "type": "documentation",
             "title": "Documentation",
-            "href": "http://community.versionone.com/sdk/DetailedDocumentation/Bugzilla/index.html"
+            "href": "http://versionone.github.io/VersionOne.Integration.Bugzilla/index.html"
         }
     ],
     "updatesSection": {
