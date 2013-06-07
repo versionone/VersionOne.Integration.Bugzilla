@@ -1,7 +1,7 @@
 {
-    "id": "VersionOne.V1Bugzilla",
+    "id": "VersionOne.Integration.Bugzilla",
     "titleSection": {
-        "name": "VersionOne Bugzilla Integration",
+        "name": "VersionOne Integration for Bugzilla",
         "shortDescription": "Triage defects and include them in the planning process to balance new work and maintenance.",
         "pricing": "Free",
         "support": {
@@ -10,7 +10,7 @@
         }
     },
     "descriptionSection": {
-        "description": "The VersionOne Bugzilla Integration (V1Bugzilla) creates defects in VersionOne based on bugs in Bugzilla. Using this integration your organization can manage and triage bugs reported by customers and promote them to VersionOne once you determine a fix is necessary."
+        "description": "VersionOne Integration for Bugzilla creates defects in VersionOne based on bugs in Bugzilla. Using this integration your organization can manage and triage bugs reported by customers and promote them to VersionOne once you determine a fix is necessary."
     },
     "linksSection": [
         {
@@ -90,8 +90,6 @@
                 "version": "456",
                 "qualityBand": "mature"
             }
-
-
         ],
         "qualityBands": [
             {
