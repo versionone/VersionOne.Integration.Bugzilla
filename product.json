@@ -107,7 +107,8 @@
                 "shortDesc": "The product is stable. The code will continue to evolve with minimum breaking changes.",
                 "href": "https://github.com/versionone/VersionOne.Integration.Bugzilla/blob/master/CONTRIBUTING.md#mature"
             }
-        ],
+        ]
+    },
     "mediaSection": [
         {
             "title": "Build Integration",
