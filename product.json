@@ -93,15 +93,15 @@
         ],
         "qualityBands": {
             "seed": {
-                "shortDesc": "The initial idea of a product. May not be stable code.",
+                "shortDescription": "The initial idea of a product. May not be stable code.",
                 "href": "https://github.com/versionone/VersionOne.Integration.Bugzilla/blob/master/CONTRIBUTING.md#seed"
             },
             "sapling": {
-                "shortDesc": "The product is undergoing rapid growth. The code works but expect major changes.",
+                "shortDescription": "The product is undergoing rapid growth. The code works but expect major changes.",
                 "href": "https://github.com/versionone/VersionOne.Integration.Bugzilla/blob/master/CONTRIBUTING.md#sapling"
             },
             "mature": {
-                "shortDesc": "The product is stable. The code will continue to evolve with minimum breaking changes.",
+                "shortDescription": "The product is stable. The code will continue to evolve with minimum breaking changes.",
                 "href": "https://github.com/versionone/VersionOne.Integration.Bugzilla/blob/master/CONTRIBUTING.md#mature"
             }
         }
