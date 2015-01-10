@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7AF58AB0-F39A-48DB-9B2B-23DD24EFC12A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VersionOne.ServiceHost.BugzillaServices</RootNamespace>
+    <AssemblyName>VersionOne.ServiceHost.BugzillaServices</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>http://localhost/VersionOne.ServiceHost.BugzillaServices/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BugzillaHostedService.cs" />
+    <Compile Include="BugzillaReaderUpdater.cs" />
+    <Compile Include="BugzillaServiceConfiguration.cs" />
+    <Compile Include="IBugzillaReader.cs" />
+    <Compile Include="IBugzillaUpdater.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VersionOne.Bugzilla.XmlRpcProxy\VersionOne.Bugzilla.XmlRpcProxy.csproj">
+      <Project>{9f8c4aa1-00cb-4640-9764-7691230c1ee5}</Project>
+      <Name>VersionOne.Bugzilla.XmlRpcProxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VersionOne.ServiceHost.Core\VersionOne.ServiceHost.Core.csproj">
+      <Project>{f432bac8-27ed-4c2c-8e06-ef806a5b0d79}</Project>
+      <Name>VersionOne.ServiceHost.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VersionOne.ServiceHost.WorkitemServices\VersionOne.ServiceHost.WorkitemServices.csproj">
+      <Project>{76b6d3f1-16f8-43a9-a2b7-ddadafe70d0d}</Project>
+      <Name>VersionOne.ServiceHost.WorkitemServices</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BugzillaScripts\3.0.x\ReadMe.txt" />
+    <Content Include="BugzillaScripts\3.2.x\ReadMe.txt" />
+    <Content Include="BugzillaScripts\3.4.x\ReadMe.txt" />
+    <Content Include="BugzillaScripts\3.6.x\ReadMe.txt" />
+    <Content Include="BugzillaScripts\4.0.x\ReadMe.txt" />
+    <Content Include="BugzillaScripts\4.2.x\ReadMe.txt" />
+    <Content Include="BugzillaScripts\4.4x\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BugzillaScripts\3.0.x\Bugzilla\Bugzilla\WebService\V1.pm" />
+    <None Include="BugzillaScripts\3.0.x\Bugzilla\v1.cgi" />
+    <None Include="BugzillaScripts\3.0.x\TestV1Service.pl" />
+    <None Include="BugzillaScripts\3.2.x\Bugzilla\extensions\V1\code\webservice.pl" />
+    <None Include="BugzillaScripts\3.2.x\Bugzilla\extensions\V1\info.pl" />
+    <None Include="BugzillaScripts\3.2.x\Bugzilla\extensions\V1\lib\V1.pm" />
+    <None Include="BugzillaScripts\3.2.x\TestV1Service.pl" />
+    <None Include="BugzillaScripts\3.4.x\Bugzilla\extensions\V1\code\webservice.pl" />
+    <None Include="BugzillaScripts\3.4.x\Bugzilla\extensions\V1\info.pl" />
+    <None Include="BugzillaScripts\3.4.x\Bugzilla\extensions\V1\lib\V1.pm" />
+    <None Include="BugzillaScripts\3.4.x\TestV1Service.pl" />
+    <None Include="BugzillaScripts\3.6.x\Bugzilla\extensions\V1Integration\Config.pm" />
+    <None Include="BugzillaScripts\3.6.x\Bugzilla\extensions\V1Integration\Extension.pm" />
+    <None Include="BugzillaScripts\3.6.x\Bugzilla\extensions\V1Integration\lib\V1.pm" />
+    <None Include="BugzillaScripts\3.6.x\TestV1Service.pl" />
+    <None Include="BugzillaScripts\4.0.x\Bugzilla\extensions\V1Integration\Config.pm" />
+    <None Include="BugzillaScripts\4.0.x\Bugzilla\extensions\V1Integration\Extension.pm" />
+    <None Include="BugzillaScripts\4.0.x\Bugzilla\extensions\V1Integration\lib\V1.pm" />
+    <None Include="BugzillaScripts\4.0.x\TestV1Service.pl" />
+    <None Include="BugzillaScripts\4.2.x\Bugzilla\extensions\V1Integration\Config.pm" />
+    <None Include="BugzillaScripts\4.2.x\Bugzilla\extensions\V1Integration\Extension.pm" />
+    <None Include="BugzillaScripts\4.2.x\Bugzilla\extensions\V1Integration\lib\V1.pm" />
+    <None Include="BugzillaScripts\4.2.x\TestV1Service.pl" />
+    <None Include="BugzillaScripts\4.4x\Bugzilla\extensions\V1Integration\Config.pm" />
+    <None Include="BugzillaScripts\4.4x\Bugzilla\extensions\V1Integration\Extension.pm" />
+    <None Include="BugzillaScripts\4.4x\Bugzilla\extensions\V1Integration\lib\V1.pm" />
+    <None Include="BugzillaScripts\4.4x\TestV1Service.pl" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>
