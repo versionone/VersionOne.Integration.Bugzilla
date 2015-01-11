@@ -260,14 +260,19 @@ sub ResolveBug {
 	Bugzilla::Bug::check_field('resolution', $resolution);
 
 	# don't resolve as fixed while still unresolved blocking bugs
-    if (Bugzilla->params->{"noresolveonopenblockers"} && $resolution eq 'FIXED' && scalar @{$bug->dependson}) {
-        my $dep_bugs = Bugzilla::Bug->new_from_list($bug->dependson);
-        my $count_open = grep { $_->isopened } @$dep_bugs;
-        if ($count_open) {
-            ThrowUserError("still_unresolved_bugs",
-                           { bug_id => $bug->id, dep_count => $count_open });
-        }
-    }
+	if (Bugzilla->params->{"noresolveonopenblockers"} && $resolution eq 'FIXED')
+	{
+		my @idlist = ($bugid);
+		my @dependencies = Bugzilla::Bug::CountOpenDependencies(@idlist);
+		if (scalar @dependencies > 0) {
+			ThrowUserError("still_unresolved_bugs",
+				{
+					dependencies     => \@dependencies,
+					dependency_count => scalar @dependencies
+				}
+			);
+		}
+	}
 
 	# update the status
 	_ChangeStatus($bug, 'RESOLVED', $resolution);

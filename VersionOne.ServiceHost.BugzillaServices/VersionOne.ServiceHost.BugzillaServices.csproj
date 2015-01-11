@@ -117,44 +117,6 @@
       <Name>VersionOne.ServiceHost.WorkitemServices</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="BugzillaScripts\3.0.x\ReadMe.txt" />
-    <Content Include="BugzillaScripts\3.2.x\ReadMe.txt" />
-    <Content Include="BugzillaScripts\3.4.x\ReadMe.txt" />
-    <Content Include="BugzillaScripts\3.6.x\ReadMe.txt" />
-    <Content Include="BugzillaScripts\4.0.x\ReadMe.txt" />
-    <Content Include="BugzillaScripts\4.2.x\ReadMe.txt" />
-    <Content Include="BugzillaScripts\4.4x\ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="BugzillaScripts\3.0.x\Bugzilla\Bugzilla\WebService\V1.pm" />
-    <None Include="BugzillaScripts\3.0.x\Bugzilla\v1.cgi" />
-    <None Include="BugzillaScripts\3.0.x\TestV1Service.pl" />
-    <None Include="BugzillaScripts\3.2.x\Bugzilla\extensions\V1\code\webservice.pl" />
-    <None Include="BugzillaScripts\3.2.x\Bugzilla\extensions\V1\info.pl" />
-    <None Include="BugzillaScripts\3.2.x\Bugzilla\extensions\V1\lib\V1.pm" />
-    <None Include="BugzillaScripts\3.2.x\TestV1Service.pl" />
-    <None Include="BugzillaScripts\3.4.x\Bugzilla\extensions\V1\code\webservice.pl" />
-    <None Include="BugzillaScripts\3.4.x\Bugzilla\extensions\V1\info.pl" />
-    <None Include="BugzillaScripts\3.4.x\Bugzilla\extensions\V1\lib\V1.pm" />
-    <None Include="BugzillaScripts\3.4.x\TestV1Service.pl" />
-    <None Include="BugzillaScripts\3.6.x\Bugzilla\extensions\V1Integration\Config.pm" />
-    <None Include="BugzillaScripts\3.6.x\Bugzilla\extensions\V1Integration\Extension.pm" />
-    <None Include="BugzillaScripts\3.6.x\Bugzilla\extensions\V1Integration\lib\V1.pm" />
-    <None Include="BugzillaScripts\3.6.x\TestV1Service.pl" />
-    <None Include="BugzillaScripts\4.0.x\Bugzilla\extensions\V1Integration\Config.pm" />
-    <None Include="BugzillaScripts\4.0.x\Bugzilla\extensions\V1Integration\Extension.pm" />
-    <None Include="BugzillaScripts\4.0.x\Bugzilla\extensions\V1Integration\lib\V1.pm" />
-    <None Include="BugzillaScripts\4.0.x\TestV1Service.pl" />
-    <None Include="BugzillaScripts\4.2.x\Bugzilla\extensions\V1Integration\Config.pm" />
-    <None Include="BugzillaScripts\4.2.x\Bugzilla\extensions\V1Integration\Extension.pm" />
-    <None Include="BugzillaScripts\4.2.x\Bugzilla\extensions\V1Integration\lib\V1.pm" />
-    <None Include="BugzillaScripts\4.2.x\TestV1Service.pl" />
-    <None Include="BugzillaScripts\4.4x\Bugzilla\extensions\V1Integration\Config.pm" />
-    <None Include="BugzillaScripts\4.4x\Bugzilla\extensions\V1Integration\Extension.pm" />
-    <None Include="BugzillaScripts\4.4x\Bugzilla\extensions\V1Integration\lib\V1.pm" />
-    <None Include="BugzillaScripts\4.4x\TestV1Service.pl" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -164,7 +126,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)$(SolutionName)\$(OutDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
