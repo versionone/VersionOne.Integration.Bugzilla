@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencie
 		Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WinForms.dll = Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WinForms.dll
 		Dependencies\Microsoft.Practices.ObjectBuilder2.dll = Dependencies\Microsoft.Practices.ObjectBuilder2.dll
 		Dependencies\Ninject.dll = Dependencies\Ninject.dll
+		Dependencies\VersionOne.SDK.APIClient.dll = Dependencies\VersionOne.SDK.APIClient.dll
 	EndProjectSection
 EndProject
 Global
