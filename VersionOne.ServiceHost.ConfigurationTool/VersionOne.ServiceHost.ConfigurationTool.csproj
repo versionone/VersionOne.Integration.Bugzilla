@@ -1,0 +1,375 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{424084D5-C8B1-4593-B837-E1A7083E30AE}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VersionOne.ServiceHost.ConfigurationTool</RootNamespace>
+    <AssemblyName>ServiceHostConfigTool</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>http://localhost/ServiceHostConfigTool/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=e44a2bc38ed2c13c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Validation, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WinForms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ObjectBuilder2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\Microsoft.Practices.ObjectBuilder2.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VersionOne.SDK.APIClient, Version=12.0.716.43782, Culture=neutral, PublicKeyToken=e0f410c10d2e7630, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\VersionOne.SDK.APIClient.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes\DependsOnServiceAttribute.cs" />
+    <Compile Include="Attributes\DependsOnVersionOneAttribute.cs" />
+    <Compile Include="Attributes\HelpStringAttribute.cs" />
+    <Compile Include="BZ\AssemblyLoadException.cs" />
+    <Compile Include="BZ\BusinessException.cs" />
+    <Compile Include="BZ\ConnectionValidatorFactory.cs" />
+    <Compile Include="BZ\DependencyFailureException.cs" />
+    <Compile Include="BZ\DependencyValidator.cs" />
+    <Compile Include="BZ\ListValue.cs" />
+    <Compile Include="BZ\PropertyValidationResult.cs" />
+    <Compile Include="BZ\TestProjectEventArgs.cs" />
+    <Compile Include="BZ\IFacade.cs" />
+    <Compile Include="BZ\InvalidFilenameException.cs" />
+    <Compile Include="BZ\V1ConnectionRequiredException.cs" />
+    <Compile Include="DL\BugzillaConnectionValidator.cs" />
+    <Compile Include="DL\Exceptions\AssetTypeException.cs" />
+    <Compile Include="DL\Exceptions\FieldNameException.cs" />
+    <Compile Include="DL\Exceptions\VersionOneException.cs" />
+    <Compile Include="DL\IConnectionValidator.cs" />
+    <Compile Include="DL\ProjectWrapper.cs" />
+    <Compile Include="Entities\BugzillaProjectMapping.cs" />
+    <Compile Include="Entities\BugzillaPriorityMapping.cs" />
+    <Compile Include="Entities\NullableBool.cs" />
+    <Compile Include="Entities\NullableInt.cs" />
+    <Compile Include="Entities\Mapping.cs" />
+    <Compile Include="Entities\ProxyConnectionSettings.cs" />
+    <Compile Include="Entities\TestCompleteServiceEntity.cs" />
+    <Compile Include="Entities\TestPublishProjectMapping.cs" />
+    <Compile Include="Entities\TestServiceEntity.cs" />
+    <Compile Include="HelpResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HelpResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ServicesGroup.cs" />
+    <Compile Include="ServicesMap.cs" />
+    <Compile Include="ConfigurationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigurationForm.Designer.cs">
+      <DependentUpon>ConfigurationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Entities\BaseEntity.cs" />
+    <Compile Include="Entities\BaseServiceEntity.cs" />
+    <Compile Include="Entities\BugzillaServiceEntity.cs" />
+    <Compile Include="Entities\WorkitemWriterEntity.cs" />
+    <Compile Include="BZ\Facade.cs" />
+    <Compile Include="Entities\ChangesetLink.cs" />
+    <Compile Include="Entities\TestWriterEntity.cs" />
+    <Compile Include="Entities\TimerEntity.cs" />
+    <Compile Include="Entities\ServiceHostConfiguration.cs" />
+    <Compile Include="Entities\VersionOneSettings.cs" />
+    <Compile Include="Entities\ChangesetWriterEntity.cs" />
+    <Compile Include="DL\V1Connector.cs" />
+    <Compile Include="DL\XmlEntitySerializer.cs" />
+    <Compile Include="StateDefinition.cs" />
+    <Compile Include="UI\Controllers\TestServiceController.cs" />
+    <Compile Include="UI\Controls\BugzillaAssignControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BugzillaAssignControl.Designer.cs">
+      <DependentUpon>BugzillaAssignControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\BugzillaTagControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BugzillaTagControl.Designer.cs">
+      <DependentUpon>BugzillaTagControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\BaseDataBindingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\PathSelectorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\PathSelectorControl.Designer.cs">
+      <DependentUpon>PathSelectorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\HelpButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\HelpButton.Designer.cs">
+      <DependentUpon>HelpButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\TabHighlighter.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TestServicePageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TestServicePageControl.Designer.cs">
+      <DependentUpon>TestServicePageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\TestCompletePageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TestCompletePageControl.Designer.cs">
+      <DependentUpon>TestCompletePageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Validation\ConditionalNonEmptyStringValidatorAttribute.cs" />
+    <Compile Include="Validation\ConditionalNonEmptyStringValidator.cs" />
+    <Compile Include="Validation\UniqueFieldValueValidatorAttribute.cs" />
+    <Compile Include="Validation\IValidationInterceptor.cs" />
+    <Compile Include="UI\Interfaces\IVersionOneSettingsConsumer.cs" />
+    <Compile Include="UI\Interfaces\ISettingsProvider.cs" />
+    <Compile Include="UI\Interfaces\ITestServicePageView.cs" />
+    <Compile Include="UI\Interfaces\ITestCompletePageView.cs" />
+    <Compile Include="UI\IUIFactory.cs" />
+    <Compile Include="UI\UIFactory.cs" />
+    <Compile Include="UI\ConnectionValidationEventArgs.cs" />
+    <Compile Include="UI\Controllers\BaseController.cs" />
+    <Compile Include="UI\Controllers\BugzillaController.cs" />
+    <Compile Include="UI\Controllers\ChangesetsController.cs" />
+    <Compile Include="UI\Controllers\DefectsController.cs" />
+    <Compile Include="UI\Controllers\TestsController.cs" />
+    <Compile Include="UI\Controllers\GeneralController.cs" />
+    <Compile Include="UI\Controls\ChangesetsPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\ChangesetsPageControl.Designer.cs">
+      <DependentUpon>ChangesetsPageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\WorkitemsPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\WorkitemsPageControl.Designer.cs">
+      <DependentUpon>WorkitemsPageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\TestsPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\TestsPageControl.Designer.cs">
+      <DependentUpon>TestsPageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\BugzillaPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\BugzillaPageControl.Designer.cs">
+      <DependentUpon>BugzillaPageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\V1SettingsPageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\V1SettingsPageControl.Designer.cs">
+      <DependentUpon>V1SettingsPageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Interfaces\IBugzillaPageView.cs" />
+    <Compile Include="UI\Interfaces\IChangesetsPageView.cs" />
+    <Compile Include="UI\Interfaces\IWorkitemsPageView.cs" />
+    <Compile Include="UI\Interfaces\IFormController.cs" />
+    <Compile Include="UI\Interfaces\IGeneralPageView.cs" />
+    <Compile Include="UI\Interfaces\IConfigurationController.cs" />
+    <Compile Include="UI\Interfaces\IConfigurationView.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ConfigurationFormController.cs" />
+    <Compile Include="UI\Controls\BasePageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Interfaces\IPageController.cs" />
+    <Compile Include="UI\Interfaces\ITestsPageView.cs" />
+    <Compile Include="UI\Interfaces\IPageView.cs" />
+    <Compile Include="Validation\ConfigurationValidationResult.cs" />
+    <Compile Include="Validation\GridMemberValueAccessBuilder.cs" />
+    <Compile Include="Validation\GridValidationIntegrationProxy.cs" />
+    <Compile Include="Validation\GridValidationProvider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Validation\NonEmptyStringValidator.cs" />
+    <Compile Include="Validation\NonEmptyStringValidatorAttribute.cs" />
+    <Compile Include="Validation\PropertyValueAccess.cs" />
+    <Compile Include="Validation\UniqueFieldValueValidator.cs" />
+    <Compile Include="Validation\ValidationReflectionHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ConfigurationForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Configuration.xml" />
+    <Content Include="Resources\HelpBalloon.bmp" />
+    <Content Include="Resources\HelpMark.bmp" />
+    <EmbeddedResource Include="HelpResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>HelpResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\error.bmp" />
+    <EmbeddedResource Include="Resources\DeleteIcon.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="ClassDiagram.cd" />
+    <EmbeddedResource Include="log4net.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VersionOne.Bugzilla.XmlRpcProxy\VersionOne.Bugzilla.XmlRpcProxy.csproj">
+      <Project>{9F8C4AA1-00CB-4640-9764-7691230C1EE5}</Project>
+      <Name>VersionOne.Bugzilla.XmlRpcProxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VersionOne.ServerConnector\VersionOne.ServerConnector.csproj">
+      <Project>{19A13CA5-7461-4453-8A5E-9C5A7A55C4D5}</Project>
+      <Name>VersionOne.ServerConnector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VersionOne.ServiceHost.Core\VersionOne.ServiceHost.Core.csproj">
+      <Project>{F432BAC8-27ED-4C2C-8E06-EF806A5B0D79}</Project>
+      <Name>VersionOne.ServiceHost.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)$(SolutionName)\$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

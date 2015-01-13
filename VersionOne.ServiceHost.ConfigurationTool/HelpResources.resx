@@ -1,0 +1,488 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BugzillaCloseFieldId" xml:space="preserve">
+    <value>Name of the Bugzilla field to update when a VersionOne defect is closed. (optional)</value>
+  </data>
+  <data name="BugzillaCloseFieldValue" xml:space="preserve">
+    <value>Value to update the field to when VersionOne defect is closed. (optional)</value>
+  </data>
+  <data name="BugzillaCloseReassignValue" xml:space="preserve">
+    <value>User ID to assign bug to once it gets closed in VersionOne. (optional)</value>
+  </data>
+  <data name="BugzillaCloseResolveValue" xml:space="preserve">
+    <value>Status to resolve bug to once it gets closed in VersionOne. (optional)</value>
+  </data>
+  <data name="BugzillaCreateAccept" xml:space="preserve">
+    <value>Check to mark the bug accepted once it gets created in VersionOne. (optional)</value>
+  </data>
+  <data name="BugzillaCreateFieldId" xml:space="preserve">
+    <value>Name of the Bugzilla field to update when a VersionOne defect is created. (optional)</value>
+  </data>
+  <data name="BugzillaCreateFieldValue" xml:space="preserve">
+    <value>Value to update the field to when VersionOne defect is created. (optional)</value>
+  </data>
+  <data name="BugzillaCreateReassignValue" xml:space="preserve">
+    <value>User ID to assign bug to once it gets created in VersionOne. (optional)</value>
+  </data>
+  <data name="BugzillaCreateResolve" xml:space="preserve">
+    <value>Status to resolve bug to once it gets created in VersionOne. (optional)</value>
+  </data>
+  <data name="BugzillaPriorityMappings" xml:space="preserve">
+    <value>Issue priority mappings. 
+If a mapping of Bugzilla to VersionOne priority is omitted here, created VersionOne defects do not have any priority set. 
+In example configuration, Bugzilla priorities are valid for version 3.6.</value>
+  </data>
+  <data name="BugzillaProjectMappings" xml:space="preserve">
+    <value>Mapping for projects from Bugzilla to VersionOne. Note that projects not enlisted in mappings are matched by name, and if there's no match, default (root) VersionOne project is used. Usually, it is System (All Projects).</value>
+  </data>
+  <data name="BugzillaSearchName" xml:space="preserve">
+    <value>Bugzilla Search that finds artifacts to move into VersionOne.</value>
+  </data>
+  <data name="BugzillaSource" xml:space="preserve">
+    <value>VersionOne 'Source' value to use when Defect was created from Bugzilla artifact. Make sure this value exists in VersionOne.</value>
+  </data>
+  <data name="BugzillaUrl" xml:space="preserve">
+    <value>Bugzilla URL used to query for defects.
+For Bugzilla 3.0.x the URL should include v1.cgi.
+For Bugzilla 3.2.x the URL should include xmlrpc.cgi.</value>
+  </data>
+  <data name="BugzillaUrlTemplate" xml:space="preserve">
+    <value>Links in VersionOne to Bugzilla Bug (we replace #key# with Bugzilla Issue ID).</value>
+  </data>
+  <data name="BugzillaV1LinkFieldId" xml:space="preserve">
+    <value>Bugzilla custom field to use for VersionOne Defect URL.</value>
+  </data>
+  <data name="ChangesetsAddToMenu" xml:space="preserve">
+    <value>If checked, the link between VersionOne and VCS is placed on the ChangeSet Details page tab menu. If cleared, there is no tab menu element for the link.</value>
+  </data>
+  <data name="ChangesetsAllwaysCreate" xml:space="preserve">
+    <value>If checked, a VersionOne ChangeSet is created for each version control system (VCS) ChangeSet. If cleared, the VersionOne ChangeSet is only created if a VersionOne identifier can be found in the VCS commit comment.</value>
+  </data>
+  <data name="ChangesetsComment" xml:space="preserve">
+    <value>The VersionOne ChangeSet creation comment.</value>
+  </data>
+  <data name="ChangesetsName" xml:space="preserve">
+    <value>Friendly name for this link. Defaults to "ChangeSet {0}" and the {0} is replaced with the VCS ChangeSet Identifier.</value>
+  </data>
+  <data name="ChangesetsUrl" xml:space="preserve">
+    <value>Fully qualified URL to your web based VCS  Viewer. The VCS ChangeSet identifier is set by putting {0} in the URL.</value>
+  </data>
+  <data name="ClearQuestCloseAction" xml:space="preserve">
+    <value>ClearQuest Action to perform when a Defect is closed in VersionOne.</value>
+  </data>
+  <data name="ClearQuestConnectionName" xml:space="preserve">
+    <value>ClearQuest Connection Identifier.</value>
+  </data>
+  <data name="ClearQuestDatabase" xml:space="preserve">
+    <value>Database Name in the ClearQuest instance.</value>
+  </data>
+  <data name="ClearQuestDefectTitleField" xml:space="preserve">
+    <value>The name of the ClearQuest Field containing the entity title.</value>
+  </data>
+  <data name="ClearQuestDescriptionField" xml:space="preserve">
+    <value>The name of the ClearQuest Field containing the entity description.</value>
+  </data>
+  <data name="ClearQuestEntityType" xml:space="preserve">
+    <value>The name of the Defect entity in your ClearQuest instance.</value>
+  </data>
+  <data name="ClearQuestIdField" xml:space="preserve">
+    <value>The name of the ClearQuest Field used to uniquely identify the entity.</value>
+  </data>
+  <data name="ClearQuestIssueUrlTemplate" xml:space="preserve">
+    <value>Template used to create a link in VersionOne to the ClearQuest defect ( #key# is placeholder for ClearQuest defect id). For example:
+http://domain:port/cqweb/#/&lt;SchemaName&gt;/&lt;DataBase&gt;/RECORD/#defectid#&amp;format=HTML&amp;noframes=true&amp;recordType=Defect
+ SchemaName - Schema name in the ClearQuest,
+ DataBase   - Database name in the ClearQuest</value>
+  </data>
+  <data name="ClearQuestMandatoryFields" xml:space="preserve">
+    <value>Mandatory fields which need to be filled during changing state of defect to close.</value>
+  </data>
+  <data name="ClearQuestModifyAction" xml:space="preserve">
+    <value>The name of the ClearQuest Action used to modify the entity.</value>
+  </data>
+  <data name="ClearQuestOwnerLoginField" xml:space="preserve">
+    <value>The name of the ClearQuest Field containing the entity owner.</value>
+  </data>
+  <data name="ClearQuestPassword" xml:space="preserve">
+    <value>Password for ClearQuest user.</value>
+  </data>
+  <data name="ClearQuestPriorityField" xml:space="preserve">
+    <value>The name of the ClearQuest Field containing the priority state.</value>
+  </data>
+  <data name="ClearQuestPriorityMappings" xml:space="preserve">
+    <value>Issue priority mappings. 
+If a mapping of ClearQuest to VersionOne priority is omitted here, created VersionOne defects do not have any priority set.</value>
+  </data>
+  <data name="ClearQuestProjectMappings" xml:space="preserve">
+    <value>Mapping for projects from ClearQuest to VersionOne.</value>
+  </data>
+  <data name="ClearQuestProjectNameField" xml:space="preserve">
+    <value>The name of the ClearQuest Field containing the Project Name for this entity.</value>
+  </data>
+  <data name="ClearQuestSourceFieldValue" xml:space="preserve">
+    <value>Select the VersionOne Source to use for ClearQuest.</value>
+  </data>
+  <data name="ClearQuestStateField" xml:space="preserve">
+    <value>The name of the ClearQuest Field containing the entity state.</value>
+  </data>
+  <data name="ClearQuestSubmittedToV1Action" xml:space="preserve">
+    <value>ClearQuest Action to perform once a Defect is successfully created in VersionOne.</value>
+  </data>
+  <data name="ClearQuestSubmittedToV1State" xml:space="preserve">
+    <value>ClearQuest State that indicates which Defects are in the VersionOne system.</value>
+  </data>
+  <data name="ClearQuestUsername" xml:space="preserve">
+    <value>Valid ClearQuest Username.</value>
+  </data>
+  <data name="ClearQuestWaitedSubmitToV1State" xml:space="preserve">
+    <value>ClearQuest State that indicates which Defects are ready for delivery to VersionOne.</value>
+  </data>
+  <data name="CommonDisabled" xml:space="preserve">
+    <value>If checked, configuration node is created, but service would not run.</value>
+  </data>
+  <data name="CommonFilter" xml:space="preserve">
+    <value>The search string to match against the names of files in the folder.</value>
+  </data>
+  <data name="CommonPollInterval" xml:space="preserve">
+    <value>Time interval (in minutes) between two consequent requests for changes.</value>
+  </data>
+  <data name="CommonRegularExpression" xml:space="preserve">
+    <value>Regular expression for extracting VersionOne asset ID.
+To Match S-01001 (Matches "S-01001"): [A-Z]{1,2}-[0-9]+
+To match #Reference (matches only "Reference"): (?&lt;=#)[a-zA-Z]+\b
+To match "V1:Reference"  (matches only "Reference"): (?&lt;=V1:)[a-zA-Z]+\b</value>
+  </data>
+  <data name="CommonWatch" xml:space="preserve">
+    <value>Folder for tracking changes.</value>
+  </data>
+  <data name="WorkitemsReference" xml:space="preserve">
+    <value>VersionOne Workitem field used to hold defect system issue  ID. By default this is the Reference field.</value>
+  </data>
+  <data name="JiraAssigneeStateChanged" xml:space="preserve">
+    <value>The name of the JIRA user to assign the Issue once it's closed in VersionOne. A value of -1 will cause JIRA to set the assignee based on workflow rules. (optional)</value>
+  </data>
+  <data name="JiraCloseFieldId" xml:space="preserve">
+    <value>Name of the JIRA custom field to update after a the VersionOne Defect is closed.</value>
+  </data>
+  <data name="JiraCloseFieldValue" xml:space="preserve">
+    <value>Value to set in "Closed Field ID" after a the VersionOne Defect is closed.</value>
+  </data>
+  <data name="JiraCreateFieldId" xml:space="preserve">
+    <value>Name of the JIRA Custom Field to update after a Defect is created in VersionOne.</value>
+  </data>
+  <data name="JiraCreateFieldValue" xml:space="preserve">
+    <value>Value to set in "Create Field ID" after a Defect is created in VersionOne.</value>
+  </data>
+  <data name="JiraFilterId" xml:space="preserve">
+    <value>ID of the filter used to find JIRA issues that need to have VersionOne assets created.</value>
+  </data>
+  <data name="JiraWorkitemLinkFieldId" xml:space="preserve">
+    <value>Custom Field in JIRA used to hold VersionOne URL (this information also appears in the comment).</value>
+  </data>
+  <data name="JiraIssueUrlTemplate" xml:space="preserve">
+    <value>Template used to create a link in VersionOne to the JIRA issue ( #key# is placeholder for JIRA Issue id).</value>
+  </data>
+  <data name="JiraPriorityMappings" xml:space="preserve">
+    <value>Mapping for priorities from JIRA to VersionOne.
+If a mapping of JIRA to VersionOne priority is omitted here, created VersionOne defects do not have any priority set.</value>
+  </data>
+  <data name="JiraProgressWorkflow" xml:space="preserve">
+    <value>The JIRA Workflow Transition ID to set once the Defect has been created in VersionOne.</value>
+  </data>
+  <data name="JiraProgressWorkflowClosed" xml:space="preserve">
+    <value>The JIRA Workflow Transition ID to set once the Defect is closed in VersionOne.</value>
+  </data>
+  <data name="JiraProjectMappings" xml:space="preserve">
+    <value>Mapping for projects from JIRA to VersionOne.</value>
+  </data>
+  <data name="JiraSourceFieldValue" xml:space="preserve">
+    <value>Select the VersionOne Source to use for JIRA.</value>
+  </data>
+  <data name="PerforcePath" xml:space="preserve">
+    <value>Fully qualified URL to the Perforce repository monitored by this integration instance.
+Don't forget about port (default is 1666).</value>
+  </data>
+  <data name="PerforceView" xml:space="preserve">
+    <value>Depot folder for tracking changes. For entire repository use //Depot/...</value>
+  </data>
+  <data name="QcCloseStatusValue" xml:space="preserve">
+    <value>Specify the Quality Center Defect status value to set after the VersionOne Defect is closed.</value>
+  </data>
+  <data name="QcCreateStatusValue" xml:space="preserve">
+    <value>Specify the Quality Center Defect status value to set after a Defect is created in VersionOne.</value>
+  </data>
+  <data name="QcDefectFilters" xml:space="preserve">
+    <value>Search criteria to find Quality Center defects to be moved into VersionOne.</value>
+  </data>
+  <data name="QcPriorityMappings" xml:space="preserve">
+    <value>Mapping for priorities from Quality Center to VersionOne.
+If a mapping of Quality Center to VersionOne priority is omitted here, created VersionOne defects do not have any priority set.</value>
+  </data>
+  <data name="QcProjectMappings" xml:space="preserve">
+    <value>Mapping for projects from Quality Center to VersionOne.</value>
+  </data>
+  <data name="QcSourceFieldValue" xml:space="preserve">
+    <value>Select the VersionOne Source to use for Quality Center.</value>
+  </data>
+  <data name="QtpSuiteName" xml:space="preserve">
+    <value>The VersionOne test suite name.</value>
+  </data>
+  <data name="SvnPath" xml:space="preserve">
+    <value>Fully qualified URL to the Subversion repository monitored by this integration instance.</value>
+  </data>
+  <data name="TcProjectSuiteConfig" xml:space="preserve">
+    <value>Test Complete Project Suite file.</value>
+  </data>
+  <data name="TcRetryAttempts" xml:space="preserve">
+    <value>Number of times to retry when an error occurs before stopping.</value>
+  </data>
+  <data name="TcRetryTimeoutSeconds" xml:space="preserve">
+    <value>How long to wait if the integration encounters an error when attempting to read test result files. This can occur if TestComplete is writing results when the integration polls to read results.</value>
+  </data>
+  <data name="TestsComment" xml:space="preserve">
+    <value>Comment to use when setting values on VersionOne tests.</value>
+  </data>
+  <data name="TestsCreateDefect" xml:space="preserve">
+    <value>Indicates whether the TestWriterService should create defects when automated tests fail for closed tests in VersionOne. Valid values are:
+* All: The integration will create a VersionOne Defect for any closed test in the project when the external system test fails;
+* Current Iteration: The integration will only create VersionOne Defects for closed tests within the current iteration;
+* None: The integration never create VersionOne defects.</value>
+  </data>
+  <data name="TestsDescription" xml:space="preserve">
+    <value>If you are creating Defects, this text will appear in the description field.</value>
+  </data>
+  <data name="TestServicesBaseQueryFilter" xml:space="preserve">
+    <value>Base filter used when selecting tests to push to partner system. This filter must include the attribute defined in TestReferenceAttribute.</value>
+  </data>
+  <data name="TestServicesV1Project" xml:space="preserve">
+    <value>This table describes the attributes on each VersionOne Project element. These elements are child elements to TestPublishProjectMap and describe the VersionOne project to poll when looking for Test that need to be created in Quality Center.</value>
+  </data>
+  <data name="TestsFailedStatus" xml:space="preserve">
+    <value>Value to set when a test fails.</value>
+  </data>
+  <data name="TestsPassedStatus" xml:space="preserve">
+    <value>Value to set when a test passes.</value>
+  </data>
+  <data name="TestsReference" xml:space="preserve">
+    <value>VersionOne Field name to search for test identifier. It's recommended that you use the Reference field; however if you are already using this field for another purpose, you may choose another text field, including custom fields.</value>
+  </data>
+  <data name="V1PageIntegratedAuth" xml:space="preserve">
+    <value>Whether to use Windows integrated authentication instead of username/password pair.</value>
+  </data>
+  <data name="V1PageProxyEnabled" xml:space="preserve">
+    <value>Enabling proxy server affects VersionOne communication. Be sure to enable it if server is not accessible directly.</value>
+  </data>
+  <data name="V1PageVersionOneUrl" xml:space="preserve">
+    <value>VersionOne server URL.</value>
+  </data>
+  <data name="LkkAccount" xml:space="preserve">
+    <value>Your LeanKitKanban account name.</value>
+  </data>
+  <data name="LkkOverrideWipLimit" xml:space="preserve">
+    <value>If checked, cards will be created in LKK regardless of whether lane limit is exceeded.</value>
+  </data>
+  <data name="LkkOverrideWipLimitComment" xml:space="preserve">
+    <value>If you choose to override WIP limit, you have to provide the reason in this field.</value>
+  </data>
+  <data name="LkkPriorityMappings" xml:space="preserve">
+    <value>Workitem priority mappings. If you provide non-existing LKK priority IDs, the integration would not be able to create cards.</value>
+  </data>
+  <data name="LkkProjectMappings" xml:space="preserve">
+    <value>Mappings of VersionOne projects to LKK boards. Data creation and updates are done according to these mappings.</value>
+  </data>
+  <data name="LkkCloseStatus" xml:space="preserve">
+    <value>Primary workitem status will be set to this value when closing items matching to archived cards.</value>
+  </data>
+  <data name="LkkTypeMappings" xml:space="preserve">
+    <value>Mappings of VersionOne workitem types to LKK card types. Non existing LKK card types will be created on each mapped board on service startup.</value>
+  </data>
+  <data name="LkkV1LeanKitActiveStatus" xml:space="preserve">
+    <value>Status that VersionOne workitems are updated with, if mapped to LK cards on Board lanes. If value does not exist in VersionOne, it will be created.</value>
+  </data>
+  <data name="LkkV1LeanKitArchivedStatus" xml:space="preserve">
+    <value>Status that VersionOne workitems are updated with, if mapped to LK cards in Archive. If value does not exist in VersionOne, it will be created.</value>
+  </data>
+  <data name="LkkV1LeanKitBacklogStatus" xml:space="preserve">
+    <value>Status that VersionOne workitems are updated with, if mapped to LK cards in Backlog. If value does not exist in VersionOne, it will be created.</value>
+  </data>
+  <data name="BafApiId" xml:space="preserve">
+    <value>User API Id is used to identify application working with Buy a Feature system and provided with the integration. You can change it in the configuration file only</value>
+  </data>
+  <data name="BafFgStatusFieldName" xml:space="preserve">
+    <value>Custom VersionOne list field assigned to Feature Group and containing statuses for integration with Buy a Feature system</value>
+  </data>
+  <data name="BafFgStatusCompleted" xml:space="preserve">
+    <value>This status indicates that Game corresponding to exported Feature Group was played</value>
+  </data>
+  <data name="BafFgStatusPorted" xml:space="preserve">
+    <value>This status appears when a Feature Group was successfully ported to Buy a Feature and corresponding Game Definition was created</value>
+  </data>
+  <data name="BafFgStatusReady" xml:space="preserve">
+    <value>This status is used to mark Feature Groups as ready to be ported to Buy a Feature</value>
+  </data>
+  <data name="BafItemStatusFieldName" xml:space="preserve">
+    <value>Custom VersionOne list field assigned to Story and containing statuses for integration with Buy a Feature system</value>
+  </data>
+  <data name="BafItemStatusNotPurchased" xml:space="preserve">
+    <value>This status indicates that Game was played, and corresponding story was not purchased by players</value>
+  </data>
+  <data name="BafItemStatusPorted" xml:space="preserve">
+    <value>This status indicates that Story was successfully ported to Buy a Feature system, and corresponding Game Definition Item was created</value>
+  </data>
+  <data name="BafItemStatusPurchased" xml:space="preserve">
+    <value>This status means that Game was played, and corresponding Story was purchased by players</value>
+  </data>
+  <data name="BafItemStatusReady" xml:space="preserve">
+    <value>This status is used to mark Stories ready to be ported to Buy a Feature system</value>
+  </data>
+  <data name="BafProject" xml:space="preserve">
+    <value>VersionOne Project</value>
+  </data>
+  <data name="BafSigningKey" xml:space="preserve">
+    <value>Signing Key is used for data encryption. It is provided with the integration. You can change it in the configuration file only.</value>
+  </data>
+  <data name="BafFgGameRunCounterFieldName" xml:space="preserve">
+    <value>Custom VersionOne numeric field assigned to Feature Group and containing the amount of Game Runs.</value>
+  </data>
+  <data name="BafItemPurchasedCounterFieldName" xml:space="preserve">
+    <value>Custom VersionOne numeric field assigned to Story and containing the number of times a corresponding game item has been purchased.</value>
+  </data>
+  <data name="BafItemGameRunCounterFieldName" xml:space="preserve">
+    <value>Custom VersionOne numeric field assigned to Story and containing the amount of Game Runs.</value>
+  </data>
+  <data name="JiraFilterDisabled" xml:space="preserve">
+    <value>If checked, the integration will not use this filter to find JIRA issues.</value>
+  </data>
+  <data name="BafShirtSizeMappings" xml:space="preserve">
+    <value>Mappings of VersionOne T-Shirt Sizes to Buy a Feature Shirt Sizes</value>
+  </data>
+  <data name="BafVersionOneShirtSizeField" xml:space="preserve">
+    <value>Custom VersionOne list field assigned to Story and containing T-Shirt sizes populated along with workitems to Buy a Feature system</value>
+  </data>
+  <data name="BafIncludeChildProjects" xml:space="preserve">
+    <value>If this option is checked, VersionOne workitems from sub-projects of selected project will also be processed by the service.</value>
+  </data>
+  <data name="BafServerUrl" xml:space="preserve">
+    <value>Buy a Feature server URL</value>
+  </data>
+  <data name="V1LkkWorkflowFieldName" xml:space="preserve">
+    <value>VersionOne field which contains card workflow status.</value>
+  </data>
+</root>
