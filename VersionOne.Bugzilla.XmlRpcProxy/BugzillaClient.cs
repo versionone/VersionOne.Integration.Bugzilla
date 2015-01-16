@@ -19,7 +19,6 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
                     proxy = XmlRpcProxyGen.Create<IServer>();
                     proxy.KeepAlive = false;
                 }
-
                 return proxy;
             }
         }
@@ -30,7 +29,8 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
 
         public int Login(string username, string password, bool remember) {
             try {
-                var args = new XmlRpcStruct {{"login", username}, {"password", password}, {"remember", (remember ? "1" : "0")}};
+                //var args = new XmlRpcStruct {{"login", username}, {"password", password}, {"remember", (remember ? "1" : "0")}};
+                var args = new XmlRpcStruct { { "login", username }, { "password", password } };
                 var result = Proxy.Login(args);
                 return int.Parse(result["id"].ToString());
             } catch (Exception ex) {
