@@ -23,10 +23,11 @@ namespace VersionOne.ServiceHost.BugzillaServices {
 		
         public List<Defect> GetBugs() {
             var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
-            bugzillaClient.Login(configuration.UserName, configuration.Password, true);
-            
-            var ids = bugzillaClient.GetBugs(configuration.OpenIssueFilterId);
-			var defects = new List<Defect>(ids.Count);
+            //bugzillaClient.Login(configuration.UserName, configuration.Password, true);
+            //var ids = bugzillaClient.GetBugs(configuration.OpenIssueFilterId);
+
+           var ids = bugzillaClient.LoginSearch(configuration.UserName, configuration.Password, true, configuration.OpenIssueFilterId);
+           var defects = new List<Defect>(ids.Count);
 
             foreach (var id in ids) {
                 var bug = bugzillaClient.GetBug(id);

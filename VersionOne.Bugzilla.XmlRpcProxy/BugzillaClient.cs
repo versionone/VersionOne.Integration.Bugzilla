@@ -27,21 +27,22 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
             get { return new Version(Proxy.Version()); }
         }
 
-        public int Login(string username, string password, bool remember) {
+        public int Login(string username, string password, bool remember) 
+        {
             try {
-                //var args = new XmlRpcStruct {{"login", username}, {"password", password}, {"remember", (remember ? "1" : "0")}};
-                var args = new XmlRpcStruct { { "login", username }, { "password", password } };
-                var result = Proxy.Login(args);
-                return int.Parse(result["id"].ToString());
+               var args = new XmlRpcStruct { { "login", username }, { "password", password } };
+               var result = Proxy.Login(args);
+               return int.Parse(result["id"].ToString());
             } catch (Exception ex) {
                 throw new BugzillaException(
                     string.Format("Error attempting to log in to Bugzilla as ({0}) on {1}. {2}", username, Proxy.Url, ex.Message), ex);
             }
         }
 
-        public IList<int> GetBugs(string searchName) {
+        private IList<int> GetBugs(string searchName, string token) 
+        {
             try {
-                var args = new XmlRpcStruct {{"searchphrase", searchName}};
+                var args = new XmlRpcStruct { { "searchphrase", searchName }, {"token" , token}};
                 return new List<int>(Proxy.GetBugs(args));
             } catch (Exception ex) {
                 throw new BugzillaException(
@@ -49,6 +50,20 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
             }
         }
 
+        public IList<int> LoginSearch(string username, string password, bool remember, string searchname)
+        {
+          try {
+                var args = new XmlRpcStruct { { "login", username }, { "password", password } };
+                var result = Proxy.Login(args);
+              
+                return this.GetBugs(searchname, result.ContainsKey("token") ? result["token"].ToString() : result["id"].ToString());
+          }
+          catch (Exception ex){
+              throw new BugzillaException(
+                  string.Format("Error attempting to Login Search  ({0}) on Bugzilla at {1}. {2}", searchname, Proxy.Url, ex.Message), ex);
+          }
+        }
+ 
         public void Logout() {
             Proxy.Logout();
         }

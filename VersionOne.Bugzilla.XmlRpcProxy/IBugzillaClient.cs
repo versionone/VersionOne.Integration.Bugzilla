@@ -10,7 +10,7 @@ namespace VersionOne.Bugzilla.XmlRpcProxy
 		int Login(string username, string password, bool remember);
 		void Logout();
 
-		IList<int> GetBugs(string searchName);
+		//IList<int> GetBugs(string searchName);
 
 		Bug GetBug(int bugId);
 		Product GetProduct(int productId);
@@ -23,6 +23,7 @@ namespace VersionOne.Bugzilla.XmlRpcProxy
 		bool UpdateBug(int bugId, string fieldName, string fieldValue);
 
 	    string GetFieldValue(int bugId, string fieldName);
+	    IList<int> LoginSearch(string userName, string password, bool b, string openIssueFilterId);
 	}
 
 	public interface IBugzillaClientFactory
