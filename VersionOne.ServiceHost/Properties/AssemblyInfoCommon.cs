@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("VersionOne, Inc.")]
-[assembly: AssemblyCopyright("Copyright © 2011, VersionOne, Inc. All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright © 2015, VersionOne, Inc. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 
 #if DEBUG
@@ -13,5 +13,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Release")]
 #endif
 
-[assembly: ComVisible(false)]
 
