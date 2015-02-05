@@ -2,65 +2,43 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>VersionOne Bugzilla Integration</title>
+<title>VersionOne Integration for Bugzilla</title>
 <link rel="stylesheet" href="styles/help.css" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 	<div class="main">
-		<h1>VersionOne Bugzilla Integration</h1>
+		<h1>VersionOne Integration for Bugzilla</h1>
 		<h2>Introduction</h2>
+			<p>The VersionOne Integration for Bugzilla creates defects in VersionOne based on bugs found in Bugzilla. Using this integration, your organization can manage and triage bugs reported by customers and promote them to VersionOne once you determine a fix is necessary.</p>
 		<h2>Contents</h2>
 		<ul>
 			<li><a href='#VersionOneBugzillaIntegration-Description'>Description</a></li>
-			<li><a href='#VersionOneBugzillaIntegration-SystemRequirements'>System
-					Requirements</a></li>
+			<li><a href='#VersionOneBugzillaIntegration-SystemRequirements'>System Requirements</a></li>
 			<li><a href='#VersionOneBugzillaIntegration-Download'>Download</a></li>
 			<li><a href='#VersionOneBugzillaIntegration-Upgrade'>Upgrade</a></li>
 			<li><a href='#VersionOneBugzillaIntegration-Installation'>Installation</a></li>
 			<li><a href='#VersionOneBugzillaIntegration-Configuration'>Configuration</a>
 				<ul>
-					<li><a href='#VersionOneBugzillaIntegration-ConfigureBugzilla'>Configure
-							Bugzilla </a></li>
-					<li><a
-						href='#VersionOneBugzillaIntegration-ConfigureVersionOne'>Configure
-							VersionOne </a></li>
-					<li><a
-						href='#VersionOneBugzillaIntegration-ConfiguretheIntegration'>Configure
-							the Integration </a></li>
+					<li><a href='#VersionOneBugzillaIntegration-ConfigureBugzilla'>Configure Bugzilla</a></li>
+					<li><a href='#VersionOneBugzillaIntegration-ConfigureVersionOne'>Configure VersionOne</a></li>
+					<li><a href='#VersionOneBugzillaIntegration-ConfiguretheIntegration'>Configure the Integration</a></li>
 				</ul></li>
 		</ul>
 		<h2>
 			<a name="VersionOneBugzillaIntegration-Description"></a>Description
 		</h2>
-		<p>The VersionOne Bugzilla Integration (V1Bugzilla) creates
-			defects in VersionOne based on bugs in Bugzilla. Using this
-			integration your organization can manage and triage bugs reported by
-			customers and promote them to VersionOne once you determine a fix is
-			necessary.</p>
-
-		<p>Once the integration is installed and configured, Bugzilla
-			users can specify which bugs require engineering attention and they
-			will automatically appear as Defects in the VersionOne repository.
-			Additionally, when the defect is closed in VersionOne, the
-			integration updates Bugzilla to reflect this change.</p>
+		<p>Once the integration is installed and configured, Bugzilla users can specify which bugs require engineering attention and they will automatically appear as Defects in the VersionOne repository. Additionally, when the defect is closed in VersionOne, the integration updates Bugzilla to reflect this change.</p>
 
 		<p>This integration supports multiple modes of operation.</p>
 
 		<ul>
-			<li>Assign a Bug: With this approach, bugs that require
-				engineering attention are assigned to an "engineering" user in
-				Bugzilla. This assignment is used to determine when to create
-				Defects in VersionOne.</li>
-			<li>Tag a Bug: With this approach bugs that require engineering
-				attention are identified using custom fields on the bugs. The value
-				of the custom field is used to indicate when to create Defects in
-				VersionOne.</li>
+			<li><b>Assign a Bug</b>: With this approach, bugs that require attention are assigned to a specific user in Bugzilla. This assignment is used to determine when to create Defects in VersionOne.</li>
+			<li><b>Tag a Bug</b>: With this approach bugs that require attention are identified using custom fields on the bugs. The value of the custom field is used to indicate when to create Defects in VersionOne.</li>
 		</ul>
 
 
-		<p>The following sequence diagram illustrates how V1Bugzilla interacts
-			with Bugzilla and VersionOne.<br />
+		<p>The following sequence diagram illustrates how the integration interacts with Bugzilla and VersionOne:<br />
 			<div class=wsd wsd_style="qsd">
 <pre>
 title Bugzilla Integration Sequence
@@ -112,122 +90,88 @@ deactivate Integration
 		<h2>
 			<a name="VersionOneBugzillaIntegration-SystemRequirements"></a>System Requirements
 		</h2>
+
+		<p>Operating System:</p>
+		<ul>
+			<li>Any Windows operating system that supports .NET Framework 4.5.1.</li>
+		</ul>
+		
 		<p>VersionOne:</p>
 		<ul>
-			<li>7.3 and above, including Team Edition</li>
-		</ul>
-
-		<p>Integration Server Operating System:</p>
-		<ul>
-			<li>Windows 2003, 2008 with .NET Framework 4.0</li>
+			<li>7.3 and higher, all editions.</li>
 		</ul>
 
 		<p>Bugzilla:</p>
 		<ul>
-			<li>Tested with 3.0.1 to 4.2</li>
+			<li>Versions 4.2 and 4.4. Previous versions may continue to work, but are no longer supported by VersionOne.</li>
 		</ul>
 
-		<p class='info'>Bugzilla must be running in the Apache Web Server.
-			Bugzilla running in IIS is not supported.</p>
-		<p class='info'>Your Bugzilla instance must support RPC
-			connections. This may require some optional modules including, but
-			not limited to, SOAP-Lite, Test-Taint, and JSON-RPC. If these modules
-			have dependencies, you will need to install those too. Refer to the
-			Bugzilla documentation for your release for exact details and
-			instructions on how to install these modules.</p>
+		<p class='info'>Bugzilla must be running in the Apache Web Server. Bugzilla running in IIS is not supported.</p>
+		<p class='info'>Your Bugzilla instance must support RPC connections. This may require some optional modules including, but not limited to, SOAP-Lite, Test-Taint, and JSON-RPC. If these modules have dependencies, you will need to install those too. Refer to the Bugzilla documentation for your release for exact details and instructions on how to install these modules.</p>
 
 		<h2>
 			<a name="VersionOneBugzillaIntegration-Download"></a>Download
 		</h2>
 		<p>
-			The latest version of V1Bugzilla is available from <a
-				href="http://community.versionone.com/Downloads/default.aspx">the
-				VersionOne Community site </a>
+			The latest version of the integration is available in the <a href="http://appcatalog.versionone.com/VersionOne.Integration.Bugzilla">VersionOne Application Catalog.</a>
 		</p>
 
 		<h2>
 			<a name="VersionOneBugzillaIntegration-Upgrade"></a>Upgrade
 		</h2>
-		<p>If you already have the Bugzilla running in your environment
-			you will need to backup the existing integration before installing
-			this release. Also, remember to upgrade the VersionOne integration
-			scripts that run on your Bugzilla server.</p>
+		<p>If you already have the Bugzilla running in your environment, you will need to backup the existing integration before installing this current version. Also, remember to upgrade the VersionOne integration scripts that run on your Bugzilla server.</p>
 
 		<h2>
 			<a name="VersionOneBugzillaIntegration-Installation"></a>Installation
 		</h2>
-		<p>These installation instructions assume that Bugzilla is already
-			installed, configured, and working properly.</p>
+		<p>These installation instructions assume that Bugzilla is already installed, configured, and working properly.</p>
 		<ol>
-			<li>Determine Install Location
-				<p>V1Bugzilla can be installed on any server with network access
-					to both VersionOne and Bugzilla. Exact placement should be
-					determined by your internal software management requirements. The
-					integration server must meet the System Requirements stated above.</p>
+			<li>Determine Installation Location
+				<p>The integration can be installed on any server with network access to both VersionOne and Bugzilla. Exact placement should be determined by your internal software management requirements. The integration server must meet the system requirements stated above.</p>
 			</li>
 			<li>Extract Files
-				<p>Download V1Bugzilla using the link above and extract it into
-					a folder of your choice.</p>
+				<p>Download the integration using the link above and extract it into a folder of your choice.</p>
 			</li>
 			<li>Configure
-				<p>Configuration for the Bugzilla Integration is a 3 step
-					process.</p>
+				<p>Configuration for the integration is a 3 step process:</p>
 				<ol>
-					<li><a href="#VersionOneBugzillaIntegration-ConfigureBugzilla">Configure
-							Bugzilla</a></li>
-					<li><a
-						href="#VersionOneBugzillaIntegration-ConfigureVersionOne">Configure
-							VersionOne</a></li>
-					<li><a
-						href="#VersionOneBugzillaIntegration-ConfigureServiceHost">Configure
-							ServiceHost</a></li>
+					<li><a href="#VersionOneBugzillaIntegration-ConfigureBugzilla">Configure Bugzilla</a></li>
+					<li><a href="#VersionOneBugzillaIntegration-ConfigureVersionOne">Configure VersionOne</a></li>
+					<li><a href="#VersionOneBugzillaIntegration-ConfigureServiceHost">Configure ServiceHost</a></li>
 				</ol>
 			</li>
 			<li>Start integration
-				<p>Open up the command prompt, navigate to your installation folder,
-					and run the following command:<br />
-					<code>VersionOne.ServiceHost.exe</code>
-				</p>
-				<p>If you have configured your system properly, you should see
-					several [Info] messages followed by a [Startup] message.</p>
+				<p>Open up the command prompt, navigate to your installation folder, and run the following command:</p>
+				<code>VersionOne.ServiceHost.exe</code>
+				<p><br />If you have configured your system properly, you should see several [Info] messages followed by a [Startup] message.</p>
 			</li>
 			<li>Test the integration
-				<p>To ensure the integration is working, perform the following
-					steps:</p>
+				<p>To ensure the integration is working, perform the following steps:</p>
 				<ol>
-					<li>Create an bug in Bugzilla</li>
-					<li>Set the appropriate state in order for the Bug to move to
-						VersionOne</li>
-					<li>Verify that the Bug appears in VersionOne as a Defect</li>
+					<li>Create a bug in Bugzilla</li>
+					<li>Set the appropriate state in order for the bug to move to VersionOne</li>
+					<li>Verify that the bug appears in VersionOne as a defect</li>
 					<li>Close the defect in VersionOne</li>
 					<li>Verify that the Bugzilla bug has been updated as expected</li>
-					<li>Shut down the service host by pressing "Q" in the console
-						window.</li>
+					<li>Shut down the service host by pressing "Q" in the console window</li>
 				</ol>
 			</li>
 			<li>Install as a Windows Service
-				<p>Run the following command from the console window:<br />
-					<code>VersionOne.ServiceHost.exe --install</code>
-				</p>
-				<p>This command installs the service so it will will run under
-					the account NT AUTHORITY\Local Service. Local Service must be given
-					access privileges to the directory where the V1Bugzilla was
-					installed so it can store its state and write to log files. Follow
-					the steps below to change the security on the installation
-					directory:</p>
+				<p>Run the following command from the console window:<br /></p>
+				<code>VersionOne.ServiceHost.exe --install</code>
+				<p><br />This command installs the service so it will will run under the account NT AUTHORITY\Local Service. Local Service must be given access privileges to the directory where the integration was
+					installed so it can store its state and write to log files. Follow the steps below to change the security on the installation directory:</p>
 				<ol>
 					<li>Right click the installation folder from Windows Explorer.</li>
-					<li>Select &quot;properties&quot;.</li>
+					<li>Select &quot;Properties&quot;.</li>
 					<li>Select the &quot;Security&quot; tab.</li>
 					<li>Click the &quot;Add&quot; button.</li>
 					<li>Enter &quot;Local Service&quot; and click &quot;OK&quot;.</li>
-					<li>Click the &quot;Allow&quot; checkbox for the &quot;Full
-						Control&quot; row.</li>
+					<li>Click the &quot;Allow&quot; checkbox for the &quot;Full Control&quot; row.</li>
 					<li>Click &quot;OK&quot; to save the changes.</li>
 				</ol>
 			</li>
 		</ol>
-
 
 		<h2>
 			<a name="VersionOneBugzillaIntegration-Configuration"></a>Configuration
@@ -236,10 +180,7 @@ deactivate Integration
 			<a name="VersionOneBugzillaIntegration-ConfigureBugzilla"></a>Configure
 			Bugzilla
 		</h3>
-		<p>This section describes how to modify your Bugzilla instance for
-			use with VersionOne. Before you begin you need to know your Bugzilla
-			version number and you need to decide if you want to Assign or Tag
-			the bugs you want visible in VersionOne.</p>
+		<p>This section describes how to modify your Bugzilla instance for use with VersionOne. Before you begin you need to know your Bugzilla version number and you need to decide if you want to Assign or Tag the bugs you want visible in VersionOne.</p>
 		<ol>
 			<li>Install the VersionOne scripts on your Bugzilla instance.
 				<ul>
