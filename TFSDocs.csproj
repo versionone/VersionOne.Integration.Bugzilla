@@ -63,25 +63,37 @@
     <Content Include="images\fancybox_overlay.png" />
     <Content Include="images\fancybox_sprite%402x.png" />
     <Content Include="images\fancybox_sprite.png" />
+    <Content Include="images\icons\bullet_blue.gif" />
+    <Content Include="images\icons\information.gif" />
     <Content Include="images\information.gif" />
+    <Content Include="images\screenshots\AssignedSavedSearch.jpg" />
+    <Content Include="images\screenshots\AssignedTransferBehavior.jpg" />
+    <Content Include="images\screenshots\BugzillaIdField.jpg" />
+    <Content Include="images\screenshots\CreateCustomField.jpg" />
+    <Content Include="images\screenshots\MapProjectValues.jpg" />
+    <Content Include="images\screenshots\PopulateCustomField.jpg" />
+    <Content Include="images\screenshots\TaggedSavedSearch.jpg" />
+    <Content Include="images\screenshots\TaggedTransferBehavior.jpg" />
+    <Content Include="images\screenshots\UrlCustomField.jpg" />
+    <Content Include="images\screenshots\ValidSource.jpg" />
+    <Content Include="images\screenshots\VersionOneConnection.jpg" />
+    <Content Include="images\thumbnails\assignedsavedsearch.jpg" />
+    <Content Include="images\thumbnails\assignedtransferbehavior.jpg" />
+    <Content Include="images\thumbnails\bugzillaidfield.jpg" />
+    <Content Include="images\thumbnails\createcustomfield.jpg" />
+    <Content Include="images\thumbnails\mapprojectvalues.jpg" />
+    <Content Include="images\thumbnails\populatecustomfield.jpg" />
+    <Content Include="images\thumbnails\taggedsavedsearch.jpg" />
+    <Content Include="images\thumbnails\taggedtransferbehavior.jpg" />
+    <Content Include="images\thumbnails\urlcustomfield.jpg" />
+    <Content Include="images\thumbnails\validsource.jpg" />
+    <Content Include="images\thumbnails\versiononeconnection.jpg" />
     <Content Include="images\warning.gif" />
     <Content Include="index.html" />
     <Content Include="scripts\jquery.fancybox.js" />
     <Content Include="styles\help.css" />
     <Content Include="styles\jquery.fancybox.css" />
     <Content Include="styles\pygments_style.css" />
-    <Content Include="thumbnails\v1TFSlistener_advancedtab.png" />
-    <Content Include="thumbnails\v1TFSlistener_TFSservertab.png" />
-    <Content Include="thumbnails\v1tfslistener_v1servertab.png" />
-    <Content Include="thumbnails\v1_buildprojectverifyadded.png" />
-    <Content Include="thumbnails\v1_buildprojectreference.png" />
-    <Content Include="thumbnails\v1_enablebuildintegration.png" />
-    <Content Include="thumbnails\vs2013builddefinition.png" />
-    <Content Include="thumbnails\vs2013builds.png" />
-    <Content Include="thumbnails\vs2013_checkinpolicytab.png" />
-    <Content Include="thumbnails\vs2013_teamexpsettings.png" />
-    <Content Include="thumbnails\vs2013_teamexpsettings_sourcecontrol.png" />
-    <Content Include="thumbnails\vs2013_v1vheckinpolicy.png" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -89,18 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="README.md" />
-    <Content Include="thumbnails\advancedconfig.png" />
-    <Content Include="thumbnails\assignbuildprojecttoproject.png" />
-    <Content Include="thumbnails\buildprojects.png" />
-    <Content Include="thumbnails\enablebuildintegration.png" />
-    <Content Include="thumbnails\listenerworks.png" />
-    <Content Include="thumbnails\tfsconfig.png" />
-    <Content Include="thumbnails\tfsenablepolicy1.png" />
-    <Content Include="thumbnails\tfsenablepolicy2.png" />
-    <Content Include="thumbnails\tfsenablepolicy3.png" />
-    <Content Include="thumbnails\v1associate.png" />
-    <Content Include="thumbnails\v1config.png" />
-    <Content Include="thumbnails\v1credentials.png" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -108,9 +108,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="screenshots\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
