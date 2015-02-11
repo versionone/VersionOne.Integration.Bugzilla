@@ -39,28 +39,22 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
             }
         }
 
-        private IList<int> GetBugs(string searchName, string token) 
+      public IList<int> LoginSearch(string username, string password, bool remember, string searchname)
         {
-            try {
-                var args = new XmlRpcStruct { { "searchphrase", searchName }, {"token" , token}};
-                return new List<int>(Proxy.GetBugs(args));
-            } catch (Exception ex) {
-                throw new BugzillaException(
-                    string.Format("Error running saved search ({0}) on Bugzilla at {1}. {2}", searchName, Proxy.Url, ex.Message), ex);
-            }
-        }
-
-        public IList<int> LoginSearch(string username, string password, bool remember, string searchname)
-        {
+           
           try {
-                var args = new XmlRpcStruct { { "login", username }, { "password", password } };
-                var result = Proxy.Login(args);
+              var args = new XmlRpcStruct { { "login", username }, { "password", password } };
+              var result = Proxy.Login(args);
               
-                return this.GetBugs(searchname, result.ContainsKey("token") ? result["token"].ToString() : result["id"].ToString());
+              var key = result.ContainsKey("token") ? "token" : "id";
+              var value = result.ContainsKey("token") ? result["token"].ToString() :  result["id"].ToString();
+              var args2 = new XmlRpcStruct { {"searchphrase", searchname }, {key, result[key]} };
+
+              return new List<int>(Proxy.GetBugs(args2));
           }
           catch (Exception ex){
               throw new BugzillaException(
-                  string.Format("Error attempting to Login Search  ({0}) on Bugzilla at {1}. {2}", searchname, Proxy.Url, ex.Message), ex);
+                  string.Format("Error  ({0}) ",  ex.Message), ex);
           }
         }
  

@@ -88,7 +88,7 @@ namespace VersionOne.ServiceHost.BugzillaServices {
             var workitemStateChangeCollection = pubobj as WorkitemStateChangeCollection;
 
             if(workitemStateChangeCollection != null) {
-                eventManager.Unsubscribe(typeof(WorkitemCreationResult), OnDefectCreated);
+              //  eventManager.Unsubscribe(typeof(WorkitemCreationResult), OnDefectCreated);
                 var success = true;
 
                 foreach(var defectStateChangeResult in workitemStateChangeCollection) {
@@ -99,7 +99,7 @@ namespace VersionOne.ServiceHost.BugzillaServices {
 
                 workitemStateChangeCollection.ChangesProcessed = success;
 
-                eventManager.Subscribe(typeof(WorkitemCreationResult), OnDefectCreated);
+                //eventManager.Subscribe(typeof(WorkitemCreationResult), OnDefectCreated);
             }
         } 
 
