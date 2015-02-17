@@ -10,6 +10,11 @@
 <link type="text/css" rel="stylesheet" href="styles/jquery.fancybox.css"/>
 <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.fancybox.js"></script>
+    <style type="text/css">
+        .auto-style1 {
+            height: 34px;
+        }
+    </style>
 </head>
 
 <body>
@@ -41,18 +46,19 @@
 		<h2>
 			<a name="VersionOneBugzillaIntegration-Description"></a>Description
 		</h2>
-		<p>Once the integration is installed and configured, Bugzilla users can specify which bugs require engineering attention and they will automatically appear as Defects in the VersionOne repository. Additionally, when the defect is closed in VersionOne, the integration updates Bugzilla to reflect this change.</p>
+		<p>Once the integration is installed and configured, Bugzilla users can specify which bugs require engineering attention and they will automatically appear as defects in the VersionOne repository. Additionally, when the defect is closed in VersionOne, the integration updates bugs in Bugzilla to reflect this change.</p>
 
-		<p>This integration supports multiple modes of operation.</p>
+		<p>This integration supports multiple modes of operation:</p>
 
 		<ul>
-			<li><b>Assign a Bug</b>: With this approach, bugs that require attention are assigned to a specific user in Bugzilla. This assignment is used to determine when to create Defects in VersionOne.</li>
-			<li><b>Tag a Bug</b>: With this approach bugs that require attention are identified using custom fields on the bugs. The value of the custom field is used to indicate when to create Defects in VersionOne.</li>
+			<li><b>Assign a Bug</b>: With this approach, bugs that require attention are assigned to a specific user in Bugzilla. This assignment is used to determine when to create defects in VersionOne.</li>
+			<li><b>Tag a Bug</b>: With this approach bugs that require attention are identified using custom fields on the bugs. The value of the custom field is used to indicate when to create defects in VersionOne.</li>
 		</ul>
+
 
 		<p>The following sequence diagram illustrates how the integration interacts with Bugzilla and VersionOne:<br />
 
-<div class="wsd" wsd_style="qsd">
+<div class=wsd wsd_style="qsd">
 <pre>
 title Bugzilla Integration Sequence
 
@@ -131,7 +137,7 @@ deactivate Integration
 		<h2>
 			<a name="VersionOneBugzillaIntegration-Upgrade"></a>Upgrade
 		</h2>
-		<p>If you already have the Bugzilla running in your environment, you will need to backup the existing integration before installing this current version. Also, remember to upgrade the VersionOne integration scripts that run on your Bugzilla server.</p>
+		<p>If you already have Bugzilla running in your environment, you will need to backup the existing integration before installing this current version. Also, remember to upgrade the VersionOne integration scripts that run on your Bugzilla server.</p>
 
 		<h2>
 			<a name="VersionOneBugzillaIntegration-Installation"></a>Installation
@@ -161,12 +167,17 @@ deactivate Integration
 			<li>Test the integration.
 				<p>To ensure the integration is working, perform the following steps:</p>
 				<ol>
-					<li>Create a bug in Bugzilla</li>
-					<li>Set the appropriate state in order for the bug to move to VersionOne</li>
-					<li>Verify that the bug appears in VersionOne as a defect</li>
-					<li>Close the defect in VersionOne</li>
-					<li>Verify that the Bugzilla bug has been updated as expected</li>
-					<li>Shut down the service host by pressing "Q" in the console window</li>
+					<li>Create a bug in Bugzilla.</li>
+					<li>Set the appropriate state in order for the bug to move to VersionOne.<ul>
+                        <li>Assigned methodology -&nbsp; bugs should be assigned to the user(s) specified in the Bugzilla Saved Search.</li>
+                        <li>Tagged methodology - the VersionOne Defect State should be set to value specified in the Bugzilla Saved Search.</li>
+                        </ul>
+                    </li>
+					<li>Submit the bug in Bugzilla.</li>
+                    <li>Verify that the bug appears in VersionOne as a defect.</li>
+					<li>Close the defect in VersionOne.</li>
+					<li>Verify that the Bugzilla bug has been updated as expected.</li>
+					<li>Shut down the service host by pressing "Q" in the console window.</li>
 				</ol>
 			</li>
 			<li>Install the integration as a Windows Service (optional).
@@ -191,7 +202,8 @@ deactivate Integration
 			<a name="VersionOneBugzillaIntegration-Configuration"></a>Configuration
 		</h2>
 		<h3>
-			<a name="VersionOneBugzillaIntegration-ConfigureBugzilla"></a>Configure Bugzilla
+			<a name="VersionOneBugzillaIntegration-ConfigureBugzilla"></a>Configure
+			Bugzilla
 		</h3>
 		<p>This section describes how to modify your Bugzilla instance for use with VersionOne. Before you begin you need to know your Bugzilla version number and you need to decide if you want to Assign or Tag the bugs you want visible in VersionOne.</p>
 		<ol>
@@ -213,7 +225,7 @@ deactivate Integration
 									<td>Place this file in the extensions/V1 folder. On Linux, this script must be marked as executable.</td>
 								</tr>
 								<tr>
-									<td>TestV1Service.pm</td>
+									<td>TestV1Service.pl</td>
 									<td>Place this file in the extensions/V1 folder. On Linux, this script must be marked as
 										executable.</td>
 								</tr>
@@ -230,15 +242,16 @@ deactivate Integration
   + data
   + docs
   - extensions
-    - V1		&lt;== Config.pm, Extension.pm, and TestV1Service.pm files
+    - V1		&lt;== Config.pm, Extension.pm, and TestV1Service.pl files
         + lib		&lt;== V1.pm file
   + graphs
   + images
   ...</pre>
 						</code>
 					</li>
+			</li>
 			<li>Verify the proper installation of the VersionOne scripts.
-				<p>To verify that the script are functioning properly, run the <code>TestV1Service.pl</code> script passing the fully qualified Bugzilla URL:</p>
+				<p>To verify that the scripts are functioning properly, run the <code>TestV1Service.pl</code> script passing the fully qualified Bugzilla URL:</p>
                 <p><code>perl TestV1Service.pl http://bugserver/Bugzilla/xmlrpc.cgi</code></p>
                 <p>&nbsp;</p>
 				<p>If your Bugzilla instance requires credentials, you must also
@@ -249,11 +262,10 @@ deactivate Integration
 			<li>Select or Create a Bugzilla User.
 				<p>The integration requires a valid Bugzilla User Id and a
 					Password in order to connect. This user must have sufficient rights
-					to accept work and modify Bugs.</p>
+					to accept work and modify bugs.</p>
 			</li>
-			<li>The next step depends the approach for pushing Bugs to
-				VersionOne.
-				<ul>
+			<li>The next step depends the approach for pushing bugs to
+				VersionOne. <ul>
 					<li>Assigned
                         <p>If you choose to push bugs by assigning them to the user identified in step 2, proceed to the next step.</p>
 					</li>
@@ -261,43 +273,43 @@ deactivate Integration
                         <p>If you want to push bugs to VersionOne using a Custom Field, you need to do the following:</p>
 						<ol>
 							<li>Create the Custom field. It is recommended that you use a drop-down field and limit the values.<br /> 
-                                <a class="fancybox" href="images/screenshots/CreateCustomField.jpg" title="Add the custom field"><img alt="" src="images/thumbnails/createcustomfield.jpg" /></a>    
+                                <a class="fancybox" href="images/screenshots/BZ_AddCustomField.png" title="Add the custom field"><img alt="" src="images/thumbnails/bz_addcustomfield.png" /></a>    
 							</li>
 							<li>Populate the field with the desired values.<br /> 
-                                <a class="fancybox" href="images/screenshots/PopulateCustomField.jpg" title="Values for the custom field"><img alt="" src="images/thumbnails/populatecustomfield.jpg" /></a>
+                                <a class="fancybox" href="images/screenshots/BZ_CustomFieldValues.png" title="Values for the custom field"><img alt="" src="images/thumbnails/bz_customfieldvalues.png" /></a>
                             </li>
 						</ol>
 					</li>
 				</ul>
 			</li>
 			<li>Create a 'Saved Search' to select the bugs you want pushed to VersionOne.</li>
-				<p>It's beyond the scope of this document to describe how to create Filters in Bugzilla , but here are some filter ideas</p>
+				<p>It's beyond the scope of this document to describe how to create filters in Bugzilla , but here are some filter ideas:</p>
 				<ul>
 					<li>Assigned 
-                        <p>Using this approach, the easiest Filter is based on who the Bug is assigned to ("Assignee is {user}") and Status (i.e. "NEW")<br />
-                            <a class="fancybox" href="images/screenshots/AssignedSavedSearch.jpg" title="Assigned search filter"><img alt="" src="images/thumbnails/assignedsavedsearch.jpg" /></a>
+                        <p>Using this approach, the easiest filter is based on who the fug is assigned to ("Assignee is {user}") and Status (i.e. "CONFIRMED&quot;)<br />
+                            <a class="fancybox" href="images/screenshots/BZ_SavedSearchAssigned.png" title="Assigned search filter"><img alt="" src="images/thumbnails/bz_savedsearchassigned.png" /></a>
                         </p></li>
 					<li>Tagged
                         <p>Using this approach, the easiest Filter is based on the value of the Custom Field.<br />
-                            <a class="fancybox" href="images/screenshots/TaggedSavedSearch.jpg" title="Tagged search filter"><img alt="" src="images/thumbnails/taggedsavedsearch.jpg" /></a>
+                            <a class="fancybox" href="images/screenshots/BZ_SavedSearchTagged.png" title="Tagged search filter"><img alt="" src="images/thumbnails/bz_savedsearchtagged.png" /></a>
                         </p></li>
 				</ul>
                 <p class='info'>It is recommended that you create the filter using the same credentials used by the integration.</p>
 			</li>
-			<li>Determine how to prevent Bugs from being pushed more than once.
-				<p>This decision is based on your Search and how you want Bugs pushed to VersionOne.</p>
+			<li>Determine how to prevent bugs from being pushed more than once.
+				<p>This decision is based on your search and how you want bugs pushed to VersionOne.</p>
 				<ul>
 					<li>Assigned
-						<p>Using this approach, the simplest option is to change the Status. To do this you need to Accept the Bug</p>
+						<p>Using this approach, the simplest option is to change the Status. To do this you need to accept the bug.</p>
 					</li>
 					<li>Tagged
-						<p>Using this approach, the simplest option is to change the value of the custom field. To do this you need to know the value you want set in the custom field.</p>
+						<p>Using this approach, the simplest option is to change the value of the Custom Field. To do this you need to know the value you want set in the Custom Field.</p>
 					</li>
 				</ul>
 			</li>
-			<li>Do you want the a URL to the VersionOne Defect to appear in Bugzilla?
+			<li>Do you want the URL of the VersionOne defect to appear in Bugzilla?
 				<p>If so, you'll need to create a custom field in Bugzilla.<br /> 
-                    <a class="fancybox" href="images/screenshots/UrlCustomField.jpg" title="URL custom field"><img alt="" src="images/thumbnails/urlcustomfield.jpg" /></a>
+                    <a class="fancybox" href="images/screenshots/BZ_CustomURL.png" title="URL custom field"><img alt="" src="images/thumbnails/bz_customurl.png" /></a>
 				</p>
 			</li>
 		</ol>
@@ -311,10 +323,10 @@ deactivate Integration
 		<ol>
 			<li>Add "Bugzilla" to the VersionOne Global Source list.
 				<p>
-                    <a class="fancybox" href="images/screenshots/ValidSource.jpg" title="Global source value"><img alt="" src="images/thumbnails/validsource.jpg" /></a>
+                    <a class="fancybox" href="images/screenshots/V1_GlobalSource.png" title="Global source value"><img alt="" src="images/thumbnails/v1_globalsource.png" /></a>
 				</p>
 			</li>
-			<li>Determine where to store the Bugzilla ID. <p>The integration needs a text field in VersionOne to store the Bugzilla identifier. By default this is the Reference field. If you are already using this field, you'll need to create a custom text field and note the name</p>
+			<li>Determine where to store the Bugzilla ID. <p>The integration needs a text field in VersionOne to store the Bugzilla identifier; by default this is the Reference field. If you are already using this field, you'll need to create a custom text field and note the name.</p>
 			</li>
 		</ol>
 
@@ -323,10 +335,10 @@ deactivate Integration
 			<a name="VersionOneBugzillaIntegration-ConfiguretheIntegration"></a>Configure the Integration
             <a name="VersionOneBugzillaIntegration-ConfigureServiceHost"></a>
 		</h3>
-		<p>To configure the Bugzilla integration, run the ServiceHost configuration tool<br />
+		<p>To configure the Bugzilla integration, run the ServiceHost configuration tool:<br />
 			<code>ServiceHostConfigTool.exe</code>
 		</p>
-		<p>The following section describes how to configure your Bugzilla integration using the use the configuration tool.</p>
+		<p>The following section describes how to configure your Bugzilla integration using the configuration tool.</p>
 		<ol>
 			<li>On the General tab specify your VersionOne connection details.
                 <p>
@@ -341,19 +353,19 @@ deactivate Integration
 							</tr>
 							<tr>
 								<td>Server URL</td>
-								<td>This is the URL to your VersionOne server</td>
+								<td>This is the URL to your VersionOne server.</td>
 							</tr>
 							<tr>
 								<td>Username</td>
-								<td>VersionOne user that will create defects</td>
+								<td>VersionOne user that will create defects.</td>
 							</tr>
 							<tr>
 								<td>Password</td>
-								<td>Password for the specified user</td>
+								<td>Password for the specified user.</td>
 							</tr>
 							<tr>
 								<td>Use Windows Integrated Authentication</td>
-								<td>Check this box if you VersionOne server is configured to use Windows Integrated Authentication</td>
+								<td>Check this box if you VersionOne server is configured to use Windows Integrated Authentication.</td>
 							</tr>
 						</tbody>
 					</table>
@@ -366,31 +378,31 @@ deactivate Integration
 						</tr>
 						<tr>
 							<td>Use Proxy For Connection</td>
-							<td>Determines if the integration tries to connect through a Proxy</td>
+							<td>Determines if the integration tries to connect through a Proxy.</td>
 						</tr>
 						<tr>
 							<td>Proxy URL</td>
-							<td>This is the URL to your Proxy Server</td>
+							<td>This is the URL to your Proxy Server.</td>
 						</tr>
 						<tr>
 							<td>Proxy Username</td>
-							<td>The username that will get you past this proxy</td>
+							<td>The username that will get you past this proxy.</td>
 						</tr>
 						<tr>
 							<td>Proxy Password</td>
-							<td>The password for the Proxy Username</td>
+							<td>The password for the Proxy Username.</td>
 						</tr>
 						<tr>
 							<td>Proxy Domain</td>
-							<td>Name of Proxy Domain</td>
+							<td>Name of Proxy Domain.</td>
 						</tr>
 					</tbody>
 				</table>
 			</li>
-			<li>Once the VersionOne parameters are specified, press Verify button to continue.</li>
-			<li>On the Defects tab specify the VersionOne field that will hold the Bugzilla ID. 
+			<li>Once the VersionOne parameters are specified, press the Validate button to continue.&nbsp; You should see a &quot;VersionOne settings are valid&quot; message to the left of the Validate button.</li>
+			<li>On the Workitems tab, specify the VersionOne field that will hold the Bugzilla ID. 
                 <p>
-                    <a class="fancybox" href="images/screenshots/BugzillaIdField.jpg" title="Bugzilla ID field"><img alt="" src="images/thumbnails/bugzillaidfield.jpg" /></a>
+                    <a class="fancybox" href="images/screenshots/SvcHostTool_WorkitemsTab.png" title="Bugzilla ID field"><img alt="" src="images/thumbnails/svchosttool_workitemstab.png" /></a>
                 </p>
 				<p>The following table describes the fields on this tab:</p>
 				<table>
@@ -400,17 +412,17 @@ deactivate Integration
 							<th>Description</th>
 						</tr>
 						<tr>
-							<td>Reference Field Name</td>
-							<td>Defect field used to hold Bugzilla ID. By default this is the Reference field.</td>
+							<td class="auto-style1">Disabled</td>
+							<td class="auto-style1">Check this box to disable polling VersionOne for bug updates.</td>
 						</tr>
 						<tr>
-							<td>Disabled</td>
-							<td>Check this box to disable polling VersionOne for Defect updates.</td>
+							<td>Reference Field Name</td>
+							<td>Workitem field used to hold Bugzilla ID; by default this is the Reference field.</td>
 						</tr>
 					</tbody>
 				</table>
 			</li>
-			<li>On the Bugzilla tab specify your Bugzilla connection details and the Bug transfer behavior. <p>This tab changes slightly depending on whether you are assigning or tagging Bugs.</p>
+			<li>On the Bugzilla tab specify your Bugzilla connection details and the bug transfer behavior. <p>This tab changes slightly depending on whether you are assigning or tagging bugs.</p>
 				<table>
 					<tbody>
 						<tr>
@@ -419,18 +431,17 @@ deactivate Integration
 						</tr>
 						<tr>
 							<td>
-                                <a class="fancybox" href="images/screenshots/AssignedTransferBehavior.jpg" title="Assigned transfer behavior"><img alt="" src="images/thumbnails/assignedtransferbehavior.jpg" /></a>
+                                <a class="fancybox" href="images/screenshots/SvcHost_BugzillaAssigned.png" title="Assigned transfer behavior"><img alt="" src="images/thumbnails/svchost_bugzillaassigned.png" /></a>
                             </td>
 							<td>
-                                <a class="fancybox" href="images/screenshots/TaggedTransferBehavior.jpg" title="Tagged transfer behavior"><img alt="" src="images/thumbnails/taggedtransferbehavior.jpg" /></a>
+                                <a class="fancybox" href="images/screenshots/SvcHost_BugzillaTagged.png" title="Tagged transfer behavior"><img alt="" src="images/thumbnails/svchost_bugzillatagged.png" /></a>
                             </td>
 						</tr>
 					</tbody>
 				</table>
 
 				<ol>
-					<li>Configure the Bugzilla connection (Connection Parameters)
-						<table>
+					<li>Configure the Bugzilla connection (Connection Parameters):<table>
 							<tbody>
 								<tr>
 									<th>Field</th>
@@ -438,44 +449,32 @@ deactivate Integration
 								</tr>
 								<tr>
 									<td>Disabled</td>
-									<td>Check this box if you want to disable polling Bugzilla for new Bugs</td>
+									<td>Check this box if you want to disable polling Bugzilla for new bugs.</td>
 								</tr>
 								<tr>
 									<td>Bugzilla URL</td>
-									<td>Fully qualified URL to your Bugzilla instance
-										<p class='info'>Don't forget to specify the script filename</p>
+									<td>Fully qualified URL to your Bugzilla instance.
+										<p class='info'>Don't forget to specify the script filename.</p>
 									</td>
 								</tr>
 								<tr>
 									<td>Username</td>
-									<td>Valid Bugzilla user. This user must be able to see and update Bugs in the appropriate projects</td>
+									<td>Valid Bugzilla user. This user must be able to see and update bugs in the appropriate projects.</td>
 								</tr>
 								<tr>
 									<td>Password</td>
-									<td>Password for specified user</td>
+									<td>Password for specified user.</td>
 								</tr>
 							</tbody>
 						</table>
 					</li>
-					<li>Click Verify to ensure the connection parameters are correct.</li>
-					<li>Configure how bugs are identified and how they are linked between Bugzilla and VersionOne (General Parameters)
+					<li>Click the Validate button to ensure your Bugzilla connection parameters are correct.</li>
+					<li>Configure how bugs are linked between Bugzilla and VersionOne (VersionOne Defect Attributes):
 						<table>
 							<tbody>
 								<tr>
 									<th>Field</th>
 									<th>Description</th>
-								</tr>
-								<tr>
-									<td>Search Name</td>
-									<td>Name of the Search used to locate Bugs to be created in VersionOne</td>
-								</tr>
-								<tr>
-									<td>Bug URL Template</td>
-									<td>Template for URL to access specific Bug in Bugzilla. &#35;key&#35; is replaced with the Bugzilla Bug ID. This field is used to create links from VersionOne to Bugzilla</td>
-								</tr>
-								<tr>
-									<td>Bug URL Title</td>
-									<td>This field is the Link title in VersionOne.</td>
 								</tr>
 								<tr>
 									<td>Source</td>
@@ -484,22 +483,43 @@ deactivate Integration
 									</td>
 								</tr>
 								<tr>
-									<td>Defect List Field Id</td>
-									<td>Custom Field in Bugzilla used to hold VersionOne URL.</td>
+									<td>URL Template</td>
+									<td>Template for URL to access specific bug in Bugzilla. &#35;key&#35; is replaced with the Bugzilla Bug ID. This field is used to create links from VersionOne to Bugzilla.</td>
 								</tr>
 								<tr>
-									<td>Poll Interval</td>
-									<td>Determines how frequently the integration polls Bugzilla looking for Bugs.</td>
+									<td>URL Title</td>
+									<td>This field is the link title in VersionOne.</td>
 								</tr>
 							</tbody>
 						</table>
 					</li>
-					<li>Configure how Bugzilla Bugs are updated after Defect creation and closure in VersionOne.
+					<li>Configure how bugs are identified by VersionOne in Bugzilla.<table>
+							<tbody>
+								<tr>
+									<th>Field</th>
+									<th>Description</th>
+								</tr>
+								<tr>
+									<td>Search Name</td>
+									<td>Name of the Search used to locate bugs to be created in VersionOne.</td>
+								</tr>
+								<tr>
+									<td>Poll Interval</td>
+									<td>Determines how frequently the integration polls Bugzilla looking for bugs.</td>
+								</tr>
+							</tbody>
+						</table>
+					</li>
+                    <li>Configure how Bugzilla bugs are updated after defect creation and closure in VersionOne.
 						<table>
 							<tbody>
 								<tr>
 									<th>Field</th>
 									<th>Description</th>
+								</tr>
+								<tr>
+									<td>Link to VersionOne Field ID</td>
+									<td>Custom Field in Bugzilla used to hold VersionOne URL.</td>
 								</tr>
 								<tr>
 									<td>Create Accept</td>
@@ -512,28 +532,28 @@ deactivate Integration
 								<tr>
 									<td>Close Accept</td>
 									<td>Check this box if you want the integration to accept
-										a Bug once the VersionOne Defect is <em>closed</em>.
+										a bug once the VersionOne defect is <em>closed</em>.
 									</td>
 								</tr>
 								<tr>
 									<td>Create Resolve Value</td>
 									<td>Value for Bugzilla 'Resolve' attribute after <em>creating</em>
-										the VersionOne Defect.
+										the VersionOne defect.
 									</td>
 								</tr>
 								<tr>
 									<td>Close Resolve Value</td>
 									<td>Value for Bugzilla 'Resolve' attribute after the
-										VersionOne Defect is <em>closed</em>.
+										VersionOne defect is <em>closed</em>.
 									</td>
 								</tr>
 							</tbody>
 						</table>
 					</li>
-					<li>Select the appropriate mode of operation (Assign/Tag)
+					<li>Select the appropriate mode of operation (Assign/Tag).
 						<ul>
 							<li>Assign<br /> The following fields are available when you
-								are assigning Bugs to VersionOne
+								are assigning Bugs to VersionOne:
 								<table>
 									<tbody>
 										<tr>
@@ -542,21 +562,21 @@ deactivate Integration
 										</tr>
 										<tr>
 											<td>Create Reassign Value</td>
-											<td>Identifier for the Bugzilla user to assign a Bug
-												after a Defect is <em>created</em> in VersionOne.
+											<td>Identifier for the Bugzilla user to assign a bug
+												after a defect is <em>created</em> in VersionOne.
 											</td>
 										</tr>
 										<tr>
 											<td>Close Reassign Value</td>
-											<td>Identifier for the Bugzilla user to assign a Bug
-												after the VersionOne Defect is <em>closed</em>.
+											<td>Identifier for the Bugzilla user to assign a bug
+												after the VersionOne defect is <em>closed</em>.
 											</td>
 										</tr>
 									</tbody>
 								</table>
 							</li>
 							<li>Tag<br /> The following fields are available when you
-								are tagging Bugs you want in VersionOne
+								are tagging bugs you want in VersionOne:
 								<table>
 									<tbody>
 										<tr>
@@ -566,25 +586,25 @@ deactivate Integration
 										<tr>
 											<td>Create Field ID</td>
 											<td>Name of the Bugzilla Custom Field to update after a
-												Defect is <em>created</em> in VersionOne.
+												defect is <em>created</em> in VersionOne.
 											</td>
 										</tr>
 										<tr>
 											<td>Create Field Value</td>
-											<td>Value to set in "Create Field ID" after a Defect is
+											<td>Value to set in "Create Field ID" after a defect is
 												<em>created</em> in VersionOne.
 											</td>
 										</tr>
 										<tr>
 											<td>Closed Field ID</td>
-											<td>Name of the Bugzilla custom field to update after a
-												the VersionOne Defect is <em>closed</em>.
+											<td>Name of the Bugzilla Custom Field to update after a
+												the VersionOne defect is <em>closed</em>.
 											</td>
 										</tr>
 										<tr>
 											<td>Closed Field Value</td>
 											<td>Value to set in "Closed Field ID" after a the
-												VersionOne Defect is <em>closed</em>.
+												VersionOne defect is <em>closed</em>.
 											</td>
 										</tr>
 									</tbody>
@@ -596,7 +616,7 @@ deactivate Integration
 			</li>
 			<li>Map your Projects Values.
 				<p>Project Mapping allows you to
-				specify where Defects are created in VersionOne. The algorithm for
+				specify where defects are created in VersionOne. The algorithm for
 				selecting a project is as follows: First, the integration looks for
 				the Bugzilla Product Name in the map. If it exists, the defect is
 				created in the corresponding VersionOne Project. If the Bugzilla
@@ -607,41 +627,39 @@ deactivate Integration
 				Bugzilla Product, the integration will create the defect in the root
 				level node of the VersionOne Project tree or in the first Project in
 				the list if there are multiple top level nodes.<br /> 
-                    <a class="fancybox" href="images/screenshots/MapProjectValues.jpg" title="Project mappings"><img alt="" src="images/thumbnails/mapprojectvalues.jpg" /></a>
+                    <a class="fancybox" href="images/screenshots/SvcHost_BugzillaPriorityMappings.png" title="Project mappings"><img alt="" src="images/thumbnails/svchost_bugzillaprioritymappings.png" /></a>
                 </p>
 				<p>To add a Project mapping you need to do the following:</p>
 				<ol>
-					<li>Click on the <b>Project and Priority Mapping</b> tab
-					</li>
+					<li>Click on the <b>Project and Priority Mapping</b> tab.</li>
 					<li>In the Project Mapping grid, select a VersionOne Project
-						value from the dropdown</li>
+						value from the dropdown.</li>
 					<li>Supply the corresponding Bugzilla Product name.<br /> To
 						remove a mapping:
 					</li>
 					<li>Select the desired row.</li>
-					<li>Click the Delete current row button</li>
+					<li>Click the Delete current row button.</li>
 				</ol>
 			</li>
 			<li>Map your Priority Values. 
 				<p>Priority mapping allows you
-				to configure how the VersionOne Defect priority value is set based
-				on the Bugzilla Priority value. The algorithm for mapping is simple,
-				if the Bugzilla Priority value is in the mapping, the VersionOne
-				defect value is set to the mapped value. If the Bugzilla Priority
+				to configure how the VersionOne defect priority value is set based
+				on the Bugzilla priority value. The algorithm for mapping is simple,
+				if the Bugzilla priority value is in the mapping, the VersionOne
+				defect value is set to the mapped value. If the Bugzilla priority
 				value is not found, the VersionOne defect value is not set.<br /> 
-                    <a class="fancybox" href="images/screenshots/MapProjectValues.jpg" title="Priority mappings"><img alt="" src="images/thumbnails/mapprojectvalues.jpg" /></a>
+                    <a class="fancybox" href="images/screenshots/SvcHost_BugzillaPriorityMappings.png" title="Priority mappings"><img alt="" src="images/thumbnails/svchost_bugzillaprioritymappings.png" /></a>
                 </p>
-				<p>To add a Priority mapping you need to do the following:</p>
+				<p>To add a priority mapping you need to do the following:</p>
 				<ol>
-					<li>Click on the <b>Project and Priority Mapping</b> tab
-					</li>
+					<li>Click on the <b>Project and Priority Mapping</b> tab.</li>
 					<li>In the Priority Mappings grid, select a VersionOne
-						Priority value from the dropdown</li>
+						Priority value from the dropdown.</li>
 					<li>Supply the corresponding Bugzilla Priority value name.<br />
 						To remove a mapping:
 					</li>
 					<li>Select the desired row.</li>
-					<li>Click the Delete current row button</li>
+					<li>Click the Delete current row button.</li>
 				</ol>
 			</li>
 			<li>Save your changes and exit the program.</li>
