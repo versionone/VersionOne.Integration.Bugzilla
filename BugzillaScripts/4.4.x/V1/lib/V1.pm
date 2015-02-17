@@ -73,7 +73,8 @@ sub _GetUrlForSearch {
 		'params' => scalar $params->Vars
 	);
 
-	return $search->sql();
+	# 2/3/2015 VP Changed to support 4.4.x versions of Bugzilla.
+	return $search->_sql();
 }
 
 sub _FindUserQueryByName {

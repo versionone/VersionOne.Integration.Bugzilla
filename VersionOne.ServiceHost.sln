@@ -16,13 +16,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.Bugzilla.XmlRpcP
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{0B57C3F9-AF0F-4D13-8799-F28342F37958}"
 	ProjectSection(SolutionItems) = preProject
-		Dependencies\CookComputing.XmlRpcV2.dll = Dependencies\CookComputing.XmlRpcV2.dll
-		Dependencies\log4net.dll = Dependencies\log4net.dll
 		Dependencies\Microsoft.Practices.EnterpriseLibrary.Common.dll = Dependencies\Microsoft.Practices.EnterpriseLibrary.Common.dll
 		Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.dll = Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.dll
 		Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WinForms.dll = Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WinForms.dll
 		Dependencies\Microsoft.Practices.ObjectBuilder2.dll = Dependencies\Microsoft.Practices.ObjectBuilder2.dll
-		Dependencies\Ninject.dll = Dependencies\Ninject.dll
 		Dependencies\VersionOne.SDK.APIClient.dll = Dependencies\VersionOne.SDK.APIClient.dll
 	EndProjectSection
 EndProject

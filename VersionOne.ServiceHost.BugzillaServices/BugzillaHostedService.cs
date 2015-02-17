@@ -84,9 +84,11 @@ namespace VersionOne.ServiceHost.BugzillaServices {
         }
 
         private void OnDefectStateChanged(object pubobj) {
+            // to avoid creating closed issues
             var workitemStateChangeCollection = pubobj as WorkitemStateChangeCollection;
 
             if(workitemStateChangeCollection != null) {
+              //  eventManager.Unsubscribe(typeof(WorkitemCreationResult), OnDefectCreated);
                 var success = true;
 
                 foreach(var defectStateChangeResult in workitemStateChangeCollection) {
@@ -96,8 +98,10 @@ namespace VersionOne.ServiceHost.BugzillaServices {
                 }
 
                 workitemStateChangeCollection.ChangesProcessed = success;
+
+                //eventManager.Subscribe(typeof(WorkitemCreationResult), OnDefectCreated);
             }
-        }
+        } 
 
         public class IntervalSync { }
     }

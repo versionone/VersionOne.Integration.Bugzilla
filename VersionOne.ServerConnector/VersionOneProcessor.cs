@@ -10,9 +10,7 @@ using VersionOne.ServiceHost.Core.Logging;
 using System.Xml;
 
 namespace VersionOne.ServerConnector {
-    // TODO extract hardcoded strings to constants
-    // TODO this one is getting huge - it should be split
-    // TODO change attribute to property in field names and move them to entity classes
+
     public class VersionOneProcessor : IVersionOneProcessor {
         public const string ScopeType = "Scope";
         public const string FeatureGroupType = "Theme";
@@ -204,7 +202,6 @@ namespace VersionOne.ServerConnector {
             }
         }
 
-        // TODO refactor
         public void UpdateProject(string projectId, Link link) {
             try {
                 if(link != null && !string.IsNullOrEmpty(link.Url)) {

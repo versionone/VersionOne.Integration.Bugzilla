@@ -27,28 +27,37 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
             get { return new Version(Proxy.Version()); }
         }
 
-        public int Login(string username, string password, bool remember) {
+        public int Login(string username, string password, bool remember) 
+        {
             try {
-                //var args = new XmlRpcStruct {{"login", username}, {"password", password}, {"remember", (remember ? "1" : "0")}};
-                var args = new XmlRpcStruct { { "login", username }, { "password", password } };
-                var result = Proxy.Login(args);
-                return int.Parse(result["id"].ToString());
+               var args = new XmlRpcStruct { { "login", username }, { "password", password } };
+               var result = Proxy.Login(args);
+               return int.Parse(result["id"].ToString());
             } catch (Exception ex) {
                 throw new BugzillaException(
                     string.Format("Error attempting to log in to Bugzilla as ({0}) on {1}. {2}", username, Proxy.Url, ex.Message), ex);
             }
         }
 
-        public IList<int> GetBugs(string searchName) {
-            try {
-                var args = new XmlRpcStruct {{"searchphrase", searchName}};
-                return new List<int>(Proxy.GetBugs(args));
-            } catch (Exception ex) {
-                throw new BugzillaException(
-                    string.Format("Error running saved search ({0}) on Bugzilla at {1}. {2}", searchName, Proxy.Url, ex.Message), ex);
-            }
-        }
+      public IList<int> LoginSearch(string username, string password, bool remember, string searchname)
+        {
+           
+          try {
+              var args = new XmlRpcStruct { { "login", username }, { "password", password } };
+              var result = Proxy.Login(args);
+              
+              var key = result.ContainsKey("token") ? "token" : "id";
+              var value = result.ContainsKey("token") ? result["token"].ToString() :  result["id"].ToString();
+              var args2 = new XmlRpcStruct { {"searchphrase", searchname }, {key, result[key]} };
 
+              return new List<int>(Proxy.GetBugs(args2));
+          }
+          catch (Exception ex){
+              throw new BugzillaException(
+                  string.Format("Error  ({0}) ",  ex.Message), ex);
+          }
+        }
+ 
         public void Logout() {
             Proxy.Logout();
         }

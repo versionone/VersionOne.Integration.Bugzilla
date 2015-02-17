@@ -4,6 +4,6 @@ using System.Reflection;
 
 #if !DEBUG
 [assembly: AssemblyDelaySign(false)]
-[assembly: AssemblyKeyFile("..\\..\\..\\..\\Common\\SigningKey\\VersionOne.snk")]
+[assembly: AssemblyKeyFile("")]
 [assembly: AssemblyKeyName("")]
 #endif
