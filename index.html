@@ -114,6 +114,12 @@ deactivate Integration
 			<li>The ServiceHost executable can be ran on any Windows operating system that supports .NET Framework 4.5.1.</li>
 		</ul>
 		
+		<p>
+            Framework:</p>
+        <ul>
+            <li>Both the ServiceHost executable and the ServiceHost config tool require that .NET Framework 4.5.1, which can be downloaded here: <a href="http://www.microsoft.com/en-us/download/details.aspx?id=40773">http://www.microsoft.com/en-us/download/details.aspx?id=40773</a></li>
+        </ul>
+		
 		<p>VersionOne:</p>
 		<ul>
 			<li>7.3 and higher, all editions.</li>
@@ -523,28 +529,26 @@ deactivate Integration
 								</tr>
 								<tr>
 									<td>Create Accept</td>
-									<td>Check this box if you want the integration to accept
-										a Bug once the Defect is <em>created</em> in VersionOne.
-										<p class='info'>If you are assigning Bugs to VersionOne,
-											you most likely want this checked.</p>
+									<td>Check this box if you want the integration to update the bug status in Bugzilla once the Defect is created in VersionOne.
 									</td>
 								</tr>
 								<tr>
 									<td>Close Accept</td>
-									<td>Check this box if you want the integration to accept
-										a bug once the VersionOne defect is <em>closed</em>.
+									<td>Check this box if you want the integration to update the bug status in Bugzilla once the VersionOne defect is closed in VersionOne.
 									</td>
 								</tr>
 								<tr>
 									<td>Create Resolve Value</td>
-									<td>Value for Bugzilla 'Resolve' attribute after <em>creating</em>
-										the VersionOne defect.
+									<td>Value for Bugzilla status value after creating the VersionOne defect. For older versions of Bugzilla, this value was "NEW", 
+                                        for newer versions, the value is "IN_PROGRESS". However, you may set this value to what makes sense for your current workflow.
+                                        <br />
+                                        <br />
+                                        See <a href="https://www.bugzilla.org/docs/4.0/en/html/lifecycle.html">https://www.bugzilla.org/docs/4.0/en/html/lifecycle.html</a> for more details.
 									</td>
 								</tr>
 								<tr>
 									<td>Close Resolve Value</td>
-									<td>Value for Bugzilla 'Resolve' attribute after the
-										VersionOne defect is <em>closed</em>.
+									<td>Value for Bugzilla status value after the VersionOne defect is closed.
 									</td>
 								</tr>
 							</tbody>
