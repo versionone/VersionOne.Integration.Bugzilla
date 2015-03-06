@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using CookComputing.XmlRpc;
 
 namespace VersionOne.Bugzilla.XmlRpcProxy {
+
     public class BugzillaClient : IBugzillaClient {
+
         public BugzillaClient(string url) {
             Proxy.Url = url;
         }
@@ -27,22 +29,31 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
             get { return new Version(Proxy.Version()); }
         }
 
-        public int Login(string username, string password, bool remember) 
+        public int Login(string username, string password, bool remember, bool ignoreCert) 
         {
             try {
-               var args = new XmlRpcStruct { { "login", username }, { "password", password } };
-               var result = Proxy.Login(args);
-               return int.Parse(result["id"].ToString());
+                //Ignore certificates if config is set.
+                if (ignoreCert)
+                    System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+                var args = new XmlRpcStruct { { "login", username }, { "password", password } };
+                var result = Proxy.Login(args);
+                return int.Parse(result["id"].ToString());
+
             } catch (Exception ex) {
                 throw new BugzillaException(
                     string.Format("Error attempting to log in to Bugzilla as ({0}) on {1}. {2}", username, Proxy.Url, ex.Message), ex);
             }
         }
 
-      public IList<int> LoginSearch(string username, string password, bool remember, string searchname)
+      public IList<int> LoginSearch(string username, string password, bool remember, string searchname, bool ignoreCert)
         {
            
           try {
+              //Ignore certificates if config is set.
+              if (ignoreCert)
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
               var args = new XmlRpcStruct { { "login", username }, { "password", password } };
               var result = Proxy.Login(args);
               

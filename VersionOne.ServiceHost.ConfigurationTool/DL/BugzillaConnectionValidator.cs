@@ -17,7 +17,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
             var client = new BugzillaClient(entity.Url);
             
             try {
-                client.Login(entity.UserName, entity.Password, false);
+                client.Login(entity.UserName, entity.Password, false, false);
                 return true;
             } catch (Exception) {
                 return false;

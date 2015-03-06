@@ -24,11 +24,9 @@ namespace VersionOne.ServiceHost.BugzillaServices
         public List<Defect> GetBugs() 
         {
             var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
-            //bugzillaClient.Login(configuration.UserName, configuration.Password, true);
-            //var ids = bugzillaClient.GetBugs(configuration.OpenIssueFilterId);
 
-           var ids = bugzillaClient.LoginSearch(configuration.UserName, configuration.Password, true, configuration.OpenIssueFilterId);
-           var defects = new List<Defect>(ids.Count);
+            var ids = bugzillaClient.LoginSearch(configuration.UserName, configuration.Password, true, configuration.OpenIssueFilterId, configuration.IgnoreCert);
+            var defects = new List<Defect>(ids.Count);
 
             foreach (var id in ids) 
             {
@@ -67,7 +65,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 			var bugId = int.Parse(createdResult.Source.ExternalId);
 			var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
 
-            bugzillaClient.Login(configuration.UserName, configuration.Password, true);
+            bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
 
 			if (configuration.OnCreateAccept && !bugzillaClient.AcceptBug(bugId)) 
             {
@@ -124,7 +122,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 			var bugId = int.Parse(stateChangeResult.ExternalId);
 			var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
 
-            bugzillaClient.Login(configuration.UserName, configuration.Password, true);
+            bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
 
             // We do not need to push changes to Defects that have been processed as we could break their state.
             if(SkipCloseActions(bugId, bugzillaClient)) 

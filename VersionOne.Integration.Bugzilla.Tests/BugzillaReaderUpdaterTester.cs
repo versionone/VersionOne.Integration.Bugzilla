@@ -56,7 +56,7 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 
 			SetupResult.For(mocks.ServiceFactory.CreateNew(config.Url)).Return(mocks.Client);
 
-			Expect.Call(mocks.Client.Login(config.UserName, config.Password, true)).Return(expectedUserId);
+            Expect.Call(mocks.Client.Login(config.UserName, config.Password, true, false)).Return(expectedUserId);
 			//Expect.Call(mocks.Client.GetBugs(config.OpenIssueFilterId)).Return(expectedIds);
 
 			for (int i = 0; i < expectedBugs.Count; i++)
@@ -147,7 +147,7 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 
 			SetupResult.For(mocks.ServiceFactory.CreateNew(config.Url)).Return(mocks.Client);
 
-			Expect.Call(mocks.Client.Login(config.UserName, config.Password, true)).Return(expectedUserId);
+			Expect.Call(mocks.Client.Login(config.UserName, config.Password, true, false)).Return(expectedUserId);
 			
 			if (!string.IsNullOrEmpty(config.OnCreateFieldName))
 			{
