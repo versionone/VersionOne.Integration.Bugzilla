@@ -33,7 +33,7 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
         {
             try {
                 //Ignore certificates if config is set.
-                if (ignoreCert)
+                //if (ignoreCert)
                     System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
                 var args = new XmlRpcStruct { { "login", username }, { "password", password } };
@@ -51,7 +51,7 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
            
           try {
               //Ignore certificates if config is set.
-              if (ignoreCert)
+              //if (ignoreCert)
                 System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
               var args = new XmlRpcStruct { { "login", username }, { "password", password } };
