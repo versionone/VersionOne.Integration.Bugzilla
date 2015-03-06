@@ -14,6 +14,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
         public const string UrlProperty = "Url";
         public const string UserNameProperty = "UserName";
         public const string PasswordProperty = "Password";
+        public const string IgnoreCertificateProperty = "IgnoreCertificate";
         public const string SearchNameProperty = "SearchName";
         public const string UrlTemplateProperty = "UrlTemplate";
         public const string UrlTitleProperty = "UrlTitle";
@@ -56,6 +57,9 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
         [NonEmptyStringValidator]
         [XmlElement("BugzillaPassword")]
         public string Password { get; set; }
+
+        [HelpString(HelpResourceKey = "BugzillaCreateAccept")]
+        public NullableBool IgnoreCertificate { get; set; }
 
         [NonEmptyStringValidator]
         [HelpString(HelpResourceKey="BugzillaSearchName")]
@@ -169,7 +173,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
                 string.Equals(other.LinkField, LinkField) && string.Equals(other.Password, Password) && 
                 string.Equals(other.UserName, UserName) && string.Equals(other.SearchName, SearchName) && 
                 string.Equals(other.SourceName, SourceName) && string.Equals(other.Url, Url) && 
-                string.Equals(other.UrlTemplate, UrlTemplate) && string.Equals(other.UrlTitle, UrlTitle);
+                string.Equals(other.UrlTemplate, UrlTemplate) && string.Equals(other.UrlTitle, UrlTitle) &&
+                NullableBool.Equals(other.IgnoreCertificate, IgnoreCertificate);
         }
 
         public override int GetHashCode() {

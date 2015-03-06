@@ -16,6 +16,9 @@ namespace VersionOne.ServiceHost.BugzillaServices {
         [ConfigFileValue("BugzillaPassword", null)]
         public string Password;
 
+        [ConfigFileValue("BugzillaIgnoreCertificate", "false", true)]
+        public bool IgnoreCert;
+
         [ConfigFileValue("BugzillaUrl", null)]
         public string Url;
 
