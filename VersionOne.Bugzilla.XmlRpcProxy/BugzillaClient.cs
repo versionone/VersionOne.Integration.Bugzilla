@@ -29,11 +29,12 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
             get { return new Version(Proxy.Version()); }
         }
 
+        //Used by config tool.
         public int Login(string username, string password, bool remember, bool ignoreCert) 
         {
             try {
-                //Ignore certificates if config is set.
-                //if (ignoreCert)
+                //Ignore certificate if config is set.
+                if (ignoreCert)
                     System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
                 var args = new XmlRpcStruct { { "login", username }, { "password", password } };
@@ -41,18 +42,17 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
                 return int.Parse(result["id"].ToString());
 
             } catch (Exception ex) {
-                throw new BugzillaException(
-                    string.Format("Error attempting to log in to Bugzilla as ({0}) on {1}. {2}", username, Proxy.Url, ex.Message), ex);
+                throw new BugzillaException(string.Format("Error attempting to log in to Bugzilla as ({0}) on {1}. {2}", username, Proxy.Url, ex.Message), ex);
             }
         }
 
-      public IList<int> LoginSearch(string username, string password, bool remember, string searchname, bool ignoreCert)
+        //Used by SericeHost.
+        public IList<int> LoginSearch(string username, string password, bool remember, string searchname, bool ignoreCert)
         {
-           
           try {
-              //Ignore certificates if config is set.
-              //if (ignoreCert)
-                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+              //Ignore certificate if config is set.
+              if (ignoreCert)
+                  System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
               var args = new XmlRpcStruct { { "login", username }, { "password", password } };
               var result = Proxy.Login(args);
@@ -64,8 +64,7 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
               return new List<int>(Proxy.GetBugs(args2));
           }
           catch (Exception ex){
-              throw new BugzillaException(
-                  string.Format("Error  ({0}) ",  ex.Message), ex);
+              throw new BugzillaException(string.Format("Error  ({0}) ",  ex.Message), ex);
           }
         }
  
