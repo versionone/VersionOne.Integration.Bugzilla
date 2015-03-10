@@ -25,6 +25,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.grpConnection = new System.Windows.Forms.GroupBox();
+            this.chkIgnoreCertificate = new System.Windows.Forms.CheckBox();
             this.lblConnectionValidation = new System.Windows.Forms.Label();
             this.btnVerify = new System.Windows.Forms.Button();
             this.txtPassword = new System.Windows.Forms.TextBox();
@@ -92,6 +93,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             // 
             // grpConnection
             // 
+            this.grpConnection.Controls.Add(this.chkIgnoreCertificate);
             this.grpConnection.Controls.Add(this.lblConnectionValidation);
             this.grpConnection.Controls.Add(this.btnVerify);
             this.grpConnection.Controls.Add(this.txtPassword);
@@ -107,10 +109,19 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.grpConnection.TabStop = false;
             this.grpConnection.Text = "Connection";
             // 
+            // chkIgnoreCertificate
+            // 
+            this.chkIgnoreCertificate.Location = new System.Drawing.Point(13, 75);
+            this.chkIgnoreCertificate.Name = "chkIgnoreCertificate";
+            this.chkIgnoreCertificate.Size = new System.Drawing.Size(106, 17);
+            this.chkIgnoreCertificate.TabIndex = 0;
+            this.chkIgnoreCertificate.Text = "Ignore Certificate";
+            this.chkIgnoreCertificate.UseVisualStyleBackColor = true;
+            // 
             // lblConnectionValidation
             // 
             this.lblConnectionValidation.AutoSize = true;
-            this.lblConnectionValidation.Location = new System.Drawing.Point(86, 79);
+            this.lblConnectionValidation.Location = new System.Drawing.Point(175, 76);
             this.lblConnectionValidation.Name = "lblConnectionValidation";
             this.lblConnectionValidation.Size = new System.Drawing.Size(81, 13);
             this.lblConnectionValidation.TabIndex = 6;
@@ -209,21 +220,19 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             // nmdInterval
             // 
             this.nmdInterval.Location = new System.Drawing.Point(152, 52);
-        	this.nmdInterval.Minimum = 1;
-			//    new decimal(new int[] {
-			//1,
-			//0,
-			//0,
-			//0});
+            this.nmdInterval.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.nmdInterval.Name = "nmdInterval";
             this.nmdInterval.Size = new System.Drawing.Size(52, 20);
             this.nmdInterval.TabIndex = 3;
-        	this.nmdInterval.Value = 5;
-			//new decimal(new int[] {
-			//5,
-			//0,
-			//0,
-			//0});
+            this.nmdInterval.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
             // 
             // txtSearchName
             // 
@@ -438,9 +447,9 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             // 
             // tcBugzillaData
             // 
-            this.tcBugzillaData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tcBugzillaData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tcBugzillaData.Controls.Add(this.tpGeneral);
             this.tcBugzillaData.Controls.Add(this.tpMappings);
             this.tcBugzillaData.Location = new System.Drawing.Point(0, 20);
@@ -656,5 +665,6 @@ private System.Windows.Forms.GroupBox grpConnection;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBugzillaPriority;
         private System.Windows.Forms.DataGridViewComboBoxColumn colVersionOneProject;
         private System.Windows.Forms.DataGridViewTextBoxColumn colBugzillaProductName;
+        private System.Windows.Forms.CheckBox chkIgnoreCertificate;
     }
 }
