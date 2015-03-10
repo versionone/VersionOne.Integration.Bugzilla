@@ -8,6 +8,7 @@ using VersionOne.ServiceHost.ConfigurationTool.DL;
 using VersionOne.ServiceHost.ConfigurationTool.BZ;
 
 namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
+    // To be able to access Design View on this control you need to extend from UserControl and comment all lines with errors
     public partial class BugzillaPageControl : BasePageControl<BugzillaServiceEntity>, IBugzillaPageView {
         public event EventHandler ValidationRequested;
 
@@ -55,6 +56,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             AddControlBinding(chkDisable, Model, BaseEntity.DisabledProperty);
             AddControlBinding(txtPassword, Model, BugzillaServiceEntity.PasswordProperty);
             AddControlBinding(txtUserName, Model, BugzillaServiceEntity.UserNameProperty);
+            AddControlBinding(chkIgnoreCertificate, Model.IgnoreCertificate, NullableBool.BoolValueProperty);
             AddControlBinding(txtUrlTitle, Model, BugzillaServiceEntity.UrlTitleProperty);
             AddControlBinding(txtUrlTempl, Model, BugzillaServiceEntity.UrlTemplateProperty);
             AddControlBinding(txtSearchName, Model, BugzillaServiceEntity.SearchNameProperty);

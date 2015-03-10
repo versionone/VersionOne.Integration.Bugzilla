@@ -58,7 +58,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
         [XmlElement("BugzillaPassword")]
         public string Password { get; set; }
 
-        [HelpString(HelpResourceKey = "BugzillaCreateAccept")]
+        [HelpString(HelpResourceKey = "BugzillaIgnoreCertificate")]
         public NullableBool IgnoreCertificate { get; set; }
 
         [NonEmptyStringValidator]

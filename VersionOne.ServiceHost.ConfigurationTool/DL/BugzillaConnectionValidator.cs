@@ -17,8 +17,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
             var client = new BugzillaClient(entity.Url);
             
             try {
-                //TO DO: Need to make ignoreCert param to be from checkbox in UI. 
-                client.Login(entity.UserName, entity.Password, false, true);
+                client.Login(entity.UserName, entity.Password, false, entity.IgnoreCertificate.BoolValue);
                 return true;
             } catch (Exception) {
                 return false;
