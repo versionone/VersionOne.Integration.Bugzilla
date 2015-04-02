@@ -17,5 +17,5 @@ The binaries for this integration can be downloaded from the [VersionOne Applica
 
 The source code for this integration is available in the following GitHub repository: [https://github.com/versionone/VersionOne.Integration.Bugzilla](https://github.com/versionone/VersionOne.Integration.Bugzilla).
 
-If you are interested in contributing to this integration, please contact [VersionOne openAgile Support](mailto:openAgileSupport@versionone.com).
+If you are interested in contributing to this integration, please contact [VersionOne openAgile Team](mailto:openAgileSupport@versionone.com).
 
