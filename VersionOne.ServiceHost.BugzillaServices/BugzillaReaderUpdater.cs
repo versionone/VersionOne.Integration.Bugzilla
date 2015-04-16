@@ -93,7 +93,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 				}
 			}
 
-            ResolveBugIfRequired(configuration.OnCreateResolveValue, bugId, bugzillaClient);
+            //ResolveBugIfRequired(configuration.OnCreateResolveValue, bugId, bugzillaClient);
 			bugzillaClient.Logout();
 		}
 
