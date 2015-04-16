@@ -87,8 +87,14 @@ namespace VersionOne.Bugzilla.XmlRpcProxy {
             return User.Create(Proxy.GetUser(args));
         }
 
-        public bool AcceptBug(int bugId) {
-            var args = new XmlRpcStruct {{"bugid", bugId}};
+        public bool AcceptBug(int bugId)
+        {
+            var args = new XmlRpcStruct { { "bugid", bugId }};
+            return Proxy.AcceptBug(args);
+        }
+
+        public bool AcceptBug(int bugId, string status) {
+            var args = new XmlRpcStruct { { "bugid", bugId }, { "bugstatus", status } };
             return Proxy.AcceptBug(args);
         }
 
