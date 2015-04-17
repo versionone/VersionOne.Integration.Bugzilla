@@ -15,6 +15,9 @@ namespace VersionOne.Bugzilla.XmlRpcProxy
 		User GetUser(int userId);
 
 		bool AcceptBug(int bugId);
+
+        bool AcceptBug(int bugId, string status);
+
 		bool ResolveBug(int bugId, string resolution, string comment);
 		bool ReassignBug(int bugId, string assignTo);
 

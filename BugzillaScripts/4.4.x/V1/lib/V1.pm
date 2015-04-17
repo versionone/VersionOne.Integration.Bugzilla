@@ -281,6 +281,8 @@ sub ResolveBug {
 sub AcceptBug {
 	my $bugid = $_[1]->{bugid};
 
+	my $bugstatusresolved = $_[1]->{bugstatus};
+
 	$bugid = _ValidateBugId($bugid);
 
 	my $bug = new Bugzilla::Bug($bugid);
@@ -290,7 +292,10 @@ sub AcceptBug {
 		ThrowUserError("milestone_required", { bug_id => $bugid });
 	}
 	# NOTE was: ASSIGNED, this status does not exist in default 4.0.1 setup
-	_ChangeStatus($bug, "IN_PROGRESS");
+	#_ChangeStatus($bug, "IN_PROGRESS");
+	
+	_ChangeStatus($bug, $bugstatus);
+
 	$bug->update();
 
 	return SOAP::Data::type('boolean')->value(1);
