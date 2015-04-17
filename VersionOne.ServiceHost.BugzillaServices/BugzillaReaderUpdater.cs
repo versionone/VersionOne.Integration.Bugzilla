@@ -131,7 +131,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
                 return true;
             }
 
-			if (configuration.OnStateChangeAccept && !bugzillaClient.AcceptBug(bugId)) 
+			if (configuration.OnStateChangeAccept && !bugzillaClient.AcceptBug(bugId , configuration.OnCreateResolveValue)) 
             {
     			logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to accept bug {0}.", bugId));
 			}
