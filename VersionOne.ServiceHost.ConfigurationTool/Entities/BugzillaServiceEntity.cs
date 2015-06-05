@@ -59,6 +59,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
         public string Password { get; set; }
 
         [HelpString(HelpResourceKey = "BugzillaIgnoreCertificate")]
+        [XmlElement("BugzillaIgnoreCertificate")]
         public NullableBool IgnoreCertificate { get; set; }
 
         [NonEmptyStringValidator]
