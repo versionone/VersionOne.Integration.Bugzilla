@@ -294,7 +294,7 @@ sub AcceptBug {
 	# NOTE was: ASSIGNED, this status does not exist in default 4.0.1 setup
 	#_ChangeStatus($bug, "IN_PROGRESS");
 	
-	_ChangeStatus($bug, $bugstatus);
+	_ChangeStatus($bug, $bugstatusresolved);
 
 	$bug->update();
 
