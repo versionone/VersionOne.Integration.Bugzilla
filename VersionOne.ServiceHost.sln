@@ -28,6 +28,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.ServiceHost.Conf
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.Integration.Bugzilla.Tests", "VersionOne.Integration.Bugzilla.Tests\VersionOne.Integration.Bugzilla.Tests.csproj", "{D811A438-688E-4419-9381-CB652D415AEE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.Bugzilla.BugzillaAPI", "VersionOne.Bugzilla.BugzillaAPI\VersionOne.Bugzilla.BugzillaAPI.csproj", "{BF7D1A4E-CA52-4263-B7B9-403396613490}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.Bugzilla.BugzillaAPI.Tests", "VersionOne.Bugzilla.BugzillaAPI.Testss\VersionOne.Bugzilla.BugzillaAPI.Tests.csproj", "{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +100,22 @@ Global
 		{D811A438-688E-4419-9381-CB652D415AEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D811A438-688E-4419-9381-CB652D415AEE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D811A438-688E-4419-9381-CB652D415AEE}.Release|x86.ActiveCfg = Release|Any CPU
+		{BF7D1A4E-CA52-4263-B7B9-403396613490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF7D1A4E-CA52-4263-B7B9-403396613490}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF7D1A4E-CA52-4263-B7B9-403396613490}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BF7D1A4E-CA52-4263-B7B9-403396613490}.Debug|x86.Build.0 = Debug|Any CPU
+		{BF7D1A4E-CA52-4263-B7B9-403396613490}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF7D1A4E-CA52-4263-B7B9-403396613490}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF7D1A4E-CA52-4263-B7B9-403396613490}.Release|x86.ActiveCfg = Release|Any CPU
+		{BF7D1A4E-CA52-4263-B7B9-403396613490}.Release|x86.Build.0 = Release|Any CPU
+		{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}.Debug|x86.Build.0 = Debug|Any CPU
+		{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}.Release|x86.ActiveCfg = Release|Any CPU
+		{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
