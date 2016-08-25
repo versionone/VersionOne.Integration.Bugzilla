@@ -16,5 +16,15 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 
 			Assert.IsNotNull(token);
 		}
+
+		[TestMethod]
+		public void when_calling_search_it_should_respond_with_bug_collection()
+		{
+			string searchCriteria = "email1=terry.densmore%40versionone.com&emailassigned_to1=1&emailtype1=equals&product=TestProduct&query_format=advanced&resolution=---&known_name=AssignedBugs";
+			var response = client.Search(searchCriteria);
+
+			var count = response.Count();
+			Assert.IsNotNull(count);
+		}
 	}
 }

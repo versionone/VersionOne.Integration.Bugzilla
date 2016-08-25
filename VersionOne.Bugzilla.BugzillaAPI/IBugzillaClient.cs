@@ -29,6 +29,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 //
 //	    string GetFieldValue(int bugId, string fieldName);
 //	    IList<int> LoginSearch(string userName, string password, bool b, string openIssueFilterId, bool ignoreCert);
+		JEnumerable<JToken> Search(string searchQuery);
 	}
 
 	public interface IBugzillaClientFactory

@@ -28,6 +28,18 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			return Token;
 		}
 
+		public JEnumerable<JToken> Search(string searchQuery)
+		{
+			var req = new RestRequest("bug?" + searchQuery, Method.GET);
+			//req.AddHeader("Authorization", "Basic" + Token);
+			req.AddParameter("token", Token);
+
+			var result = Client.Get(req);
+
+			var response = JObject.Parse(result.Content);
+			return response["bugs"].Children();
+		}
+
 
 //		public bool AcceptBug(int bugId)
 //		{
