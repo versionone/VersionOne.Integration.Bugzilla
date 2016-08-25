@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Linq;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
@@ -59,31 +60,5 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			return bug;
 
 		}
-
-//		public bool AcceptBug(int bugId)
-//		{
-//
-//			var req = new RestRequest(string.Empty);
-//
-//			req.AddHeader("Authorization", "Token " + "123456");
-//			req.AddParameter("application/json", "post data", ParameterType.RequestBody);
-//			var result = Post(req);
-//
-//			return false;
-//		}
-//
-//		public Bug GetBug(int bugId)
-//		{
-//			var args = new XmlRpcStruct { { "bugid", bugId } };
-//			return Bug.Create(Proxy.GetBug(args));
-//		}
-//
-//		private IRestResponse Post(IRestRequest req)
-//		{
-//
-//			IRestClient client = new RestClient();
-//			return client.Post(req);
-//		}
-
 	}
 }
