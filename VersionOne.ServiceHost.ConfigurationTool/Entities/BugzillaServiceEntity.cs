@@ -45,7 +45,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
         }
 
         [NonEmptyStringValidator]
-        [RegexValidator(@"^[a-z]+:\/\/.+?\.cgi$", MessageTemplate = "URL must be valid and has to contain CGI file.")]
         [HelpString(HelpResourceKey="BugzillaUrl")]
         [XmlElement("BugzillaUrl")]
         public string Url { get; set; }

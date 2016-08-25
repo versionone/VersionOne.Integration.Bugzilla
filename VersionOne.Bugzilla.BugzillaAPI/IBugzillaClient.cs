@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using RestSharp;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
 {
 	public interface IBugzillaClient
 	{
-//		Version Version { get; }
-//
+        //		Version Version { get; }
+        //
+        RestClient Client { get; set; }
+
         string Login(string username, string password);
 //		void Logout();
 //

@@ -1,6 +1,6 @@
 using System;
 using VersionOne.ServiceHost.ConfigurationTool.Entities;
-using VersionOne.Bugzilla.XmlRpcProxy;
+using VersionOne.Bugzilla.BugzillaAPI;
 
 namespace VersionOne.ServiceHost.ConfigurationTool.DL {
     public class BugzillaConnectionValidator : IConnectionValidator {
@@ -14,10 +14,12 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         }
 
         public bool Validate() {
-            var client = new BugzillaClient(entity.Url);
-            
-            try {
-                client.Login(entity.UserName, entity.Password, false, entity.IgnoreCertificate.BoolValue);
+            //var client = new BugzillaClient(entity.Url);
+             var client = new BugzillaClient(entity.Url);
+            try
+            {
+                // client.Login(entity.UserName, entity.Password, false, entity.IgnoreCertificate.BoolValue);
+                client.Login(entity.UserName, entity.Password);
                 return true;
             } catch (Exception) {
                 return false;
