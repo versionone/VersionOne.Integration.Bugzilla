@@ -1,17 +1,16 @@
-﻿using System;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-//using RestSharp;
-
 
 namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 {
-	[TestClass]
+	[TestClass()]
 	public class BugzillaClientTest
 	{
+		private BugzillaClient client = new BugzillaClient("http://184.170.227.113/bugzilla/rest/");
+
 		[TestMethod]
 		public void when_calling_login_it_should_respond_with_a_token()
 		{
-			BugzillaClient client = new BugzillaClient("http://184.170.227.113/bugzilla/rest/");
 			string token = client.Login("terry.densmore@versionone.com", "admin1425");
 
 			Assert.IsNotNull(token);
