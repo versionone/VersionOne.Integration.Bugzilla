@@ -11,6 +11,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         RestClient Client { get; set; }
 		string Token { get; set; }
 
+		string Login(string username, string password);
         string Login(string username, string password);
 //		void Logout();
 //
