@@ -26,5 +26,14 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 			var count = response.Count();
 			Assert.IsNotNull(count);
 		}
+
+		[TestMethod]
+		public void when_calling_get_bug_it_should_return_a_bug()
+		{
+			int ID = 7;
+			Bug bug = client.GetBug(ID);
+
+			Assert.IsNotNull(bug);
+		}
 	}
 }

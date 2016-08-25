@@ -40,6 +40,25 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			return response["bugs"].Children();
 		}
 
+		public Bug GetBug(int ID)
+		{
+			var req = new RestRequest("bug/" + ID, Method.GET);
+			var result = Client.Get(req);
+
+			var response = JObject.Parse(result.Content)["bugs"].First;
+
+			var bug = new Bug
+			{
+				ID = response["id"].ToString(),
+				Name = response["summary"].ToString(),
+				AssignedTo = response["assigned_to"].ToString(),
+				ComponentID = response["component"].ToString(),
+				Priority = response["priority"].ToString(),
+				Product = response["product"].ToString()
+			};
+			return bug;
+
+		}
 
 //		public bool AcceptBug(int bugId)
 //		{
