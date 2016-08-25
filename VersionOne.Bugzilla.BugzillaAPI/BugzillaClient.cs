@@ -6,6 +6,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	public class BugzillaClient: IBugzillaClient
 	{
         public RestClient Client{ get; set; }
+		public string Token { get; set; }
 
         public BugzillaClient(string URL)
         {
@@ -22,8 +23,9 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			var result = Client.Get(req);
 
 			var response = JObject.Parse(result.Content);
+			Token = response["token"].ToString();
 
-			return response["token"].ToString();
+			return Token;
 		}
 
 

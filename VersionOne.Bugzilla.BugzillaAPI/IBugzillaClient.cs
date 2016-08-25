@@ -9,6 +9,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         //		Version Version { get; }
         //
         RestClient Client { get; set; }
+		string Token { get; set; }
 
         string Login(string username, string password);
 //		void Logout();
