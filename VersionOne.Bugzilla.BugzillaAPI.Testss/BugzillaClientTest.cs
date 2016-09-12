@@ -34,5 +34,33 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 
 			Assert.IsNotNull(bug);
 		}
-	}
+
+        [TestMethod]
+        public void when_calling_accept_bug_the_status_change()
+        {
+            int ID = 7;
+            string status = "ASSIGNED";
+            client.AcceptBug(ID, status);
+
+            Bug bug = client.GetBug(ID);
+
+           // Assert.AreEqual(bug.s)
+        }
+
+        [TestMethod]
+        public void when_calling_a_bug_that_dont_exist_it_should_throw_an_exception()
+        {
+            try
+            {
+                int ID = 9999;
+                Bug bug = client.GetBug(ID);
+                Assert.Fail("no exception thrown");
+            }
+            catch (System.Exception ex)
+            {
+                Assert.IsTrue(ex.Message == "Bug #9999 does not exist.");
+            }
+           
+        }
+    }
 }

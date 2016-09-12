@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
@@ -8,6 +9,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	{
         public RestClient Client{ get; set; }
 		public string Token { get; set; }
+
+        public string CommentResolution = "Resolution has changed to {0} by VersionOne";
 
         public BugzillaClient(string URL)
         {
@@ -46,19 +49,89 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			var req = new RestRequest("bug/" + ID, Method.GET);
 			var result = Client.Get(req);
 
-			var response = JObject.Parse(result.Content)["bugs"].First;
+            var response = JObject.Parse(result.Content);
+            if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
+
+            var bugResponse = response["bugs"].First;
+
+            var comment = SearchForComment(ID);
 
 			var bug = new Bug
 			{
-				ID = response["id"].ToString(),
-				Name = response["summary"].ToString(),
-				AssignedTo = response["assigned_to"].ToString(),
-				ComponentID = response["component"].ToString(),
-				Priority = response["priority"].ToString(),
-				Product = response["product"].ToString()
+				ID = bugResponse["id"].ToString(),
+				Name = bugResponse["summary"].ToString(),
+				AssignedTo = bugResponse["assigned_to"].ToString(),
+				ComponentID = bugResponse["component"].ToString(),
+				Priority = bugResponse["priority"].ToString(),
+				Product = bugResponse["product"].ToString(),
+                Description  = comment
 			};
 			return bug;
 
 		}
-	}
+
+        private string SearchForComment(int iD)
+        {
+            //need to be ordered asc way ??
+            var req = new RestRequest("bug/" + iD + "/comment", Method.GET);
+            var result = Client.Get(req);
+            var response = JObject.Parse(result.Content)["bugs"];
+
+            return response[iD.ToString()]["comments"][0]["text"].ToString();
+
+        }
+
+        public bool AcceptBug(int bugId, string status)
+        {
+            //validate id
+            var bug = GetBug(bugId);
+
+            //if bug.target_milestone is empty
+                //throws user errror
+
+            //status can be CONFIRMED, IN_PROGRESS, RESOLVED 
+            // or any value defined on the status combo
+            ChangeStatus(bug, status); //
+           
+            return true;
+        }
+
+        public bool AcceptBug(int bugId)
+        {
+            return true;
+        }
+
+
+        public void ChangeStatus(Bug bug, string status, string resolution="")
+        {
+            //validate status availables
+            // Get bugzilla/ rest / field / bug / status / values
+
+            if (findStatuses(status)) {
+                //validate resolution ok?
+                if (string.IsNullOrEmpty(resolution)) {
+                    //set remaining time to 0
+                    //remaining_time = 0;
+                    //set resolution to pararesolution
+                    //add comment
+                    //set status 
+
+                }
+            }
+            //change
+        }
+
+
+        public bool findStatuses(string status)
+        {
+            //Get bugzilla/ rest / field / bug / status / values
+            var req = new RestRequest("bug/status/values", Method.GET);
+            var result = Client.Get(req);
+            var whatever = JObject.Parse(result.Content)["values"];
+            return true;
+            //if ( JObject.Parse(result.Content)["values"].
+
+        }
+
+    }
 }

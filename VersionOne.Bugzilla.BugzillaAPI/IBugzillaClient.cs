@@ -18,7 +18,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 		Bug GetBug(int bugId);
 
-	}
+        bool AcceptBug(int bugId);
+
+        bool AcceptBug(int bugId, string status);
+
+
+    }
 
 	public interface IBugzillaClientFactory
 	{
