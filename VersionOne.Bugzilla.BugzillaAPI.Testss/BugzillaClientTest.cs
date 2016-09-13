@@ -35,7 +35,17 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 			Assert.IsNotNull(bug);
 		}
 
-        [TestMethod]
+		[TestMethod]
+		public void when_calling_status_exists_it_should_return_true()
+		{
+			int ID = 7;
+			string status = "CONFIRMED";
+			bool exists = client.StatusExists(status);
+
+			Assert.IsTrue(exists);
+		}
+
+		[TestMethod]
         public void when_calling_accept_bug_the_status_change()
         {
             int ID = 7;

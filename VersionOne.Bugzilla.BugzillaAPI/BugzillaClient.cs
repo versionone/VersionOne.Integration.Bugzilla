@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -101,13 +102,9 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return true;
         }
 
-
         public void ChangeStatus(Bug bug, string status, string resolution="")
         {
-            //validate status availables
-            // Get bugzilla/ rest / field / bug / status / values
-
-            if (findStatuses(status)) {
+            if (StatusExists(status)) {
                 //validate resolution ok?
                 if (string.IsNullOrEmpty(resolution)) {
                     //set remaining time to 0
@@ -122,16 +119,18 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         }
 
 
-        public bool findStatuses(string status)
+        public bool StatusExists(string status)
         {
-            //Get bugzilla/ rest / field / bug / status / values
-            var req = new RestRequest("bug/status/values", Method.GET);
+            var req = new RestRequest("field/bug/status/values", Method.GET);
             var result = Client.Get(req);
-            var whatever = JObject.Parse(result.Content)["values"];
-            return true;
-            //if ( JObject.Parse(result.Content)["values"].
+            var statuses = JObject.Parse(result.Content)["values"].ToList();
 
-        }
+			if (statuses.Contains(status))
+			{
+				return true;
+			}
 
+		    return false;
+		}
     }
 }

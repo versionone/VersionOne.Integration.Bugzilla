@@ -22,8 +22,10 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         bool AcceptBug(int bugId, string status);
 
+		bool StatusExists(string status);
 
-    }
+
+	}
 
 	public interface IBugzillaClientFactory
 	{
