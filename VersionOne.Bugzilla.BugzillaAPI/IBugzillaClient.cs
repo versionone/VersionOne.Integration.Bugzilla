@@ -24,8 +24,13 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 		bool StatusExists(string status);
 
+        string SearchForComment(int iD);
 
-	}
+        bool UpdateBug(int bugId, string fieldName, string fieldValue);
+
+
+
+    }
 
 	public interface IBugzillaClientFactory
 	{
