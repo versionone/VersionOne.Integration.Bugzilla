@@ -48,13 +48,15 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 		[TestMethod]
         public void when_calling_accept_bug_the_status_change()
         {
+
+            client.Login("terry.densmore@versionone.com", "admin1425");
             int ID = 7;
-            string status = "ASSIGNED";
+            string status = "IN_PROGRESS";
             client.AcceptBug(ID, status);
 
             Bug bug = client.GetBug(ID);
 
-           // Assert.AreEqual(bug.s)
+            Assert.AreEqual(bug.Status, status);
         }
 
         [TestMethod]
@@ -72,5 +74,41 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
             }
            
         }
+
+        [TestMethod]
+        public void when_calling_change_status_the_bug_status_should_change()
+        {
+            int ID = 7;
+            string status = "RESOLVED";
+            string resolution = "FIXED";
+            Bug bug = client.GetBug(ID);
+            client.ResolveBug(bug, resolution);
+                      
+            bug = client.GetBug(ID);
+
+            Assert.AreEqual(bug.Status, status);
+        }
+
+        public void when_calling_user_can_edit_the_user_should_be_able_to_do_it()
+        {
+            int ID = 7;
+         
+            Bug bug = client.GetBug(ID);
+
+            Assert.IsTrue(client.UserCanEdit(bug));
+        }
+
+        public void when_calling_find_product_it_should_return_product_id()
+        {
+            int ID = 7;
+            var product_id = 1;
+
+            Bug bug = client.GetBug(ID);
+
+            Assert.AreEqual(client.findProductId(bug), product_id);
+        }
+
+
+
     }
 }
