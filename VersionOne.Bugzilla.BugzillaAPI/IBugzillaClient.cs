@@ -28,7 +28,9 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         bool UpdateBug(int bugId, string fieldName, string fieldValue);
 
+        bool ResolveBug(Bug bug, string resolution);
 
+        bool ReassignBug(int bugId, string assignTo)
 
     }
 

@@ -70,7 +70,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 IsOpen = bugResponse["is_open"].ToString(),
                 DependesOn = bugResponse["depends_on"].ToList()
 			};
-			return bug;
+            bug.ProductId = findProductId(bug);
+            return bug;
 
 		}
  
@@ -115,12 +116,34 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         {
             //validate bug
 
-            //check fild to update
+            //check field to update
 
             return true;
         }
 
-        public void ChangeStatus(Bug bug, string status, string resolution="")
+        public bool ReassignBug(int bugId, string assignTo)
+        {
+            var bug = GetBug(bugId);
+            //validate assignto user /rest/user/
+            if (IsValidUser(assignTo))
+            {
+                //check for strict isolation ??
+
+                //user can edit on this product
+                if (!UserCanEdit(bug))
+                {
+                    throw new Exception(String.Format("Invalid User group for User {0} and product {1} for bug {2}", bug.AssignedTo, bug.Product, bug.Name));
+                }
+                //change the assign to field ??
+
+                //call change status
+                ChangeStatus(bug, Status.CONFIRMED.ToString());
+            }
+            //   var args = new XmlRpcStruct { { "bugid", bugId }, { "assignto", assignTo } };
+            return true;
+        }
+
+        private void ChangeStatus(Bug bug, string status, string resolution="")
         {
             if (StatusExists(status)) {
                 var req = new RestRequest("bug/" + bug.ID, Method.PUT);
@@ -143,7 +166,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             }
         }
 
-        public void CreateComment(Bug bug, string comment)
+        private void CreateComment(Bug bug, string comment)
         {
             //need to be ordered asc way ??
             var req = new RestRequest("bug/" + bug.ID + "/comment", Method.POST);
@@ -176,49 +199,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var result = Client.Get(req);
             var statuses = JObject.Parse(result.Content)["values"].ToList();
 
-			if (statuses.Contains(status))
-			{
-				return true;
-			}
-
-		    return false;
-		}
-
-        public bool ReassignBug(int bugId, string assignTo)
-        {
-            var bug = GetBug(bugId);
-            //validate assignto user /rest/user/
-            if (IsValidUser(assignTo))
-            {
-                //check for strict isolation ??
-
-                //user can edit on this product
-                if (!UserCanEdit(bug))
-                {
-                    throw new Exception(String.Format("Invalid User group for User {0} and product {1} and bug {2}", bug.AssignedTo, bug.Product, bug.Name));
-                }
-                //change the assign to field
-
-                //call change status
-                ChangeStatus(bug, Status.CONFIRMED.ToString());
-            }
-            //   var args = new XmlRpcStruct { { "bugid", bugId }, { "assignto", assignTo } };
-            return true;
-        }
-
-        public bool UserCanEdit(Bug bug)
-        {
-            //look for the id of the product
-            var reqId = new RestRequest("rest/product/" + bug.Product, Method.GET);
-            var resultId = Client.Get(reqId);
-            var idProduct = JObject.Parse(resultId.Content)["id"];
-
-            //looks for a list of product IDs a user can enter a bug against:
-            var req = new RestRequest("rest/product_enterable", Method.GET);
-            var result = Client.Get(req);
-            var ids = JObject.Parse(result.Content)["ids"].ToList();
-
-            if (ids.Contains(idProduct))
+            if (statuses.Contains(status))
             {
                 return true;
             }
@@ -226,7 +207,28 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return false;
         }
 
-        public bool IsValidUser(string assignTo)
+        public bool UserCanEdit(Bug bug)
+        {
+            //looks for a list of product IDs a user can enter a bug against:
+            var req = new RestRequest("rest/product_enterable", Method.GET);
+            var result = Client.Get(req);
+            var ids = JObject.Parse(result.Content)["ids"].ToList();
+
+            return ids.Contains(bug.ProductId);
+        }
+
+        public int findProductId(Bug bug)
+        {
+            //look for the id of the product
+            var reqId = new RestRequest("rest/product/" + bug.Product, Method.GET);
+            var resultId = Client.Get(reqId);
+            var response = JObject.Parse(resultId.Content);
+            if (resultId.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
+            var idProduct = (int)JObject.Parse(resultId.Content)["id"];
+            return idProduct;
+        }
+
+        private bool IsValidUser(string assignTo)
         {
             var req = new RestRequest("rest/user/"+ assignTo, Method.GET);
             var result = Client.Get(req);
@@ -235,15 +237,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             if (result.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 throw new Exception(response["message"].ToString());
-                return  false;
             }
-            else
-            {
-              return  true;
-            }
+ 
+            return (result.StatusCode == System.Net.HttpStatusCode.NotFound);
         }
 
-        public string SearchForComment(int iD)
+        private string SearchForComment(int iD)
         {
             //need to be ordered asc way ??
             var req = new RestRequest("bug/" + iD + "/comment", Method.GET);
