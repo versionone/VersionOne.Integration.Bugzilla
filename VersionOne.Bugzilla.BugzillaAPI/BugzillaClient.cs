@@ -11,6 +11,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         public RestClient Client{ get; set; }
 		public string Token { get; set; }
 
+        public string TokenAssignToUser { get; set; }
+
         public string CommentResolution = "Resolution has changed to {0} by VersionOne";
 
         public BugzillaClient(string URL)
@@ -28,7 +30,10 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			var result = Client.Get(req);
 
 			var response = JObject.Parse(result.Content);
-			Token = response["token"].ToString();
+                        
+            if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
+
+            Token = response["token"].ToString();
 
 			return Token;
 		}
@@ -42,7 +47,10 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			var result = Client.Get(req);
 
 			var response = JObject.Parse(result.Content);
-			return response["bugs"].Children();
+            
+            if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
+
+            return response["bugs"].Children();
 		}
 
 		public Bug GetBug(int ID)
@@ -121,26 +129,31 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return true;
         }
 
-        public bool ReassignBug(int bugId, string assignTo)
+        public bool ReassignBug(int bugId, string AssignToUser)
         {
+            var response = false;
             var bug = GetBug(bugId);
-            //validate assignto user /rest/user/
-            if (IsValidUser(assignTo))
+            //validate assignto user to reassign thebug
+            if (IsValidUser(AssignToUser))
             {
                 //check for strict isolation ??
 
-                //user can edit on this product
-                if (!UserCanEdit(bug))
+                //user can edit on this product?
+                if (!UserCanEdit(bug, TokenAssignToUser))
                 {
+                    response = false;
                     throw new Exception(String.Format("Invalid User group for User {0} and product {1} for bug {2}", bug.AssignedTo, bug.Product, bug.Name));
                 }
-                //change the assign to field ??
+                
+                bug.AssignedTo = AssignToUser;
 
                 //call change status
                 ChangeStatus(bug, Status.CONFIRMED.ToString());
+
+                response = true;
             }
-            //   var args = new XmlRpcStruct { { "bugid", bugId }, { "assignto", assignTo } };
-            return true;
+           
+            return response;
         }
 
         private void ChangeStatus(Bug bug, string status, string resolution="")
@@ -157,12 +170,16 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
                 var result = Client.Put(req);
 
+                var response = JObject.Parse(result.Content);
+
+                if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
+
                 if (HasResolution(resolution))
                 {
                     CreateComment(bug, resolution);
                 }
 
-                var response = JObject.Parse(result.Content)["bugs"];
+                //var response = JObject.Parse(result.Content)["bugs"];
             }
         }
 
@@ -193,7 +210,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return false;
         }
 
-        public bool StatusExists(string status)
+        private bool StatusExists(string status)
         {
             var req = new RestRequest("field/bug/status/values", Method.GET);
             var result = Client.Get(req);
@@ -207,17 +224,20 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return false;
         }
 
-        public bool UserCanEdit(Bug bug)
+        private bool UserCanEdit(Bug bug, string UserTokenValue)
         {
             //looks for a list of product IDs a user can enter a bug against:
             var req = new RestRequest("rest/product_enterable", Method.GET);
+            req.AddParameter("token", UserTokenValue);
+
             var result = Client.Get(req);
+            
             var ids = JObject.Parse(result.Content)["ids"].ToList();
 
             return ids.Contains(bug.ProductId);
         }
 
-        public int findProductId(Bug bug)
+        private int findProductId(Bug bug)
         {
             //look for the id of the product
             var reqId = new RestRequest("rest/product/" + bug.Product, Method.GET);
@@ -233,6 +253,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var req = new RestRequest("rest/user/"+ assignTo, Method.GET);
             var result = Client.Get(req);
             var response = JObject.Parse(result.Content);
+            //token for the Assign_to user 
+            TokenAssignToUser = response["token"].ToString();
 
             if (result.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
