@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 {
@@ -42,7 +43,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 			string status = "CONFIRMED";
 		//	bool exists = client.StatusExists(status);
 
-			Assert.IsTrue(exists);
+		//	Assert.IsTrue(exists);
 		}
 
 		[TestMethod]
@@ -108,7 +109,18 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
           //  Assert.AreEqual(client.findProductId(bug), product_id);
         }
 
+        public void when_calling_reassign_bug_it_should_change_the_assigned_bug()
+        {
+            int ID = 7;
 
+            var AssignedToUser = "denise@denise.com";
+
+            Bug bug = client.GetBug(ID);
+
+            client.ReassignBug(Int32.Parse(bug.ID), AssignedToUser);
+
+            Assert.AreEqual(bug.AssignedTo,AssignedToUser);
+        }
 
     }
 }
