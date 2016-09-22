@@ -22,15 +22,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         bool AcceptBug(int bugId, string status);
 
-		bool StatusExists(string status);
-
-        string SearchForComment(int iD);
 
         bool UpdateBug(int bugId, string fieldName, string fieldValue);
 
-        bool ResolveBug(Bug bug, string resolution);
+        bool ResolveBug(int bugId, string resolution);
 
-        bool ReassignBug(int bugId, string assignTo)
+        bool ReassignBug(int bugId, string assignTo);
 
     }
 

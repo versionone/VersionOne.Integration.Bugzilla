@@ -83,7 +83,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
             string status = "RESOLVED";
             string resolution = "FIXED";
             Bug bug = client.GetBug(ID);
-            client.ResolveBug(bug, resolution);
+            client.ResolveBug(Int32.Parse(bug.ID), resolution);
                       
             bug = client.GetBug(ID);
 

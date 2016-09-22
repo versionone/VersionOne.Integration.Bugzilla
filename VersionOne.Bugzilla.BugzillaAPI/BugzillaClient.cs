@@ -93,19 +93,19 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             //status can be CONFIRMED, IN_PROGRESS, RESOLVED 
             // or any value defined on the status combo
-            ChangeStatus(bug, status); //
+           // ChangeStatus(bug, status); //
            
             return true;
         }
 
-        public bool ResolveBug(Bug bug, string resolution)
+        public bool ResolveBug(int bugId, string resolution)
         {
             //validate id
-            //var bug = GetBug(bugdep.ID);
+            var bug = GetBug(bugId);
             //get dependecies
             if (resolution.Equals(Resolution.FIXED.ToString()) && HasOpenDependencies(bug))
             {
-                throw new Exception(String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count, bug.ID));
+                throw new Exception(String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count, bugId));
             }
 
             //status can be CONFIRMED, IN_PROGRESS, RESOLVED 
@@ -120,13 +120,31 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return true;
         }
 
+
+
+        //<CreateFieldId>cf_versiononestate</CreateFieldId>
+        //<CreateFieldValue>New</CreateFieldValue>
+
+        //DefectLinkFieldId --configuration.DefectLinkFieldName
+        //createdResult.Permalink --
+
+        //configuration.OnStateChangeFieldName-- CloseFieldId
+        //configuration.OnStateChangeFieldValue--CloseFieldValue
+
         public bool UpdateBug(int bugId, string fieldName, string fieldValue)
         {
             //validate bug
+            //my $f = new Bugzilla::Field({ name => $field });
 
-            //check field to update
+            //if obsolete??{
 
-            return true;
+                //if field == FIELD_TYPE_SINGLE_SELECT{
+                  //checkfield
+           //     }
+              //  Updatefield
+         //       return true;
+           // }
+           return false;
         }
 
         public bool ReassignBug(int bugId, string AssignToUser)
@@ -134,12 +152,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var response = false;
             var bug = GetBug(bugId);
             //validate assignto user to reassign thebug
-            if (IsValidUser(AssignToUser))
+            if (GetValidUser(AssignToUser))
             {
                 //check for strict isolation ??
 
                 //user can edit on this product?
-                if (!UserCanEdit(bug, TokenAssignToUser))
+                if (!UserCanEdit(bug))
                 {
                     response = false;
                     throw new Exception(String.Format("Invalid User group for User {0} and product {1} for bug {2}", bug.AssignedTo, bug.Product, bug.Name));
@@ -224,11 +242,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return false;
         }
 
-        private bool UserCanEdit(Bug bug, string UserTokenValue)
+        private bool UserCanEdit(Bug bug)
         {
             //looks for a list of product IDs a user can enter a bug against:
             var req = new RestRequest("rest/product_enterable", Method.GET);
-            req.AddParameter("token", UserTokenValue);
+            req.AddParameter("token", TokenAssignToUser);
 
             var result = Client.Get(req);
             
@@ -248,7 +266,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return idProduct;
         }
 
-        private bool IsValidUser(string assignTo)
+        private bool GetValidUser(string assignTo)
         {
             var req = new RestRequest("rest/user/"+ assignTo, Method.GET);
             var result = Client.Get(req);
@@ -261,7 +279,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 throw new Exception(response["message"].ToString());
             }
  
-            return (result.StatusCode == System.Net.HttpStatusCode.NotFound);
+            return (result.StatusCode != System.Net.HttpStatusCode.NotFound);
         }
 
         private string SearchForComment(int iD)
