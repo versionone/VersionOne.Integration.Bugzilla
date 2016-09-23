@@ -268,11 +268,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         private bool GetValidUser(string assignTo)
         {
-            var req = new RestRequest("rest/user/"+ assignTo, Method.GET);
+            var req = new RestRequest("user/"+ assignTo, Method.GET);
             var result = Client.Get(req);
             var response = JObject.Parse(result.Content);
             //token for the Assign_to user 
-            TokenAssignToUser = response["token"].ToString();
+            TokenAssignToUser = response["users"][0]["id"].ToString();
 
             if (result.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
