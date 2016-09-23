@@ -258,11 +258,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         private int findProductId(Bug bug)
         {
             //look for the id of the product
-            var reqId = new RestRequest("rest/product/" + bug.Product, Method.GET);
-            var resultId = Client.Get(reqId);
-            var response = JObject.Parse(resultId.Content);
-            if (resultId.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
-            var idProduct = (int)JObject.Parse(resultId.Content)["id"];
+            var reqId = new RestRequest("product/" + bug.Product, Method.GET);
+            var restResponse = Client.Get(reqId);
+            var responseContent = JObject.Parse(restResponse.Content);
+            if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(responseContent["message"].ToString());
+            var idProduct = (int)responseContent["products"][0]["id"];
             return idProduct;
         }
 
