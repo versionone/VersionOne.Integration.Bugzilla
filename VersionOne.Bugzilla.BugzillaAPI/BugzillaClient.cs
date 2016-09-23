@@ -155,13 +155,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             if (GetValidUser(AssignToUser))
             {
                 //check for strict isolation ??
-
-                //user can edit on this product?
-                if (!UserCanEdit(bug))
-                {
-                    response = false;
-                    throw new Exception(String.Format("Invalid User group for User {0} and product {1} for bug {2}", bug.AssignedTo, bug.Product, bug.Name));
-                }
                 
                 bug.AssignedTo = AssignToUser;
 
@@ -241,20 +234,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             return false;
         }
-
-        private bool UserCanEdit(Bug bug)
-        {
-            //looks for a list of product IDs a user can enter a bug against:
-            var req = new RestRequest("rest/product_enterable", Method.GET);
-            req.AddParameter("token", TokenAssignToUser);
-
-            var result = Client.Get(req);
-            
-            var ids = JObject.Parse(result.Content)["ids"].ToList();
-
-            return ids.Contains(bug.ProductId);
-        }
-
+        
         private int findProductId(Bug bug)
         {
             //look for the id of the product
