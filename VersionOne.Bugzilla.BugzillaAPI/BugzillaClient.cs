@@ -9,7 +9,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	public class BugzillaClient: IBugzillaClient
 	{
         public RestClient Client{ get; set; }
-		public string Token { get; set; }
+		public string IntegrationUserToken { get; set; }
 
         public string TokenAssignToUser { get; set; }
 
@@ -33,16 +33,16 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                         
             if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
 
-            Token = response["token"].ToString();
+            IntegrationUserToken = response["token"].ToString();
 
-			return Token;
+			return IntegrationUserToken;
 		}
 
 		public JEnumerable<JToken> Search(string searchQuery)
 		{
 			var req = new RestRequest("bug?" + searchQuery, Method.GET);
-			//req.AddHeader("Authorization", "Basic" + Token);
-			req.AddParameter("token", Token);
+			//req.AddHeader("Authorization", "Basic" + IntegrationUserToken);
+			req.AddParameter("token", IntegrationUserToken);
 
 			var result = Client.Get(req);
 
@@ -178,7 +178,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
                 req.AddParameter("assigned_to", bug.AssignedTo);
                 req.AddParameter("status", status);
-                req.AddParameter("token", Token);
+                req.AddParameter("token", IntegrationUserToken);
 
                 var result = Client.Put(req);
 
@@ -199,7 +199,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         {
             //need to be ordered asc way ??
             var req = new RestRequest("bug/" + bug.ID + "/comment", Method.POST);
-            req.AddParameter("token", Token);
+            req.AddParameter("token", IntegrationUserToken);
             req.AddParameter("comment", comment);
 
             var result = Client.Post(req);
