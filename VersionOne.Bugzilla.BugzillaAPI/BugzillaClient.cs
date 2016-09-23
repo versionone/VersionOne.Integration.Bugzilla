@@ -152,7 +152,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var response = false;
             var bug = GetBug(bugId);
             //validate assignto user to reassign thebug
-            if (GetValidUser(AssignToUser))
+            if (IsValidUser(AssignToUser))
             {
                 //check for strict isolation ??
                 
@@ -247,20 +247,18 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return idProduct;
         }
 
-        private bool GetValidUser(string assignTo)
+        private bool IsValidUser(string userId)
         {
-            var req = new RestRequest("user/"+ assignTo, Method.GET);
+            var req = new RestRequest("user/"+ userId, Method.GET);
             var result = Client.Get(req);
             var response = JObject.Parse(result.Content);
-            //token for the Assign_to user 
-            TokenAssignToUser = response["users"][0]["id"].ToString();
 
-            if (result.StatusCode == System.Net.HttpStatusCode.NotFound)
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
             {
                 throw new Exception(response["message"].ToString());
             }
- 
-            return (result.StatusCode != System.Net.HttpStatusCode.NotFound);
+            
+            return result.StatusCode == System.Net.HttpStatusCode.OK;
         }
 
         private string SearchForComment(int iD)
