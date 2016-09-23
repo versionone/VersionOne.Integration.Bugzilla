@@ -175,7 +175,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                     req.AddParameter("remaining_time", 0);
                     req.AddParameter("resolution", resolution);
                 }
-               
+
+                req.AddParameter("assigned_to", bug.AssignedTo);
                 req.AddParameter("status", status);
                 req.AddParameter("token", Token);
 
