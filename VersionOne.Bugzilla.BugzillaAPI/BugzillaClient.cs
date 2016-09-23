@@ -59,7 +59,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			var result = Client.Get(req);
 
             var response = JObject.Parse(result.Content);
-            if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
+            if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
 
             var bugResponse = response["bugs"].First;
 
@@ -151,7 +151,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         {
             var response = false;
             var bug = GetBug(bugId);
-            //validate assignto user to reassign thebug
+
             if (IsValidUser(AssignToUser))
             {
                 //check for strict isolation ??
