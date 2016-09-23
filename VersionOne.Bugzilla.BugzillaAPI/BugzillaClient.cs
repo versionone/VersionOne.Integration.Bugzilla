@@ -158,8 +158,9 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 
                 bug.AssignedTo = AssignToUser;
 
-                //call change status
-                ChangeStatus(bug, Status.CONFIRMED.ToString());
+                var req = new RestRequest("bug/" + bug.ID, Method.PUT);
+                req.AddParameter("application/json", bug.GetReasignBugPayload(IntegrationUserToken), ParameterType.RequestBody);
+                Client.Put(req);
 
                 response = true;
             }

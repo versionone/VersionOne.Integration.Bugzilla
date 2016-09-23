@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
 {
-	public class Bug
+	public class Bug : IBug
 	{
 		public string ID { get; set; }
 		public string Name { get; set; }
@@ -20,7 +17,18 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         public List<JToken> DependesOn { get; set; }
         public string IsOpen { get; set; }
 
-    }
+	    public string GetReasignBugPayload(string integrationUserToken)
+	    {
+            JObject reassignBugPayload = new JObject();
+
+	        reassignBugPayload["assigned_to"] = AssignedTo;
+	        reassignBugPayload["status"] = BugzillaAPI.Status.CONFIRMED.ToString();
+	        reassignBugPayload["token"] = integrationUserToken;
+            
+            return reassignBugPayload.ToString();
+	    }
+
+	}
 
     public enum Status
     {   
