@@ -17,9 +17,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 		JEnumerable<JToken> Search(string searchQuery);
 
 		Bug GetBug(int bugId);
-
-        bool AcceptBug(int bugId);
-
+        
         bool AcceptBug(int bugId, string status);
 
 

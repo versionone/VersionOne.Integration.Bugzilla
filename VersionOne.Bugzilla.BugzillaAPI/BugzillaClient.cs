@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -114,13 +113,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             return true;
         }
-
-        public bool AcceptBug(int bugId)
-        {
-            return true;
-        }
-
-
 
         //<CreateFieldId>cf_versiononestate</CreateFieldId>
         //<CreateFieldValue>New</CreateFieldValue>
