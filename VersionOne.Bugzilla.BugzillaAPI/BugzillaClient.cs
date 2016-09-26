@@ -159,7 +159,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 bug.AssignedTo = AssignToUser;
 
                 var req = new RestRequest("bug/" + bug.ID, Method.PUT);
-                req.AddParameter("application/json", bug.GetReasignBugPayload(IntegrationUserToken), ParameterType.RequestBody);
+                req.AddParameter("application/json", bug.GetReassignBugPayload(IntegrationUserToken), ParameterType.RequestBody);
                 Client.Put(req);
 
                 response = true;

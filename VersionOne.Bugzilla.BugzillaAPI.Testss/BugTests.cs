@@ -24,7 +24,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
             var integrationUser = "terry.densmore@versionone.com";
             _bug.AssignedTo = "denise@denise.com";
 
-            Assert.IsTrue(_expectedReassignToPayload == _bug.GetReasignBugPayload(integrationUser));
+            Assert.IsTrue(_expectedReassignToPayload == _bug.GetReassignBugPayload(integrationUser));
         }
 
     }
