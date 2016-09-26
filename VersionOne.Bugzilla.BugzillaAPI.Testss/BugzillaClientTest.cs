@@ -4,56 +4,57 @@ using System;
 
 namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 {
-	[TestClass()]
-	public class BugzillaClientTest
-	{
+    [TestClass()]
+    public class BugzillaClientTest
+    {
 
-	    private IBugzillaClient _client;
-	    private string _loggedInUserToken;
+        private IBugzillaClient _client;
+        private string _loggedInUserToken;
 
-	    [TestInitialize()]
-	    public void SetContext()
-	    {
+        [TestInitialize()]
+        public void SetContext()
+        {
             _client = new BugzillaClient("http://184.170.227.113/bugzilla/rest/");
-            _loggedInUserToken =_client.Login("terry.densmore@versionone.com", "admin1425");
+            _loggedInUserToken = _client.Login("terry.densmore@versionone.com", "admin1425");
         }
 
         [TestMethod]
-		public void when_calling_login_it_should_respond_with_a_token()
+        public void when_calling_login_it_should_respond_with_a_token()
         {
             Assert.IsNotNull(_loggedInUserToken);
         }
 
-		[TestMethod]
-		public void when_calling_search_it_should_respond_with_bug_collection()
-		{
-			string searchCriteria = "email1=terry.densmore%40versionone.com&emailassigned_to1=1&emailtype1=equals&product=TestProduct&query_format=advanced&resolution=---&known_name=AssignedBugs";
-			var response = _client.Search(searchCriteria);
+        [TestMethod]
+        public void when_calling_search_it_should_respond_with_bug_collection()
+        {
+            string searchCriteria =
+                "email1=terry.densmore%40versionone.com&emailassigned_to1=1&emailtype1=equals&product=TestProduct&query_format=advanced&resolution=---&known_name=AssignedBugs";
+            var response = _client.Search(searchCriteria);
 
-			var count = response.Count();
-			Assert.IsNotNull(count);
-		}
+            var count = response.Count();
+            Assert.IsNotNull(count);
+        }
 
-		[TestMethod]
-		public void when_calling_get_bug_it_should_return_a_bug()
-		{
-			int ID = 7;
-			Bug bug = _client.GetBug(ID);
+        [TestMethod]
+        public void when_calling_get_bug_it_should_return_a_bug()
+        {
+            int ID = 7;
+            Bug bug = _client.GetBug(ID);
 
-			Assert.IsNotNull(bug);
-		}
+            Assert.IsNotNull(bug);
+        }
 
-		[TestMethod, Ignore]
-		public void when_calling_status_exists_it_should_return_true()
-		{
-			int ID = 7;
-			string status = "CONFIRMED";
-		//	bool exists = _client.StatusExists(status);
+        [TestMethod, Ignore]
+        public void when_calling_status_exists_it_should_return_true()
+        {
+            int ID = 7;
+            string status = "CONFIRMED";
+            //	bool exists = _client.StatusExists(status);
 
-		//	Assert.IsTrue(exists);
-		}
+            //	Assert.IsTrue(exists);
+        }
 
-		[TestMethod]
+        [TestMethod]
         public void when_calling_accept_bug_the_status_change()
         {
             int ID = 7;
@@ -78,31 +79,48 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
             {
                 Assert.IsTrue(ex.Message == "Bug #9999 does not exist.");
             }
-           
+
         }
 
         [TestMethod]
-        public void when_calling_change_status_the_bug_status_should_change()
+        public void when_calling_resolve_bug_the_bug_status_should_change()
         {
             int ID = 7;
             string status = "RESOLVED";
             string resolution = "FIXED";
             Bug bug = _client.GetBug(ID);
             _client.ResolveBug(Int32.Parse(bug.ID), resolution);
-                      
+
             bug = _client.GetBug(ID);
 
             Assert.AreEqual(bug.Status, status);
         }
 
+        [TestMethod]
+        public void when_calling_resolve_bug_the_bug_should_get_a_comment()
+        {
+            int bugId = 25;
+            string resolution = "FIXED";
+            string expectedComment = $"Resolution has changed to {resolution} by VersionOne";
+
+            Bug bug = _client.GetBug(bugId);
+            _client.ResolveBug(Int32.Parse(bug.ID), resolution);
+
+            var comments = _client.GetComments(bugId);
+
+            Assert.IsTrue(comments.First().Text == expectedComment);
+        }
+
+
+
         [TestMethod, Ignore]
         public void when_calling_user_can_edit_the_user_should_be_able_to_do_it()
         {
             int ID = 7;
-         
+
             Bug bug = _client.GetBug(ID);
 
-          //  Assert.IsTrue(_client.UserCanEdit(bug));
+            //  Assert.IsTrue(_client.UserCanEdit(bug));
         }
 
         [TestMethod, Ignore]
@@ -113,7 +131,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 
             Bug bug = _client.GetBug(ID);
 
-          //  Assert.AreEqual(_client.findProductId(bug), product_id);
+            //  Assert.AreEqual(_client.findProductId(bug), product_id);
         }
 
         [TestMethod]
@@ -129,8 +147,25 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 
             bug = _client.GetBug(ID);
 
-            Assert.AreEqual(bug.AssignedTo,AssignedToUser);
+            Assert.AreEqual(bug.AssignedTo, AssignedToUser);
         }
 
+
+        [TestMethod]
+        public void when_calling_accept_bug_it_should_change_the_status()
+        {
+            int ID = 25;
+
+            Bug bug = _client.GetBug(ID);
+
+            var newBugStatus = "IN_PROGRESS";
+
+            _client.AcceptBug(Int32.Parse(bug.ID), newBugStatus);
+
+            bug = _client.GetBug(ID);
+
+            Assert.AreEqual(bug.Status, newBugStatus);
+        }
+        
     }
 }

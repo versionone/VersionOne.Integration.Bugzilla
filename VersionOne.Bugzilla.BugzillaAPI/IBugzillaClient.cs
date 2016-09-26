@@ -17,8 +17,10 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 		JEnumerable<JToken> Search(string searchQuery);
 
 		Bug GetBug(int bugId);
-        
-        bool AcceptBug(int bugId, string status);
+
+        IList<IComment> GetComments(int bugId);
+
+        bool AcceptBug(int bugId, string newBugStatus);
 
 
         bool UpdateBug(int bugId, string fieldName, string fieldValue);
@@ -29,7 +31,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
     }
 
-	public interface IBugzillaClientFactory
+    public interface IBugzillaClientFactory
 	{
 		IBugzillaClient CreateNew(string url);
 	}

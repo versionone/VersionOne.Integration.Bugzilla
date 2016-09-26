@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -81,8 +82,23 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return bug;
 
 		}
- 
-        public bool AcceptBug(int bugId, string status)
+
+	    public IList<IComment> GetComments(int bugId)
+	    {
+            var req = new RestRequest("bug/" + bugId + "/comment", Method.GET);
+            req.AddParameter("token", IntegrationUserToken);
+
+            var result = Client.Post(req);
+
+            var response = JObject.Parse(result.Content);
+
+            if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
+
+            return new List<IComment>();
+
+        }
+
+	    public bool AcceptBug(int bugId, string newBugStatus)
         {
             //validate id
             var bug = GetBug(bugId);
@@ -90,9 +106,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             //if bug.target_milestone is empty
                 //throws user errror
 
-            //status can be CONFIRMED, IN_PROGRESS, RESOLVED 
-            // or any value defined on the status combo
-           // ChangeStatus(bug, status); //
+           ChangeStatus(bug, newBugStatus);
            
             return true;
         }
@@ -168,8 +182,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                     req.AddParameter("remaining_time", 0);
                     req.AddParameter("resolution", resolution);
                 }
-
-                req.AddParameter("assigned_to", bug.AssignedTo);
+                
                 req.AddParameter("status", status);
                 req.AddParameter("token", IntegrationUserToken);
 
@@ -177,20 +190,18 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
                 var response = JObject.Parse(result.Content);
 
-                if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
+                if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
 
                 if (HasResolution(resolution))
                 {
-                    CreateComment(bug, resolution);
+                    var comment = $"Resolution has changed to {resolution} by VersionOne";
+                    CreateComment(bug, comment);
                 }
-
-                //var response = JObject.Parse(result.Content)["bugs"];
             }
         }
 
         private void CreateComment(Bug bug, string comment)
         {
-            //need to be ordered asc way ??
             var req = new RestRequest("bug/" + bug.ID + "/comment", Method.POST);
             req.AddParameter("token", IntegrationUserToken);
             req.AddParameter("comment", comment);
@@ -198,8 +209,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var result = Client.Post(req);
 
             var response = JObject.Parse(result.Content);
-            if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
 
+            if (result.StatusCode != System.Net.HttpStatusCode.Created) throw new Exception(response["message"].ToString());
         }
 
         private bool HasOpenDependencies(Bug bug)
@@ -226,7 +237,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 return true;
             }
 
-            return false;
+            throw new Exception($"Could not find the status {status}. Please check this status exists in Bugzilla.");
+            
         }
         
         private int findProductId(Bug bug)
