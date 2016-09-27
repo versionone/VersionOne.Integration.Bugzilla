@@ -99,18 +99,16 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
         [TestMethod]
         public void when_calling_resolve_bug_the_bug_should_get_a_comment()
         {
-            int bugId = 25;
+            int bugId = 26;
             string resolution = "FIXED";
             string expectedComment = $"Resolution has changed to {resolution} by VersionOne";
 
-            Bug bug = _client.GetBug(bugId);
-            _client.ResolveBug(Int32.Parse(bug.ID), resolution);
+            _client.ResolveBug(bugId , resolution);
 
             var comments = _client.GetComments(bugId);
 
             Assert.IsTrue(comments.First().Text == expectedComment);
         }
-
 
 
         [TestMethod, Ignore]
@@ -141,11 +139,9 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 
             var AssignedToUser = "denise@denise.com";
 
+            _client.ReassignBug(ID, AssignedToUser);
+
             Bug bug = _client.GetBug(ID);
-
-            _client.ReassignBug(Int32.Parse(bug.ID), AssignedToUser);
-
-            bug = _client.GetBug(ID);
 
             Assert.AreEqual(bug.AssignedTo, AssignedToUser);
         }
@@ -156,16 +152,24 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
         {
             int ID = 25;
 
-            Bug bug = _client.GetBug(ID);
-
             var newBugStatus = "IN_PROGRESS";
 
-            _client.AcceptBug(Int32.Parse(bug.ID), newBugStatus);
+            _client.AcceptBug(ID, newBugStatus);
 
-            bug = _client.GetBug(ID);
+            Bug bug = _client.GetBug(ID);
 
             Assert.AreEqual(bug.Status, newBugStatus);
         }
-        
+
+
+        [TestMethod]
+        public void when_calling_gets_comments_it_should_returns_all_the_comments_for_the_bug()
+        {
+            int ID = 25;
+            
+            var list = _client.GetComments(ID);
+
+            Assert.IsNotNull(list);
+        }
     }
 }

@@ -88,7 +88,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var req = new RestRequest("bug/" + bugId + "/comment", Method.GET);
             req.AddParameter("token", IntegrationUserToken);
 
-            var result = Client.Post(req);
+            var result = Client.Get(req);
 
             var response = JObject.Parse(result.Content);
 
