@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace VersionOne.Bugzilla.BugzillaAPI.Testss
+namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 {
     [TestClass()]
     public class BugzillaClientTest
