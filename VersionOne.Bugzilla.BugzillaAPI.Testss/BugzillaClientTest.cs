@@ -174,5 +174,21 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
             
             Assert.AreEqual(expectedValue, fieldValue);
         }
+
+        [TestMethod]
+        public void when_udpateing_a_bug_field_the_field_gets_its_new_value()
+        {
+            var fieldName = "summary";
+            var fieldValue = "Today is a good day.";
+            var expectedValue = fieldValue;
+
+            var bugId = 25;
+
+            _client.UpdateBug(bugId, fieldName, fieldValue);
+
+            var bug = _client.GetBug(bugId);
+
+            Assert.AreEqual(expectedValue, bug.Name);
+        }
     }
 }

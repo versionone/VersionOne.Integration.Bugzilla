@@ -153,18 +153,16 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         public bool UpdateBug(int bugId, string fieldName, string fieldValue)
         {
-            //validate bug
-            //my $f = new Bugzilla::Field({ name => $field });
+            var req = new RestRequest("bug/" + bugId, Method.PUT);
+            req.AddParameter(fieldName, fieldValue);
+            req.AddParameter("token", IntegrationUserToken);
 
-            //if obsolete??{
+            var result = Client.Put(req);
+            var response = JObject.Parse(result.Content);
 
-                //if field == FIELD_TYPE_SINGLE_SELECT{
-                  //checkfield
-           //     }
-              //  Updatefield
-         //       return true;
-           // }
-           return false;
+            if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
+            
+            return true;
         }
 
         public bool ReassignBug(int bugId, string AssignToUser)
