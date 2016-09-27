@@ -105,9 +105,9 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 
             _client.ResolveBug(bugId , resolution);
 
-            var comments = _client.GetComments(bugId);
+            var comment = _client.GetLastComment(bugId);
 
-            Assert.IsTrue(comments.First().Text == expectedComment);
+            Assert.IsTrue(comment.Text == expectedComment);
         }
 
 

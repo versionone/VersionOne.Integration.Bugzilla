@@ -18,7 +18,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 		Bug GetBug(int bugId);
 
-        IList<IComment> GetComments(int bugId);
+        IComment GetLastComment(int bugId);
 
         bool AcceptBug(int bugId, string newBugStatus);
 

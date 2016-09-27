@@ -83,19 +83,21 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 		}
 
-	    public IList<IComment> GetComments(int bugId)
+	    public IComment GetLastComment(int bugId)
 	    {
             var req = new RestRequest("bug/" + bugId + "/comment", Method.GET);
             req.AddParameter("token", IntegrationUserToken);
 
             var result = Client.Get(req);
-
+            
             var response = JObject.Parse(result.Content);
 
             if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
 
-            return new List<IComment>();
+            var responseComment = response["bugs"][$"{bugId}"]["comments"].ToList().Last();
+	        var lastComment = new Comment {Text = (string) responseComment["text"]};
 
+	        return lastComment;
         }
 
 	    public bool AcceptBug(int bugId, string newBugStatus)
