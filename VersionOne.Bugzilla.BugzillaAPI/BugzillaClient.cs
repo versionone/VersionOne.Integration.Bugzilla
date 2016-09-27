@@ -78,7 +78,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 IsOpen = bugResponse["is_open"].ToString(),
                 DependesOn = bugResponse["depends_on"].ToList()
 			};
-            bug.ProductId = findProductId(bug);
+            bug.ProductId = FindProductId(bug);
             return bug;
 
 		}
@@ -241,7 +241,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             
         }
         
-        private int findProductId(Bug bug)
+        private int FindProductId(Bug bug)
         {
             //look for the id of the product
             var reqId = new RestRequest("product/" + bug.Product, Method.GET);
