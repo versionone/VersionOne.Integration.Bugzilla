@@ -127,29 +127,17 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         public bool ResolveBug(int bugId, string resolution)
         {
-            //validate id
             var bug = GetBug(bugId);
-            //get dependecies
+            
             if (resolution.Equals(Resolution.FIXED.ToString()) && HasOpenDependencies(bug))
             {
                 throw new Exception(String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count, bugId));
             }
 
-            //status can be CONFIRMED, IN_PROGRESS, RESOLVED 
-            // or any value defined on the status combo
             ChangeStatus(bug, Status.RESOLVED.ToString(), resolution); //
 
             return true;
         }
-
-        //<CreateFieldId>cf_versiononestate</CreateFieldId>
-        //<CreateFieldValue>New</CreateFieldValue>
-
-        //DefectLinkFieldId --configuration.DefectLinkFieldName
-        //createdResult.Permalink --
-
-        //configuration.OnStateChangeFieldName-- CloseFieldId
-        //configuration.OnStateChangeFieldValue--CloseFieldValue
 
         public bool UpdateBug(int bugId, string fieldName, string fieldValue)
         {
@@ -188,7 +176,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         private void ChangeStatus(Bug bug, string status, string resolution="")
         {
-            if (StatusExists(status)) {
+            if (StatusExists(status))
+            {
                 var req = new RestRequest("bug/" + bug.ID, Method.PUT);
                 if (HasResolution(resolution)) {
                     req.AddParameter("remaining_time", 0);
