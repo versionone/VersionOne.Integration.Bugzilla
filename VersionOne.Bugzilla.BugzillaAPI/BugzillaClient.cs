@@ -63,7 +63,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             var bugResponse = response["bugs"].First;
 
-            var comment = SearchForComment(ID);
+            var comment = GetFirstComment(ID);
 
             var bug = new Bug
             {
@@ -268,14 +268,14 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return result.StatusCode == System.Net.HttpStatusCode.OK;
         }
 
-        private string SearchForComment(int iD)
+        private string GetFirstComment(int ID)
         {
             //need to be ordered asc way ??
-            var req = new RestRequest("bug/" + iD + "/comment", Method.GET);
+            var req = new RestRequest("bug/" + ID + "/comment", Method.GET);
             var result = Client.Get(req);
             var response = JObject.Parse(result.Content)["bugs"];
 
-            return response[iD.ToString()]["comments"][0]["text"].ToString();
+            return response[ID.ToString()]["comments"][0]["text"].ToString();
 
         }
 
