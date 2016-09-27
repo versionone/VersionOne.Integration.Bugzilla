@@ -83,6 +83,18 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 		}
 
+	    public string GetFieldValue(int bugId, string fieldName)
+	    {
+            var req = new RestRequest("bug/" + bugId, Method.GET);
+            var result = Client.Get(req);
+
+            var response = JObject.Parse(result.Content);
+
+	        var fieldValue = response["bugs"][0][fieldName].ToString();
+
+	        return fieldValue;
+	    }
+
 	    public IComment GetLastComment(int bugId)
 	    {
             var req = new RestRequest("bug/" + bugId + "/comment", Method.GET);

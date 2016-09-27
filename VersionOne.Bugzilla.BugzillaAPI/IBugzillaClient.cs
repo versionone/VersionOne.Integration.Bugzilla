@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
@@ -17,6 +15,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 		JEnumerable<JToken> Search(string searchQuery);
 
 		Bug GetBug(int bugId);
+
+        string GetFieldValue(int bugId, string fieldName);
 
         IComment GetLastComment(int bugId);
 

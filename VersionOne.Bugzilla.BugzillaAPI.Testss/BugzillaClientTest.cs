@@ -160,5 +160,19 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 
             Assert.AreEqual(bug.Status, newBugStatus);
         }
+
+
+        [TestMethod]
+        public void when_asking_for_a_bug_field_we_should_get_its_value()
+        {
+            var fieldName = "cf_versiononestate";
+            var expectedValue = "Closed";
+
+            var bugId = 24;
+
+            var fieldValue = _client.GetFieldValue(bugId, fieldName);
+            
+            Assert.AreEqual(expectedValue, fieldValue);
+        }
     }
 }
