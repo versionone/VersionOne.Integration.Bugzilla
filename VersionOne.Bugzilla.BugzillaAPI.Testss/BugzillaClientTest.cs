@@ -160,16 +160,5 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 
             Assert.AreEqual(bug.Status, newBugStatus);
         }
-
-
-        [TestMethod]
-        public void when_calling_gets_comments_it_should_returns_all_the_comments_for_the_bug()
-        {
-            int ID = 25;
-            
-            var list = _client.GetComments(ID);
-
-            Assert.IsNotNull(list);
-        }
     }
 }
