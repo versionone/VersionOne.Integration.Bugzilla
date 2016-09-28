@@ -40,7 +40,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 		public JEnumerable<JToken> Search(string searchQuery)
 		{
-			var req = new RestRequest("bug?" + searchQuery, Method.GET);
+            //Ignore certificate if config is set.
+          //  if (ignoreCert)
+            //    System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            var req = new RestRequest("bug?" + searchQuery, Method.GET);
 			//req.AddHeader("Authorization", "Basic" + IntegrationUserToken);
 			req.AddParameter("token", IntegrationUserToken);
 
@@ -253,7 +257,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return idProduct;
         }
 
-        private bool IsValidUser(string userId)
+        public bool IsValidUser(string userId)
         {
             var req = new RestRequest("user/"+ userId, Method.GET);
             var result = Client.Get(req);
