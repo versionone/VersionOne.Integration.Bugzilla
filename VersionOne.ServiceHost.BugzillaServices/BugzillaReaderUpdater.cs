@@ -1,8 +1,11 @@
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using VersionOne.Bugzilla.XmlRpcProxy;
+using VersionOne.Bugzilla.BugzillaAPI;
 using VersionOne.ServiceHost.Core.Logging;
+
 using VersionOne.ServiceHost.WorkitemServices;
 using MappingInfo = VersionOne.ServiceHost.Core.Configuration.MappingInfo;
 
@@ -24,25 +27,46 @@ namespace VersionOne.ServiceHost.BugzillaServices
         public List<Defect> GetBugs() 
         {
             var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
+            //var bugzillaClient = new BugzillaClient(configuration.Url);
 
-            var ids = bugzillaClient.LoginSearch(configuration.UserName, configuration.Password, true, configuration.OpenIssueFilterId, configuration.IgnoreCert);
-            var defects = new List<Defect>(ids.Count);
+            var ids = bugzillaClient.Search(configuration.OpenIssueFilterId);
+            
+            //var bugs = bugzillaClient.Search(configuration.OpenIssueFilterId);
+            // var ids = bugzillaClient.LoginSearch(configuration.UserName, configuration.Password, true, configuration.OpenIssueFilterId, configuration.IgnoreCert);
+            
+            //creates a list of defects
+            var defects = new List<Defect>(ids.Count());
 
-            foreach (var id in ids) 
+            //foreach (var id in ids) 
+            foreach (JToken id in ids)
             {
-                var bug = bugzillaClient.GetBug(id);
-            	var product = bugzillaClient.GetProduct(bug.ProductID);
-            	var user = bugzillaClient.GetUser(bug.AssignedToID);
 
-                var projectMapping = ResolveVersionOneProjectMapping(product.Name);
+                //get bug id from bug
+                var bug = bugzillaClient.GetBug(id.Value<int>());
+
+                //get product definition from bug
+               // var product = bugzillaClient.GetProduct(bug.ProductID);
+                //get user info from bug
+               // var user = bugzillaClient.GetUser(bug.AssignedToID);
+
+
+                var projectMapping = ResolveVersionOneProjectMapping(bug.Product);
+                //var projectMapping = ResolveVersionOneProjectMapping(product.Name);
+
                 var priorityMapping = ResolveVersionOnePriorityMapping(bug.Priority);
 
-                var defect = new Defect(bug.Name, bug.Description, projectMapping.Name, user.Login) 
+
+
+                //var defect = new Defect(bug.Name, bug.Description, projectMapping.Name, user.Login) 
+                //    { ExternalId = bug.ID.ToString(CultureInfo.InvariantCulture),
+                //      ProjectId = projectMapping.Id };
+                var defect = new Defect(bug.Name, bug.Description, bug.Product, bug.AssignedTo)
                     { ExternalId = bug.ID.ToString(CultureInfo.InvariantCulture),
                       ProjectId = projectMapping.Id };
 
+
                 // If the BugzillaBugUrlTemplate tag of the config file is set, then build a URL to the issue in Bugzilla.
-				if (!string.IsNullOrEmpty(configuration.UrlTemplateToIssue) && !string.IsNullOrEmpty(configuration.UrlTitleToIssue)) 
+                if (!string.IsNullOrEmpty(configuration.UrlTemplateToIssue) && !string.IsNullOrEmpty(configuration.UrlTitleToIssue)) 
                 {
 					defect.ExternalLink = new UrlToExternalSystem(configuration.UrlTemplateToIssue.Replace("#key#", bug.ID.ToString()), configuration.UrlTitleToIssue);
 				}
@@ -50,24 +74,27 @@ namespace VersionOne.ServiceHost.BugzillaServices
                 if (priorityMapping != null) 
                 {
                     defect.Priority = priorityMapping.Id;
-                } 
-                
-                logger.Log(string.Format("Product: ({0}) Bug: ({1}) Defect: ({2}) AssignedTo: ({3})", product, bug, defect, user));
+                }
+
+                logger.Log(string.Format("Product: ({0}) Bug: ({1}) Defect: ({2}) AssignedTo: ({3})", bug.Product, bug, defect, bug.AssignedTo));
+                //logger.Log(string.Format("Product: ({0}) Bug: ({1}) Defect: ({2}) AssignedTo: ({3})", product, bug, defect, user));
 				defects.Add(defect);
             }
 
-            bugzillaClient.Logout();
+            //bugzillaClient.Logout();
 			return defects;
 		}
 
 		public void OnDefectCreated(WorkitemCreationResult createdResult) 
         {
 			var bugId = int.Parse(createdResult.Source.ExternalId);
-			var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
 
-            bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
+            var bugzillaClient = new BugzillaClient(configuration.Url);
+            //var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
 
-			if (configuration.OnCreateAccept && !bugzillaClient.AcceptBug(bugId, configuration.OnCreateResolveValue)) 
+            //bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
+
+            if (configuration.OnCreateAccept && !bugzillaClient.AcceptBug(bugId, configuration.OnCreateResolveValue)) 
             {
 				logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to accept bug {0}.", bugId));
 			}
@@ -94,7 +121,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 			}
 
             ResolveBugIfRequired(configuration.OnCreateResolveValue, bugId, bugzillaClient);
-			bugzillaClient.Logout();
+			//bugzillaClient.Logout();
 		}
 
         private void ResolveBugIfRequired(string resolution, int bugId, IBugzillaClient client) 
@@ -106,11 +133,14 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
             try 
             {
-                if(!client.ResolveBug(bugId, resolution, string.Empty)) 
-                {
+                //if(!client.ResolveBug(bugId, resolution, string.Empty))
+                if (!client.ResolveBug(bugId, resolution))
+                    {
                     logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to resolve bug to {0}.", resolution));
                 }
-            } catch(BugzillaException ex) 
+                //} catch(BugzillaException ex) 
+            }
+            catch (Exception ex)
             {
                 logger.Log(LogMessage.SeverityType.Error, "Failed to resolve bug: " + ex.InnerException.Message);
             }
@@ -119,10 +149,12 @@ namespace VersionOne.ServiceHost.BugzillaServices
 		public bool OnDefectStateChange(WorkitemStateChangeResult stateChangeResult) 
         {
 			logger.Log(LogMessage.SeverityType.Debug, stateChangeResult.ToString());
-			var bugId = int.Parse(stateChangeResult.ExternalId);
-			var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
 
-            bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
+			var bugId = int.Parse(stateChangeResult.ExternalId);
+
+            var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
+
+            //bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
 
             // We do not need to push changes to Defects that have been processed as we could break their state.
             if(SkipCloseActions(bugId, bugzillaClient)) 
@@ -153,7 +185,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 			}
 
             ResolveBugIfRequired(configuration.OnStateChangeResolveValue, bugId, bugzillaClient);
-			bugzillaClient.Logout();
+			//bugzillaClient.Logout();
 			return true;
 		}
 
@@ -173,13 +205,15 @@ namespace VersionOne.ServiceHost.BugzillaServices
             
             if(!string.IsNullOrEmpty(reassignValue)) 
             {
-                var bug = client.GetBug(bugId);
-                var user = client.GetUser(bug.AssignedToID);
-                
-                if(!string.IsNullOrEmpty(user.Login) && user.Login.Equals(reassignValue)) 
-                {
-                    return true;
-                }
+                //valid the AssignTo user
+
+                return client.IsValidUser(reassignValue);
+                //var bug = client.GetBug(bugId);
+                //var user = client.GetUser(bug.AssignedToID);
+                //if(!string.IsNullOrEmpty(user.Login) && user.Login.Equals(reassignValue)) 
+                //{
+                //    return ;
+                // }
             }
 
             return false;
