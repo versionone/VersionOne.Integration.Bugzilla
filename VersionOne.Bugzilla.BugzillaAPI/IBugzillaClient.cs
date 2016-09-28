@@ -29,6 +29,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         bool ReassignBug(int bugId, string assignTo);
 
+        bool IsValidUser(string userId);
+
     }
 
     public interface IBugzillaClientFactory
