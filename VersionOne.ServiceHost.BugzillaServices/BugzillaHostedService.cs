@@ -16,7 +16,7 @@ namespace VersionOne.ServiceHost.BugzillaServices {
         private IEventManager eventManager;
         private string sourceFieldValue;
         private ILogger logger;
-        private readonly IBugzillaClientFactory bugzillaClientFactory;
+        private IBugzillaClientFactory bugzillaClientFactory;
 
         private const string ProjectMappingsNode = "ProjectMappings";
         private const string PriorityMappingsNode = "PriorityMappings";
@@ -37,6 +37,7 @@ namespace VersionOne.ServiceHost.BugzillaServices {
 
             this.eventManager = eventManager;
             logger = new Logger(eventManager);
+            bugzillaClientFactory = new BugzillaClientFactory();
 
             var readerUpdater = new BugzillaReaderUpdater(bugzillaConfig, bugzillaClientFactory, logger);
             bugzillaReader = readerUpdater;
