@@ -190,5 +190,17 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 
             Assert.AreEqual(expectedValue, bug.Name);
         }
+
+        [TestMethod]
+        public void when_serching_for_bugs_assigned_to_integration_user_we_should_get_a_list_of_ids_as_ints()
+        {
+            var queryString = "email1=terry.densmore%40versionone.com&emailassigned_to1=1&emailtype1=equals&query_format=advanced&resolution=---&known_name=Assigned%20Bugs";
+            
+            var ids =  _client.Search(queryString);
+
+            var firstId = ids.First();
+
+            Assert.IsTrue(ids.Count > 0);
+        }
     }
 }

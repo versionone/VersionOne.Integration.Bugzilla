@@ -2,6 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using System.Collections.Generic;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
 {
@@ -37,23 +38,17 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			return IntegrationUserToken;
 		}
 
-		public JEnumerable<JToken> Search(string searchQuery)
+		public List<int> Search(string searchQuery)
 		{
-            //Ignore certificate if config is set.
-          //  if (ignoreCert)
-            //    System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
             var req = new RestRequest("bug?" + searchQuery, Method.GET);
-			//req.AddHeader("Authorization", "Basic" + IntegrationUserToken);
-			req.AddParameter("token", IntegrationUserToken);
 
 			var result = Client.Get(req);
 
 			var response = JObject.Parse(result.Content);
             
             if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
-
-            return response["bugs"].Children();
+            var bugIds = response["bugs"].Select(bug => (int)bug["id"]).ToList();
+            return bugIds;
 		}
 
 		public Bug GetBug(int ID)

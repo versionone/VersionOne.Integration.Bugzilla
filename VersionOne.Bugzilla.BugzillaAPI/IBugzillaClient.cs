@@ -1,5 +1,5 @@
-using Newtonsoft.Json.Linq;
 using RestSharp;
+using System.Collections.Generic;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
 {
@@ -12,7 +12,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 		string Login(string username, string password);
 
-		JEnumerable<JToken> Search(string searchQuery);
+		List<int> Search(string searchQuery);
 
 		Bug GetBug(int bugId);
 
@@ -21,8 +21,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         IComment GetLastComment(int bugId);
 
         bool AcceptBug(int bugId, string newBugStatus);
-
-
+        
         bool UpdateBug(int bugId, string fieldName, string fieldValue);
 
         bool ResolveBug(int bugId, string resolution);
@@ -32,6 +31,5 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         bool IsValidUser(string userId);
 
     }
-
- 
+    
 }
