@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,43 +26,23 @@ namespace VersionOne.ServiceHost.BugzillaServices
         public List<Defect> GetBugs() 
         {
             var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
-            //var bugzillaClient = new BugzillaClient(configuration.Url);
+            bugzillaClient.Login(configuration.UserName, configuration.Password);
 
             var ids = bugzillaClient.Search(configuration.OpenIssueFilterId);
-            
-            //var bugs = bugzillaClient.Search(configuration.OpenIssueFilterId);
-            // var ids = bugzillaClient.LoginSearch(configuration.UserName, configuration.Password, true, configuration.OpenIssueFilterId, configuration.IgnoreCert);
-            
-            //creates a list of defects
+
             var defects = new List<Defect>(ids.Count());
 
-            //foreach (var id in ids) 
-            foreach (JToken id in ids)
+            foreach (int id in ids)
             {
-
-                //get bug id from bug
-                var bug = bugzillaClient.GetBug(id.Value<int>());
-
-                //get product definition from bug
-               // var product = bugzillaClient.GetProduct(bug.ProductID);
-                //get user info from bug
-               // var user = bugzillaClient.GetUser(bug.AssignedToID);
-
+                var bug = bugzillaClient.GetBug(id);
 
                 var projectMapping = ResolveVersionOneProjectMapping(bug.Product);
-                //var projectMapping = ResolveVersionOneProjectMapping(product.Name);
-
+                
                 var priorityMapping = ResolveVersionOnePriorityMapping(bug.Priority);
 
-
-
-                //var defect = new Defect(bug.Name, bug.Description, projectMapping.Name, user.Login) 
-                //    { ExternalId = bug.ID.ToString(CultureInfo.InvariantCulture),
-                //      ProjectId = projectMapping.Id };
                 var defect = new Defect(bug.Name, bug.Description, bug.Product, bug.AssignedTo)
                     { ExternalId = bug.ID.ToString(CultureInfo.InvariantCulture),
                       ProjectId = projectMapping.Id };
-
 
                 // If the BugzillaBugUrlTemplate tag of the config file is set, then build a URL to the issue in Bugzilla.
                 if (!string.IsNullOrEmpty(configuration.UrlTemplateToIssue) && !string.IsNullOrEmpty(configuration.UrlTitleToIssue)) 
@@ -77,34 +56,30 @@ namespace VersionOne.ServiceHost.BugzillaServices
                 }
 
                 logger.Log(string.Format("Product: ({0}) Bug: ({1}) Defect: ({2}) AssignedTo: ({3})", bug.Product, bug, defect, bug.AssignedTo));
-                //logger.Log(string.Format("Product: ({0}) Bug: ({1}) Defect: ({2}) AssignedTo: ({3})", product, bug, defect, user));
-				defects.Add(defect);
+                defects.Add(defect);
             }
 
-            //bugzillaClient.Logout();
-			return defects;
+            return defects;
 		}
 
 		public void OnDefectCreated(WorkitemCreationResult createdResult) 
         {
 			var bugId = int.Parse(createdResult.Source.ExternalId);
 
-            var bugzillaClient = new BugzillaClient(configuration.Url);
-            //var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
-
-            //bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
-
+            var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
+            bugzillaClient.Login(configuration.UserName, configuration.Password);
+            
             if (configuration.OnCreateAccept && !bugzillaClient.AcceptBug(bugId, configuration.OnCreateResolveValue)) 
             {
 				logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to accept bug {0}.", bugId));
 			}
 
-			if (!string.IsNullOrEmpty(configuration.OnCreateFieldName) && !bugzillaClient.UpdateBug(bugId, configuration.OnCreateFieldName, configuration.OnCreateFieldValue)) 
+            if (!string.IsNullOrEmpty(configuration.OnCreateFieldName) && !bugzillaClient.UpdateBug(bugId, configuration.OnCreateFieldName, configuration.OnCreateFieldValue)) 
             {
     			logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to set {0} to {1}.", configuration.OnCreateFieldName, configuration.OnCreateFieldValue));
 			}
 
-			if (!string.IsNullOrEmpty(configuration.DefectLinkFieldName)) 
+            if (!string.IsNullOrEmpty(configuration.DefectLinkFieldName)) 
             {
 				if (!bugzillaClient.UpdateBug(bugId, configuration.DefectLinkFieldName, createdResult.Permalink)) 
                 {
@@ -112,7 +87,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 				}
 			}
 
-			if (!string.IsNullOrEmpty(configuration.OnCreateReassignValue)) 
+            if (!string.IsNullOrEmpty(configuration.OnCreateReassignValue)) 
             {
 				if (!bugzillaClient.ReassignBug(bugId, configuration.OnCreateReassignValue)) 
                 {
@@ -121,7 +96,6 @@ namespace VersionOne.ServiceHost.BugzillaServices
 			}
 
             ResolveBugIfRequired(configuration.OnCreateResolveValue, bugId, bugzillaClient);
-			//bugzillaClient.Logout();
 		}
 
         private void ResolveBugIfRequired(string resolution, int bugId, IBugzillaClient client) 
@@ -133,12 +107,10 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
             try 
             {
-                //if(!client.ResolveBug(bugId, resolution, string.Empty))
                 if (!client.ResolveBug(bugId, resolution))
-                    {
+                {
                     logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to resolve bug to {0}.", resolution));
                 }
-                //} catch(BugzillaException ex) 
             }
             catch (Exception ex)
             {
@@ -154,10 +126,10 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
             var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
 
-            //bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
-
+            bugzillaClient.Login(configuration.UserName, configuration.Password);
+            
             // We do not need to push changes to Defects that have been processed as we could break their state.
-            if(SkipCloseActions(bugId, bugzillaClient)) 
+            if (SkipCloseActions(bugId, bugzillaClient)) 
             {
                 logger.Log(LogMessage.SeverityType.Info, string.Format("Defect {0} has already been processed, check CloseFieldId and CloseReassignValue.", bugId));
                 return true;
@@ -185,17 +157,17 @@ namespace VersionOne.ServiceHost.BugzillaServices
 			}
 
             ResolveBugIfRequired(configuration.OnStateChangeResolveValue, bugId, bugzillaClient);
-			//bugzillaClient.Logout();
-			return true;
+
+            return true;
 		}
 
         private bool SkipCloseActions(int bugId, IBugzillaClient client) 
         {
-            if(!string.IsNullOrEmpty(configuration.OnStateChangeFieldName)) 
+            if (!string.IsNullOrEmpty(configuration.OnStateChangeFieldName))
             {
                 var fieldValue = client.GetFieldValue(bugId, configuration.OnStateChangeFieldName);
-                
-                if(fieldValue.Equals(configuration.OnStateChangeFieldValue)) 
+
+                if (fieldValue.Equals(configuration.OnStateChangeFieldValue)) 
                 {
                     return true;
                 }
@@ -205,15 +177,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
             
             if(!string.IsNullOrEmpty(reassignValue)) 
             {
-                //valid the AssignTo user
-
                 return client.IsValidUser(reassignValue);
-                //var bug = client.GetBug(bugId);
-                //var user = client.GetUser(bug.AssignedToID);
-                //if(!string.IsNullOrEmpty(user.Login) && user.Login.Equals(reassignValue)) 
-                //{
-                //    return ;
-                // }
             }
 
             return false;
