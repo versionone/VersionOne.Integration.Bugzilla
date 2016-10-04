@@ -58,6 +58,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\VersionOne.Bugzilla.BugzillaAPI\VersionOne.Bugzilla.BugzillaAPI.csproj">
+      <Project>{bf7d1a4e-ca52-4263-b7b9-403396613490}</Project>
+      <Name>VersionOne.Bugzilla.BugzillaAPI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VersionOne.Bugzilla.XmlRpcProxy\VersionOne.Bugzilla.XmlRpcProxy.csproj">
       <Project>{9f8c4aa1-00cb-4640-9764-7691230c1ee5}</Project>
       <Name>VersionOne.Bugzilla.XmlRpcProxy</Name>

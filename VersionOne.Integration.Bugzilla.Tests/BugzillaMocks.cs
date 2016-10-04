@@ -1,5 +1,5 @@
 using Rhino.Mocks;
-using VersionOne.Bugzilla.XmlRpcProxy;
+using VersionOne.Bugzilla.BugzillaAPI;
 using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
