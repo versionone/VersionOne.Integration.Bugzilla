@@ -176,7 +176,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         }
 
         [TestMethod]
-        public void when_udpateing_a_bug_field_the_field_gets_its_new_value()
+        public void when_udpating_a_bug_field_the_field_gets_its_new_value()
         {
             var fieldName = "summary";
             var fieldValue = "Today is a good day.";
