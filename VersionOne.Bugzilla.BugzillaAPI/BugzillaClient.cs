@@ -3,6 +3,7 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Collections.Generic;
+using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
 {
@@ -23,7 +24,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         public string Login(string username, string password)
 		{
 			var req = new RestRequest("login?{login}{password}",Method.GET);
-
+            
 			req.AddParameter("login", username);
 			req.AddParameter("password", password);
 
@@ -116,7 +117,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var bug = GetBug(bugId);
 
             //if bug.target_milestone is empty
-                //throws user errror
+            //throws user errror
 
            ChangeStatus(bug, newBugStatus);
            
@@ -126,13 +127,13 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         public bool ResolveBug(int bugId, string resolution)
         {
             var bug = GetBug(bugId);
-            
+
             if (resolution.Equals(Resolution.FIXED.ToString()) && HasOpenDependencies(bug))
             {
                 throw new Exception(String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count, bugId));
             }
-
-            ChangeStatus(bug, Status.RESOLVED.ToString(), resolution); //
+            
+             ChangeStatusAndResolve(bug, Status.RESOLVED.ToString(), resolution);
 
             return true;
         }
@@ -172,16 +173,34 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return response;
         }
 
-        private void ChangeStatus(Bug bug, string status, string resolution="")
+        private void ChangeStatus(Bug bug, string status)
         {
             if (StatusExists(status))
             {
                 var req = new RestRequest("bug/" + bug.ID, Method.PUT);
-                if (HasResolution(resolution)) {
+
+                req.AddParameter("status", status);
+                req.AddParameter("token", IntegrationUserToken);
+
+                var result = Client.Put(req);
+
+                var response = JObject.Parse(result.Content);
+
+                if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
+            }
+        }
+
+        private void ChangeStatusAndResolve(Bug bug, string status,  string resolution)
+        {
+            if (StatusExists(status))
+            {
+                var req = new RestRequest("bug/" + bug.ID, Method.PUT);
+                if (HasResolution(resolution))
+                {
                     req.AddParameter("remaining_time", 0);
                     req.AddParameter("resolution", resolution);
                 }
-                
+
                 req.AddParameter("status", status);
                 req.AddParameter("token", IntegrationUserToken);
 
@@ -198,6 +217,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 }
             }
         }
+
 
         private void CreateComment(Bug bug, string comment)
         {
