@@ -94,8 +94,6 @@ namespace VersionOne.ServiceHost.BugzillaServices
 					logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to reassign bug to {0}.", configuration.OnCreateReassignValue));
 				}
 			}
-
-            ResolveBugIfRequired(configuration.OnCreateResolveValue, bugId, bugzillaClient);
 		}
 
         private void ResolveBugIfRequired(string resolution, int bugId, IBugzillaClient client) 
