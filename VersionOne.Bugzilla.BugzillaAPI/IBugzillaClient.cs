@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
 {
-	public interface IBugzillaClient
+    public interface IBugzillaClient
 	{
         //		Version Version { get; }
         //

@@ -7,7 +7,7 @@ using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
 {
-	public class BugzillaClient: IBugzillaClient
+    public class BugzillaClient: IBugzillaClient
 	{
 	    private readonly ILogger _logger;
 	    public RestClient Client{ get; set; }
