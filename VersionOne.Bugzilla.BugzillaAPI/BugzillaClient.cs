@@ -202,12 +202,9 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             if (StatusExists(status))
             {
                 var req = new RestRequest("bug/" + bug.ID, Method.PUT);
-                if (HasResolution(resolution))
-                {
-                    req.AddParameter("remaining_time", 0);
-                    req.AddParameter("resolution", resolution);
-                }
 
+                req.AddParameter("remaining_time", 0);
+                req.AddParameter("resolution", resolution);
                 req.AddParameter("status", status);
                 req.AddParameter("token", IntegrationUserToken);
 
@@ -217,14 +214,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
                 if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
 
-                if (HasResolution(resolution))
-                {
-                    var comment = $"Resolution has changed to {resolution} by VersionOne";
-                    CreateComment(bug, comment);
-                }
+                
+                var comment = $"Resolution has changed to {resolution} by VersionOne";
+                CreateComment(bug, comment);
             }
         }
-
 
         private void CreateComment(Bug bug, string comment)
         {
@@ -302,11 +296,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return response[ID.ToString()]["comments"][0]["text"].ToString();
 
         }
-
-        private bool HasResolution(string resolution)
-        {
-            return !(String.IsNullOrEmpty(resolution));
-        }
-
+        
     }
 }

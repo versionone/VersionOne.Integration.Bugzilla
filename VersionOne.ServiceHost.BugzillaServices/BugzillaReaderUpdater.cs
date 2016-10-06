@@ -98,13 +98,14 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
         private void ResolveBugIfRequired(string resolution, int bugId, IBugzillaClient client) 
         {
-            if(string.IsNullOrEmpty(resolution)) 
-            {
-                return;
-            }
-
             try 
             {
+
+                if (string.IsNullOrEmpty(resolution))
+                {
+                    throw new Exception("There was an attempt to resolve a bug without having a configured resolutoin value.");
+                }
+
                 if (!client.ResolveBug(bugId, resolution))
                 {
                     logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to resolve bug to {0}.", resolution));
