@@ -9,7 +9,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 {
 	public class BugzillaClient: IBugzillaClient
 	{
-        public RestClient Client{ get; set; }
+	    private readonly ILogger _logger;
+	    public RestClient Client{ get; set; }
 		public string IntegrationUserToken { get; set; }
 
         public string TokenAssignToUser { get; set; }
@@ -18,6 +19,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         public BugzillaClient(string URL)
         {
+            Client = new RestClient(URL);
+        }
+
+        public BugzillaClient(string URL, ILogger logger)
+        {
+            _logger = logger;
             Client = new RestClient(URL);
         }
 

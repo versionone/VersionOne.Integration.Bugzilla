@@ -1,10 +1,12 @@
-﻿namespace VersionOne.Bugzilla.BugzillaAPI
+﻿using VersionOne.ServiceHost.Core.Logging;
+
+namespace VersionOne.Bugzilla.BugzillaAPI
 {
     public class BugzillaClientFactory : IBugzillaClientFactory
     {
-        public IBugzillaClient CreateNew(string url)
+        public IBugzillaClient CreateNew(string url, ILogger logger)
         {
-            return new BugzillaClient(url);
+            return new BugzillaClient(url, logger);
         }
     }
 }
