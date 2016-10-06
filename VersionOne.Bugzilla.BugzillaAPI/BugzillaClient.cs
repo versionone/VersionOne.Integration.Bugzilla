@@ -9,7 +9,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 {
     public class BugzillaClient: IBugzillaClient
 	{
-	    private readonly ILogger _logger;
+	    private readonly ILogger logger;
 	    public RestClient Client{ get; set; }
 		public string IntegrationUserToken { get; set; }
 
@@ -24,7 +24,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         public BugzillaClient(string URL, ILogger logger)
         {
-            _logger = logger;
+            this.logger = logger;
             Client = new RestClient(URL);
         }
 
@@ -38,8 +38,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			var result = Client.Get(req);
 
 			var response = JObject.Parse(result.Content);
-                        
-            if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
+
+		    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+		    {
+                LogAndThrow("Error when trying to log in: ", response["message"].ToString());
+            }
 
             IntegrationUserToken = response["token"].ToString();
 
@@ -53,8 +56,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			var result = Client.Get(req);
 
 			var response = JObject.Parse(result.Content);
-            
-            if (result.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(response["message"].ToString());
+
+		    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+		    {
+                LogAndThrow("Error when trying to search for bugs: ", response["message"].ToString());
+            }
+
             var bugIds = response["bugs"].Select(bug => (int)bug["id"]).ToList();
             return bugIds;
 		}
@@ -65,7 +72,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			var result = Client.Get(req);
 
             var response = JObject.Parse(result.Content);
-            if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
+
+		    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+		    {
+                LogAndThrow("Error when trying to get bug: ", response["message"].ToString());
+		    }
 
             var bugResponse = response["bugs"].First;
 
@@ -96,6 +107,9 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             var response = JObject.Parse(result.Content);
 
+            // What to do in failure cases, not sure yet.
+            // Need to account for when we go down the tagging code path.
+
 	        var fieldValue = response["bugs"][0][fieldName].ToString();
 
 	        return fieldValue;
@@ -110,15 +124,17 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             
             var response = JObject.Parse(result.Content);
 
-            if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
-
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                LogAndThrow("Error when trying to get bug comments: ", response["message"].ToString());
+            }
             var responseComment = response["bugs"][$"{bugId}"]["comments"].ToList().Last();
 	        var lastComment = new Comment {Text = (string) responseComment["text"]};
 
 	        return lastComment;
         }
 
-	    public bool AcceptBug(int bugId, string newBugStatus)
+        public bool AcceptBug(int bugId, string newBugStatus)
         {
             //validate id
             var bug = GetBug(bugId);
@@ -137,7 +153,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             if (resolution.Equals(Resolution.FIXED.ToString()) && HasOpenDependencies(bug))
             {
-                throw new Exception(String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count, bugId));
+                LogAndThrow("Error when trying to resolve bug: ", String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count, bugId));
             }
             
              ChangeStatusAndResolve(bug, Status.RESOLVED.ToString(), resolution);
@@ -154,7 +170,10 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var result = Client.Put(req);
             var response = JObject.Parse(result.Content);
 
-            if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                LogAndThrow("Error when trying to update bug: ", response["message"].ToString());
+            }
             
             return true;
         }
@@ -296,6 +315,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return response[ID.ToString()]["comments"][0]["text"].ToString();
 
         }
-        
+
+        private void LogAndThrow(string logMessage, string additionalDetail)
+        {
+            logger.Log(LogMessage.SeverityType.Error, logMessage + additionalDetail);
+            throw new Exception(additionalDetail);
+        }
+
     }
 }
