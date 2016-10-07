@@ -18,7 +18,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         string GetFieldValue(int bugId, string fieldName);
 
-        IComment GetLastComment(int bugId);
+        string GetLastComment(int bugId);
 
         bool AcceptBug(int bugId, string newBugStatus);
         

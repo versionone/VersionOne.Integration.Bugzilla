@@ -107,7 +107,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 
             var comment = _client.GetLastComment(bugId);
 
-            Assert.IsTrue(comment.Text == expectedComment);
+            Assert.IsTrue(comment == expectedComment);
         }
 
 

@@ -115,7 +115,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	        return fieldValue;
 	    }
 
-	    public IComment GetLastComment(int bugId)
+	    public string GetLastComment(int bugId)
 	    {
             var req = new RestRequest("bug/" + bugId + "/comment", Method.GET);
             req.AddParameter("token", IntegrationUserToken);
@@ -126,12 +126,24 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             if (result.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                LogAndThrow($"Error when trying to get bug comments for bug {bugId}: ", response["message"].ToString());
+                LogAndThrow($"Error when trying to get last comment for bug {bugId}: ", response["message"].ToString());
             }
-            var responseComment = response["bugs"][$"{bugId}"]["comments"].ToList().Last();
-	        var lastComment = new Comment {Text = (string) responseComment["text"]};
+            return (string) response["bugs"][$"{bugId}"]["comments"].ToList().Last()["text"];
+        }
 
-	        return lastComment;
+        private string GetFirstComment(int id)
+        {
+            var req = new RestRequest("bug/" + id + "/comment", Method.GET);
+            var result = Client.Get(req);
+            var response = JObject.Parse(result.Content)["bugs"];
+
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                LogAndThrow($"Error when getting first comment for bug {id}: ", response["message"].ToString());
+            }
+
+            return (string) response[id.ToString()]["comments"].ToList().First()["text"];
+
         }
 
         public bool AcceptBug(int bugId, string newBugStatus)
@@ -318,21 +330,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             }
             
             return result.StatusCode == System.Net.HttpStatusCode.OK;
-        }
-
-        private string GetFirstComment(int id)
-        {
-            var req = new RestRequest("bug/" + id + "/comment", Method.GET);
-            var result = Client.Get(req);
-            var response = JObject.Parse(result.Content)["bugs"];
-
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                LogAndThrow($"Error when getting first comment for bug {id}: ", response["message"].ToString());
-            }
-
-            return response[id.ToString()]["comments"][0]["text"].ToString();
-
         }
 
         private void LogAndThrow(string logMessage, string additionalDetail)
