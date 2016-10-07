@@ -66,21 +66,21 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return bugIds;
 		}
 
-		public Bug GetBug(int ID)
+		public Bug GetBug(int id)
 		{
-			var req = new RestRequest("bug/" + ID, Method.GET);
+			var req = new RestRequest("bug/" + id, Method.GET);
 			var result = Client.Get(req);
 
             var response = JObject.Parse(result.Content);
 
 		    if (result.StatusCode != System.Net.HttpStatusCode.OK)
 		    {
-                LogAndThrow("Error when trying to get bug: ", response["message"].ToString());
+                LogAndThrow($"Error when trying to get bug {id}: ", response["message"].ToString());
 		    }
 
             var bugResponse = response["bugs"].First;
 
-            var comment = GetFirstComment(ID);
+            var comment = GetFirstComment(id);
 
             var bug = new Bug
             {
@@ -126,7 +126,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             if (result.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                LogAndThrow("Error when trying to get bug comments: ", response["message"].ToString());
+                LogAndThrow($"Error when trying to get bug comments for bug {bugId}: ", response["message"].ToString());
             }
             var responseComment = response["bugs"][$"{bugId}"]["comments"].ToList().Last();
 	        var lastComment = new Comment {Text = (string) responseComment["text"]};
@@ -153,7 +153,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             if (resolution.Equals(Resolution.FIXED.ToString()) && HasOpenDependencies(bug))
             {
-                LogAndThrow("Error when trying to resolve bug: ", String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count, bugId));
+                LogAndThrow($"Error when trying to resolve bug {bugId}: ", String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count, bugId));
             }
             
              ChangeStatusAndResolve(bug, Status.RESOLVED.ToString(), resolution);
@@ -168,11 +168,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             req.AddParameter("token", IntegrationUserToken);
 
             var result = Client.Put(req);
-            var response = JObject.Parse(result.Content);
-
+            
             if (result.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                LogAndThrow("Error when trying to update bug: ", response["message"].ToString());
+                var response = JObject.Parse(result.Content);
+                LogAndThrow($"Error when trying to update bug {bugId}: ", response["message"].ToString());
             }
             
             return true;
@@ -180,7 +180,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         public bool ReassignBug(int bugId, string AssignToUser)
         {
-            var response = false;
+            var success = false;
             var bug = GetBug(bugId);
 
             if (IsValidUser(AssignToUser))
@@ -191,12 +191,18 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
                 var req = new RestRequest("bug/" + bug.ID, Method.PUT);
                 req.AddParameter("application/json", bug.GetReassignBugPayload(IntegrationUserToken), ParameterType.RequestBody);
-                Client.Put(req);
+                var result = Client.Put(req);
 
-                response = true;
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                   var response = JObject.Parse(result.Content);
+                   LogAndThrow($"Error when trying to reassign bug {bug.ID}: ", response["message"].ToString());
+                }
+
+                success = true;
             }
            
-            return response;
+            return success;
         }
 
         private void ChangeStatus(Bug bug, string status)
@@ -209,10 +215,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 req.AddParameter("token", IntegrationUserToken);
 
                 var result = Client.Put(req);
-
-                var response = JObject.Parse(result.Content);
-
-                if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
+                
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    var response = JObject.Parse(result.Content);
+                    LogAndThrow($"Error when trying to change status for bug {bug.ID}: ", response["message"].ToString());
+                }
             }
         }
 
@@ -228,11 +236,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 req.AddParameter("token", IntegrationUserToken);
 
                 var result = Client.Put(req);
-
-                var response = JObject.Parse(result.Content);
-
-                if (result.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception(response["message"].ToString());
-
+                
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    var response = JObject.Parse(result.Content);
+                    LogAndThrow($"Error when trying to change status and resolve bug {bug.ID}: ", response["message"].ToString());
+                }
                 
                 var comment = $"Resolution has changed to {resolution} by VersionOne";
                 CreateComment(bug, comment);
@@ -246,10 +255,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             req.AddParameter("comment", comment);
 
             var result = Client.Post(req);
-
-            var response = JObject.Parse(result.Content);
-
-            if (result.StatusCode != System.Net.HttpStatusCode.Created) throw new Exception(response["message"].ToString());
+            
+            if (result.StatusCode != System.Net.HttpStatusCode.Created)
+            {
+                var response = JObject.Parse(result.Content);
+                LogAndThrow($"Error when trying to create comment for bug {bug.ID}: ", response["message"].ToString());
+            }
         }
 
         private bool HasOpenDependencies(Bug bug)
@@ -276,18 +287,22 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 return true;
             }
 
-            throw new Exception($"Could not find the status {status}. Please check this status exists in Bugzilla.");
-            
+            LogAndThrow("Error when checking if a status exists: ", $"Could not find the status {status}. Please check this status exists in Bugzilla.");
+            return false;
         }
         
         private int FindProductId(Bug bug)
         {
-            //look for the id of the product
             var reqId = new RestRequest("product/" + bug.Product, Method.GET);
             var restResponse = Client.Get(reqId);
-            var responseContent = JObject.Parse(restResponse.Content);
-            if (restResponse.StatusCode == System.Net.HttpStatusCode.NotFound) throw new Exception(responseContent["message"].ToString());
-            var idProduct = (int)responseContent["products"][0]["id"];
+            var response = JObject.Parse(restResponse.Content);
+
+            if (restResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                LogAndThrow($"Error when trying to find product {bug.Product}: ", response["message"].ToString());
+            }
+
+            var idProduct = (int)response["products"][0]["id"];
             return idProduct;
         }
 
@@ -295,24 +310,28 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         {
             var req = new RestRequest("user/"+ userId, Method.GET);
             var result = Client.Get(req);
-            var response = JObject.Parse(result.Content);
-
+            
             if (result.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                throw new Exception(response["message"].ToString());
+                var response = JObject.Parse(result.Content);
+                LogAndThrow($"Error when checking for valid user {userId}: ", response["message"].ToString());
             }
             
             return result.StatusCode == System.Net.HttpStatusCode.OK;
         }
 
-        private string GetFirstComment(int ID)
+        private string GetFirstComment(int id)
         {
-            //need to be ordered asc way ??
-            var req = new RestRequest("bug/" + ID + "/comment", Method.GET);
+            var req = new RestRequest("bug/" + id + "/comment", Method.GET);
             var result = Client.Get(req);
             var response = JObject.Parse(result.Content)["bugs"];
 
-            return response[ID.ToString()]["comments"][0]["text"].ToString();
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                LogAndThrow($"Error when getting first comment for bug {id}: ", response["message"].ToString());
+            }
+
+            return response[id.ToString()]["comments"][0]["text"].ToString();
 
         }
 
