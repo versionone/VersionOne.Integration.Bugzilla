@@ -13,8 +13,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	    public RestClient Client{ get; set; }
 		public string IntegrationUserToken { get; set; }
 
-        public string TokenAssignToUser { get; set; }
-
         public string CommentResolution = "Resolution has changed to {0} by VersionOne";
 
         public BugzillaClient(string URL)
