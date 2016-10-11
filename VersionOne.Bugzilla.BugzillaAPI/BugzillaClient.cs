@@ -28,7 +28,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         public string Login(string username, string password)
 		{
-			var req = new RestRequest("login?{login}{password}",Method.GET);
+			var req = new RestRequest("login?",Method.GET);
             
 			req.AddParameter("login", username);
 			req.AddParameter("password", password);
@@ -141,7 +141,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             }
 
             return (string) response[id.ToString()]["comments"].ToList().First()["text"];
-
         }
 
         public bool AcceptBug(int bugId, string newBugStatus)
@@ -195,8 +194,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             if (IsValidUser(AssignToUser))
             {
-                //check for strict isolation ??
-                
                 bug.AssignedTo = AssignToUser;
 
                 var req = new RestRequest("bug/" + bug.ID, Method.PUT);
