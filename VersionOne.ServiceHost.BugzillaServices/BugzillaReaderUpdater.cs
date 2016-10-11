@@ -96,28 +96,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 			}
 		}
 
-        private void ResolveBugIfRequired(string resolution, int bugId, IBugzillaClient client) 
-        {
-            try 
-            {
-
-                if (string.IsNullOrEmpty(resolution))
-                {
-                    throw new Exception("There was an attempt to resolve a bug without having a configured resolutoin value.");
-                }
-
-                if (!client.ResolveBug(bugId, resolution))
-                {
-                    logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to resolve bug to {0}.", resolution));
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Log(LogMessage.SeverityType.Error, "Failed to resolve bug: " + ex.InnerException.Message);
-            }
-        }
-
-		public bool OnDefectStateChange(WorkitemStateChangeResult stateChangeResult) 
+        public bool OnDefectStateChange(WorkitemStateChangeResult stateChangeResult) 
         {
 			logger.Log(LogMessage.SeverityType.Debug, stateChangeResult.ToString());
 
@@ -152,7 +131,28 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
             return true;
 		}
-        
+
+        private void ResolveBugIfRequired(string resolution, int bugId, IBugzillaClient client)
+        {
+            try
+            {
+
+                if (string.IsNullOrEmpty(resolution))
+                {
+                    throw new Exception("There was an attempt to resolve a bug without having a configured resolution value.");
+                }
+
+                if (!client.ResolveBug(bugId, resolution))
+                {
+                    logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to resolve bug to {0}.", resolution));
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Log(LogMessage.SeverityType.Error, "Failed to resolve bug: " + ex.InnerException.Message);
+            }
+        }
+
         /// <summary>
         /// Return corresponding mapping of Bugzilla and VersionOne projects, if any.
         /// Mappings are provided by users in configuration file.
