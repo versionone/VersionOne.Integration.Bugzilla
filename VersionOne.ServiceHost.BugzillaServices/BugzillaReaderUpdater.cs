@@ -127,14 +127,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
             bugzillaClient.Login(configuration.UserName, configuration.Password);
             
-            // We do not need to push changes to Defects that have been processed as we could break their state.
-            if (SkipCloseActions(bugId, bugzillaClient)) 
-            {
-                logger.Log(LogMessage.SeverityType.Info, string.Format("Defect {0} has already been processed, check CloseFieldId and CloseReassignValue.", bugId));
-                return true;
-            }
-
-			if (configuration.OnStateChangeAccept && !bugzillaClient.AcceptBug(bugId , configuration.OnCreateResolveValue)) 
+            if (configuration.OnStateChangeAccept && !bugzillaClient.AcceptBug(bugId , configuration.OnCreateResolveValue))
             {
     			logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to accept bug {0}.", bugId));
 			}
@@ -159,29 +152,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
             return true;
 		}
-
-        private bool SkipCloseActions(int bugId, IBugzillaClient client) 
-        {
-            if (!string.IsNullOrEmpty(configuration.OnStateChangeFieldName))
-            {
-                var fieldValue = client.GetFieldValue(bugId, configuration.OnStateChangeFieldName);
-
-                if (fieldValue.Equals(configuration.OnStateChangeFieldValue)) 
-                {
-                    return true;
-                }
-            }
-
-            var reassignValue = configuration.OnStateChangeReassignValue;
-            
-            if(!string.IsNullOrEmpty(reassignValue)) 
-            {
-                return client.IsValidUser(reassignValue);
-            }
-
-            return false;
-        }
-
+        
         /// <summary>
         /// Return corresponding mapping of Bugzilla and VersionOne projects, if any.
         /// Mappings are provided by users in configuration file.
