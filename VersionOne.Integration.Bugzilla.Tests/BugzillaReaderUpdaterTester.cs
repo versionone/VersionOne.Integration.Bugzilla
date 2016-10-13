@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Rhino.Mocks;
-using VersionOne.Bugzilla.XmlRpcProxy;
 using VersionOne.ServiceHost.BugzillaServices;
 using VersionOne.ServiceHost.Core.Configuration;
 using VersionOne.ServiceHost.WorkitemServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VersionOne.Bugzilla.BugzillaAPI;
 
 namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 {
@@ -54,7 +54,7 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 				expectedIds.Add(bug.ID);
 			}
 
-			SetupResult.For(mocks.ServiceFactory.CreateNew(config.Url)).Return(mocks.Client);
+			SetupResult.For(mocks.ClientFactory.CreateNew(config.Url, mocks.Logger)).Return(mocks.Client);
 
             Expect.Call(mocks.Client.Login(config.UserName, config.Password, true, false)).Return(expectedUserId);
 			//Expect.Call(mocks.Client.GetBugs(config.OpenIssueFilterId)).Return(expectedIds);
@@ -145,9 +145,9 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 			workitemCreationResult.Messages.Add("Message1");
 			workitemCreationResult.Permalink = expectedDefectLinkValue;
 
-			SetupResult.For(mocks.ServiceFactory.CreateNew(config.Url)).Return(mocks.Client);
+			SetupResult.For(mocks.ClientFactory.CreateNew(config.Url, mocks.Logger)).Return(mocks.Client);
 
-			Expect.Call(mocks.Client.Login(config.UserName, config.Password, true, false)).Return(expectedUserId);
+			Expect.Call(mocks.Client.Login(config.UserName, config.Password)).Return(expectedUserId);
 			
 			if (!string.IsNullOrEmpty(config.OnCreateFieldName))
 			{
@@ -163,17 +163,12 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 			{
 				Expect.Call(mocks.Client.ReassignBug(expectedExternalId, config.OnCreateReassignValue)).Return(true);
 			}
-
-			if (!string.IsNullOrEmpty(config.OnCreateResolveValue))
-			{
-				Expect.Call(mocks.Client.ResolveBug(expectedExternalId, config.OnCreateResolveValue, string.Empty)).Return(true);
-			}
-
-			mocks.Client.Logout();
+            
+//			mocks.Client.Logout();
 
 			mocks.Repository.ReplayAll();
 
-			BugzillaReaderUpdater updater = new BugzillaReaderUpdater(config, mocks.ServiceFactory, mocks.Logger);
+			BugzillaReaderUpdater updater = new BugzillaReaderUpdater(config, mocks.ClientFactory, mocks.Logger);
 
 			updater.OnDefectCreated(workitemCreationResult);
 
