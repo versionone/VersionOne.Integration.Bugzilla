@@ -67,7 +67,7 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 				Expect.Call(mocks.Client.GetUser(bug.AssignedToID)).Return(expectedOwner);
 			}
 
-			mocks.Client.Logout();
+//			mocks.Client.Logout();
 
 			mocks.Repository.ReplayAll();
 
@@ -164,8 +164,6 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 				Expect.Call(mocks.Client.ReassignBug(expectedExternalId, config.OnCreateReassignValue)).Return(true);
 			}
             
-//			mocks.Client.Logout();
-
 			mocks.Repository.ReplayAll();
 
 			BugzillaReaderUpdater updater = new BugzillaReaderUpdater(config, mocks.ClientFactory, mocks.Logger);
