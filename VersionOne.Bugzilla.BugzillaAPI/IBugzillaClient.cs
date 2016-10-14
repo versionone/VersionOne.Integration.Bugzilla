@@ -12,7 +12,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 		string Login(string username, string password);
 
-		List<int> Search(string searchQuery);
+        List<int> Search(string searchQuery);
 
 		Bug GetBug(int bugId);
 
@@ -30,6 +30,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         bool IsValidUser(string userId);
 
-    }
+	    void Logout();
+	}
     
 }

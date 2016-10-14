@@ -47,7 +47,23 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 			return IntegrationUserToken;
 		}
 
-		public List<int> Search(string searchQuery)
+	    public void Logout()
+        {
+            var req = new RestRequest("logout?", Method.GET);
+
+            req.AddParameter("token", IntegrationUserToken);
+
+            var result = Client.Get(req);
+
+            var response = JObject.Parse(result.Content);
+
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                LogAndThrow("Error when trying to log out: ", response["message"].ToString());
+            }
+        }
+
+        public List<int> Search(string searchQuery)
 		{
             var req = new RestRequest("bug?" + searchQuery, Method.GET);
 
@@ -145,13 +161,9 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         public bool AcceptBug(int bugId, string newBugStatus)
         {
-            //validate id
             var bug = GetBug(bugId);
 
-            //if bug.target_milestone is empty
-            //throws user errror
-
-           ChangeStatus(bug, newBugStatus);
+            ChangeStatus(bug, newBugStatus);
            
             return true;
         }
@@ -327,7 +339,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return result.StatusCode == System.Net.HttpStatusCode.OK;
         }
 
-        private void LogAndThrow(string logMessage, string additionalDetail)
+	    private void LogAndThrow(string logMessage, string additionalDetail)
         {
             logger.Log(LogMessage.SeverityType.Error, logMessage + additionalDetail);
             throw new Exception(additionalDetail);
