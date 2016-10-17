@@ -12,6 +12,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         
         string Login();
 
+        void Logout();
+
         List<int> Search(string searchQuery);
 
 		Bug GetBug(int bugId);
@@ -29,9 +31,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         bool ReassignBug(int bugId, string assignTo);
 
         bool IsValidUser(string userId);
-
-	    void Logout();
         
-    }
+	    bool IsCurrentLoginCredentialsValid();
+	}
     
 }

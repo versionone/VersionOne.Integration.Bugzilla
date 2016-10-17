@@ -30,10 +30,17 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
             _loggedInUserToken = _client.Login();
         }
 
-        [TestMethod, Ignore]
-        public void testLogout()
+        [TestMethod]
+        public void when_logged_out_user_and_associated_token_is_not_valid()
         {
-//            _client.ValidLogin(_loggedInUserToken);
+            _client.Logout();
+            Assert.IsFalse(_client.IsCurrentLoginCredentialsValid());
+        }
+
+        [TestMethod]
+        public void when_logged_in_user_and_associated_token_is_valid()
+        {
+            Assert.IsTrue(_client.IsCurrentLoginCredentialsValid());
         }
 
         [TestMethod]

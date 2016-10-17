@@ -3,6 +3,8 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Collections.Generic;
+using System.Net;
+using System.Runtime.Remoting.Messaging;
 using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
@@ -344,6 +346,26 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             
             return result.StatusCode == System.Net.HttpStatusCode.OK;
         }
+
+	    public bool IsCurrentLoginCredentialsValid()
+	    {
+            var req = new RestRequest("valid_login", Method.GET);
+            req.AddParameter("login", _username);
+            req.AddParameter("token", IntegrationUserToken);
+
+            var result = Client.Get(req);
+	        var response = JObject.Parse(result.Content);
+            
+	        bool credentialsCheck = false;
+            var validUser = response["result"];
+
+            if (result.StatusCode == HttpStatusCode.OK && validUser != null && (bool) validUser)
+	        {
+	            credentialsCheck = true;
+	        } 
+	        
+            return credentialsCheck;
+	    }
 
 	    private void LogAndThrow(string logMessage, string additionalDetail)
         {
