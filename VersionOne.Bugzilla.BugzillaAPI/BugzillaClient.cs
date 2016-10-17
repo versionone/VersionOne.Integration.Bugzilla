@@ -9,45 +9,51 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 {
     public class BugzillaClient: IBugzillaClient
 	{
-	    private readonly ILogger logger;
-	    public RestClient Client{ get; set; }
+	    private readonly ILogger _logger;
+	    private readonly string _username;
+        private readonly string _password;
+        public RestClient Client{ get; set; }
 		public string IntegrationUserToken { get; set; }
 
         public string CommentResolution = "Resolution has changed to {0} by VersionOne";
-
-        public BugzillaClient(string URL)
-        {
-            Client = new RestClient(URL);
+	    
+        public BugzillaClient(IBugzillaClientConfiguration configuration, ILogger logger)
+	    {
+            this._logger = logger;
+	        this._username = configuration.UserName;
+	        this._password = configuration.Password;
+            Client = new RestClient(configuration.Url);
         }
 
-        public BugzillaClient(string URL, ILogger logger)
+        public BugzillaClient(IBugzillaClientConfiguration configuration)
         {
-            this.logger = logger;
-            Client = new RestClient(URL);
+            this._username = configuration.UserName;
+            this._password = configuration.Password;
+            Client = new RestClient(configuration.Url);
         }
+        
+        public string Login()
+        {
+            var req = new RestRequest("login?", Method.GET);
 
-        public string Login(string username, string password)
-		{
-			var req = new RestRequest("login?",Method.GET);
-            
-			req.AddParameter("login", username);
-			req.AddParameter("password", password);
+            req.AddParameter("login", _username);
+            req.AddParameter("password", _password);
 
-			var result = Client.Get(req);
+            var result = Client.Get(req);
 
-			var response = JObject.Parse(result.Content);
+            var response = JObject.Parse(result.Content);
 
-		    if (result.StatusCode != System.Net.HttpStatusCode.OK)
-		    {
+            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            {
                 LogAndThrow("Error when trying to log in: ", response["message"].ToString());
             }
 
             IntegrationUserToken = response["token"].ToString();
 
-			return IntegrationUserToken;
-		}
+            return IntegrationUserToken;
+        }
 
-	    public void Logout()
+        public void Logout()
         {
             var req = new RestRequest("logout?", Method.GET);
 
@@ -63,7 +69,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             }
         }
 
-        public List<int> Search(string searchQuery)
+	    public List<int> Search(string searchQuery)
 		{
             var req = new RestRequest("bug?" + searchQuery, Method.GET);
 
@@ -341,7 +347,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 	    private void LogAndThrow(string logMessage, string additionalDetail)
         {
-            logger.Log(LogMessage.SeverityType.Error, logMessage + additionalDetail);
+            _logger.Log(LogMessage.SeverityType.Error, logMessage + additionalDetail);
             throw new Exception(additionalDetail);
         }
 

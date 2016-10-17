@@ -63,9 +63,9 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 				expectedIds.Add(int.Parse(bug.ID));
 			}
 
-			SetupResult.For(mocks.ClientFactory.CreateNew(config.Url, mocks.Logger)).Return(mocks.Client);
+//			SetupResult.For(mocks.ClientFactory.CreateNew(config.Url, mocks.Logger)).Return(mocks.Client);
 
-            Expect.Call(mocks.Client.Login(config.UserName, config.Password)).Return(expectedUserId);
+            Expect.Call(mocks.Client.Login()).Return(expectedUserId);
 
 			for (int i = 0; i < expectedBugs.Count; i++)
 			{
@@ -152,9 +152,9 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 			workitemCreationResult.Messages.Add("Message1");
 			workitemCreationResult.Permalink = expectedDefectLinkValue;
 
-			SetupResult.For(mocks.ClientFactory.CreateNew(config.Url, mocks.Logger)).Return(mocks.Client);
-
-			Expect.Call(mocks.Client.Login(config.UserName, config.Password)).Return(expectedUserId);
+            SetupResult.For(mocks.ClientFactory.CreateNew()).Return(mocks.Client);
+            
+			Expect.Call(mocks.Client.Login()).Return(expectedUserId);
 			
 			if (!string.IsNullOrEmpty(config.OnCreateFieldName))
 			{

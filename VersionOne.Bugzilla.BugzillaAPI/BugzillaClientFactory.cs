@@ -4,9 +4,18 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 {
     public class BugzillaClientFactory : IBugzillaClientFactory
     {
-        public IBugzillaClient CreateNew(string url, ILogger logger)
+        private readonly IBugzillaClientConfiguration _bugzillaClientConfiguration;
+        private readonly ILogger _logger;
+
+        public BugzillaClientFactory(IBugzillaClientConfiguration bugzillaClientConfiguration, ILogger logger)
         {
-            return new BugzillaClient(url, logger);
+            _bugzillaClientConfiguration = bugzillaClientConfiguration;
+            _logger = logger;
+        }
+        
+        public IBugzillaClient CreateNew()
+        {
+            return new BugzillaClient(_bugzillaClientConfiguration, _logger);
         }
     }
 }

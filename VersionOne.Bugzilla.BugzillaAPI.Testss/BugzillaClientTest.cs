@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using VersionOne.ServiceHost.Core.Logging;
+using Rhino.Mocks;
 
 namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 {
@@ -14,8 +16,24 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         [TestInitialize()]
         public void SetContext()
         {
-            _client = new BugzillaClient("http://184.170.227.113/bugzilla/rest/");
-            _loggedInUserToken = _client.Login("terry.densmore@versionone.com", "admin1425");
+            IBugzillaClientConfiguration bugzillaClientConfiguration = new BugzillaClientConfiguration
+            {
+                UserName = "terry.densmore@versionone.com",
+                Password = "admin1425",
+                Url = "http://184.170.227.113/bugzilla/rest/"
+            };
+
+            ILogger logger = MockRepository.GenerateMock<ILogger>();
+
+            _client = new BugzillaClient(bugzillaClientConfiguration, logger);
+
+            _loggedInUserToken = _client.Login();
+        }
+
+        [TestMethod, Ignore]
+        public void testLogout()
+        {
+//            _client.ValidLogin(_loggedInUserToken);
         }
 
         [TestMethod]
@@ -67,19 +85,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Exception), "Bug #9999 does not exist.")]
         public void when_calling_a_bug_that_dont_exist_it_should_throw_an_exception()
         {
-            try
-            {
-                int ID = 9999;
-                Bug bug = _client.GetBug(ID);
-                Assert.Fail("no exception thrown");
-            }
-            catch (System.Exception ex)
-            {
-                Assert.IsTrue(ex.Message == "Bug #9999 does not exist.");
-            }
-
+            int ID = 9999;
+            Bug bug = _client.GetBug(ID);
         }
 
         [TestMethod]

@@ -9,8 +9,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         //
         RestClient Client { get; set; }
 		string IntegrationUserToken { get; set; }
-
-		string Login(string username, string password);
+        
+        string Login();
 
         List<int> Search(string searchQuery);
 
@@ -31,6 +31,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         bool IsValidUser(string userId);
 
 	    void Logout();
-	}
+        
+    }
     
 }

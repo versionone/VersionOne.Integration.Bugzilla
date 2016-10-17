@@ -44,6 +44,10 @@
       <HintPath>..\packages\RestSharp.105.2.2\lib\net451\RestSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Rhino.Mocks, Version=3.6.0.0, Culture=neutral, PublicKeyToken=0b3305902db7183f, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -67,6 +71,10 @@
     <ProjectReference Include="..\VersionOne.Bugzilla.BugzillaAPI\VersionOne.Bugzilla.BugzillaAPI.csproj">
       <Project>{bf7d1a4e-ca52-4263-b7b9-403396613490}</Project>
       <Name>VersionOne.Bugzilla.BugzillaAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VersionOne.ServiceHost.Core\VersionOne.ServiceHost.Core.csproj">
+      <Project>{f432bac8-27ed-4c2c-8e06-ef806a5b0d79}</Project>
+      <Name>VersionOne.ServiceHost.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

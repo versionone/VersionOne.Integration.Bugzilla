@@ -88,10 +88,12 @@
   <ItemGroup>
     <Compile Include="Bug.cs" />
     <Compile Include="BugzillaClient.cs" />
+    <Compile Include="BugzillaClientConfiguration.cs" />
     <Compile Include="BugzillaClientFactory.cs" />
     <Compile Include="Comment.cs" />
     <Compile Include="IBug.cs" />
     <Compile Include="IBugzillaClient.cs" />
+    <Compile Include="IBugzillaClientConfiguration.cs" />
     <Compile Include="IBugzillaClientFactory.cs" />
     <Compile Include="IComment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

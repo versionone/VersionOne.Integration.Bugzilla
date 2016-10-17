@@ -25,8 +25,9 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
         public List<Defect> GetBugs() 
         {
-            var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url, logger);
-            bugzillaClient.Login(configuration.UserName, configuration.Password);
+            var bugzillaClient = bugzillaClientFactory.CreateNew();
+
+            bugzillaClient.Login();
 
             var ids = bugzillaClient.Search(configuration.OpenIssueFilterId);
 
@@ -66,8 +67,9 @@ namespace VersionOne.ServiceHost.BugzillaServices
         {
 			var bugId = int.Parse(createdResult.Source.ExternalId);
 
-            var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url, logger);
-            bugzillaClient.Login(configuration.UserName, configuration.Password);
+            var bugzillaClient = bugzillaClientFactory.CreateNew();
+
+            bugzillaClient.Login();
             
             if (configuration.OnCreateAccept && !bugzillaClient.AcceptBug(bugId, configuration.OnCreateResolveValue)) 
             {
@@ -102,9 +104,9 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
 			var bugId = int.Parse(stateChangeResult.ExternalId);
 
-            var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url, logger);
+            var bugzillaClient = bugzillaClientFactory.CreateNew();
 
-            bugzillaClient.Login(configuration.UserName, configuration.Password);
+            bugzillaClient.Login();
             
             if (configuration.OnStateChangeAccept && !bugzillaClient.AcceptBug(bugId , configuration.OnCreateResolveValue))
             {
