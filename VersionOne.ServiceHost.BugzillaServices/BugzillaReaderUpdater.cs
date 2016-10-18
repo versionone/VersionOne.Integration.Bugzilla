@@ -60,6 +60,8 @@ namespace VersionOne.ServiceHost.BugzillaServices
                 defects.Add(defect);
             }
 
+            bugzillaClient.Logout();
+
             return defects;
 		}
 
@@ -96,6 +98,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 					logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to reassign bug to {0}.", configuration.OnCreateReassignValue));
 				}
 			}
+            bugzillaClient.Logout();
 		}
 
         public bool OnDefectStateChange(WorkitemStateChangeResult stateChangeResult) 
@@ -130,6 +133,8 @@ namespace VersionOne.ServiceHost.BugzillaServices
 			}
 
             ResolveBugIfRequired(configuration.OnStateChangeResolveValue, bugId, bugzillaClient);
+
+            bugzillaClient.Logout();
 
             return true;
 		}
