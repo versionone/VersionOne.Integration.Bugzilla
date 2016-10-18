@@ -122,21 +122,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 		}
 
-	    public string GetFieldValue(int bugId, string fieldName)
-	    {
-            var req = new RestRequest("bug/" + bugId, Method.GET);
-            var result = Client.Get(req);
-
-            var response = JObject.Parse(result.Content);
-
-            // What to do in failure cases, not sure yet.
-            // Need to account for when we go down the tagging code path.
-
-	        var fieldValue = response["bugs"][0][fieldName].ToString();
-
-	        return fieldValue;
-	    }
-
 	    public string GetLastComment(int bugId)
 	    {
             var req = new RestRequest("bug/" + bugId + "/comment", Method.GET);
