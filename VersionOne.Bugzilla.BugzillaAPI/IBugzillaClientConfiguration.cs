@@ -5,5 +5,6 @@
         string UserName { get; set; }
         string Password { get; set; }
         string Url { get; set; }
+        bool IgnoreSSLCert { get; set; }
     }
 }

@@ -21,6 +21,10 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	    
         public BugzillaClient(IBugzillaClientConfiguration configuration, ILogger logger)
 	    {
+            if (configuration.IgnoreSSLCert)
+            {
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            }
             this._logger = logger;
 	        this._username = configuration.UserName;
 	        this._password = configuration.Password;
@@ -29,6 +33,10 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         public BugzillaClient(IBugzillaClientConfiguration configuration)
         {
+            if (configuration.IgnoreSSLCert)
+            {
+                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            }
             this._username = configuration.UserName;
             this._password = configuration.Password;
             Client = new RestClient(configuration.Url);

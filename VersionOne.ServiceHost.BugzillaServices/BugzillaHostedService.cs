@@ -37,7 +37,7 @@ namespace VersionOne.ServiceHost.BugzillaServices {
 
             this.eventManager = eventManager;
             logger = new Logger(eventManager);
-            var bugzillaClientConfiguration = new BugzillaClientConfiguration { UserName = bugzillaConfig.UserName, Password = bugzillaConfig.Password, Url = bugzillaConfig.Url };
+            var bugzillaClientConfiguration = new BugzillaClientConfiguration { UserName = bugzillaConfig.UserName, Password = bugzillaConfig.Password, Url = bugzillaConfig.Url, IgnoreSSLCert = bugzillaConfig.IgnoreCert};
             bugzillaClientFactory = new BugzillaClientFactory(bugzillaClientConfiguration, logger);
 
             var readerUpdater = new BugzillaReaderUpdater(bugzillaConfig, bugzillaClientFactory, logger);

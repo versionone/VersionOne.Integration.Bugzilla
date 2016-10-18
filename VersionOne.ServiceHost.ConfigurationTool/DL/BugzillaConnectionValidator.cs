@@ -14,11 +14,10 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         }
 
         public bool Validate() {
-            var bugzillaClientConfiguration = new BugzillaClientConfiguration {Password = entity.Password, UserName = entity.UserName, Url = entity.Url};
+            var bugzillaClientConfiguration = new BugzillaClientConfiguration {Password = entity.Password, UserName = entity.UserName, Url = entity.Url, IgnoreSSLCert = entity.IgnoreCertificate.BoolValue};
             IBugzillaClient client = new BugzillaClient(bugzillaClientConfiguration);
             try
             {
-                // client.Login(entity.UserName, entity.Password, false, entity.IgnoreCertificate.BoolValue);
                 client.Login();
                 return true;
             } catch (Exception) {
