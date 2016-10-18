@@ -17,9 +17,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         List<int> Search(string searchQuery);
 
 		Bug GetBug(int bugId);
-
-        string GetFieldValue(int bugId, string fieldName);
-
+        
         string GetLastComment(int bugId);
 
         bool AcceptBug(int bugId, string newBugStatus);
