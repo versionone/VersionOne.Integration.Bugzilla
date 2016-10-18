@@ -248,7 +248,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.lblSearchName.Name = "lblSearchName";
             this.lblSearchName.Size = new System.Drawing.Size(72, 13);
             this.lblSearchName.TabIndex = 0;
-            this.lblSearchName.Text = "Search Name";
+            this.lblSearchName.Text = "Search Query";
             // 
             // txtDefectLinkFieldId
             // 
