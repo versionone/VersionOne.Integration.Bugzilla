@@ -96,7 +96,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return bugIds;
 		}
 
-		public Bug GetBug(int id)
+		public IBug GetBug(int id)
 		{
 			var req = new RestRequest("bug/" + id, Method.GET);
 			var result = Client.Get(req);
@@ -225,7 +225,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return success;
         }
 
-        private void ChangeStatus(Bug bug, string status)
+        private void ChangeStatus(IBug bug, string status)
         {
             if (StatusExists(status))
             {
@@ -244,7 +244,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             }
         }
 
-        private void ChangeStatusAndResolve(Bug bug, string status,  string resolution)
+        private void ChangeStatusAndResolve(IBug bug, string status,  string resolution)
         {
             if (StatusExists(status))
             {
@@ -268,7 +268,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             }
         }
 
-        private void CreateComment(Bug bug, string comment)
+        private void CreateComment(IBug bug, string comment)
         {
             var req = new RestRequest("bug/" + bug.ID + "/comment", Method.POST);
             req.AddParameter("token", IntegrationUserToken);
@@ -283,7 +283,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             }
         }
 
-        private bool HasOpenDependencies(Bug bug)
+        private bool HasOpenDependencies(IBug bug)
         {
             foreach (JToken bugId in bug.DependesOn)
             {

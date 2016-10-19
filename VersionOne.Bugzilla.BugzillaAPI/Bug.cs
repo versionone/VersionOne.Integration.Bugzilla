@@ -17,7 +17,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         public List<JToken> DependesOn { get; set; }
         public string IsOpen { get; set; }
 
-	    public string GetReassignBugPayload(string integrationUserToken)
+        public string GetReassignBugPayload(string integrationUserToken)
 	    {
             JObject reassignBugPayload = new JObject();
 

@@ -64,7 +64,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         public void when_calling_get_bug_it_should_return_a_bug()
         {
             int ID = 7;
-            Bug bug = _client.GetBug(ID);
+            IBug bug = _client.GetBug(ID);
 
             Assert.IsNotNull(bug);
         }
@@ -76,7 +76,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
             string status = "IN_PROGRESS";
             _client.AcceptBug(ID, status);
 
-            Bug bug = _client.GetBug(ID);
+            IBug bug = _client.GetBug(ID);
 
             Assert.AreEqual(bug.Status, status);
         }
@@ -86,7 +86,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         public void when_calling_a_bug_that_doesnt_exist_it_should_throw_an_exception()
         {
             int ID = 9999;
-            Bug bug = _client.GetBug(ID);
+            IBug bug = _client.GetBug(ID);
         }
 
         [TestMethod]
@@ -95,7 +95,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
             int ID = 7;
             string status = "RESOLVED";
             string resolution = "FIXED";
-            Bug bug = _client.GetBug(ID);
+            IBug bug = _client.GetBug(ID);
             _client.ResolveBug(Int32.Parse(bug.ID), resolution);
 
             bug = _client.GetBug(ID);
@@ -126,7 +126,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 
             _client.ReassignBug(ID, AssignedToUser);
 
-            Bug bug = _client.GetBug(ID);
+            IBug bug = _client.GetBug(ID);
 
             Assert.AreEqual(bug.AssignedTo, AssignedToUser);
         }
