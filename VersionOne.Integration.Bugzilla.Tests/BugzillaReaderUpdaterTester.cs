@@ -155,8 +155,10 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
             SetupResult.For(mocks.ClientFactory.CreateNew()).Return(mocks.Client);
             
 			Expect.Call(mocks.Client.Login()).Return(expectedUserId);
-			
-			if (!string.IsNullOrEmpty(config.OnCreateFieldName))
+
+            Expect.Call(mocks.Client.Logout);
+
+            if (!string.IsNullOrEmpty(config.OnCreateFieldName))
 			{
 				Expect.Call(mocks.Client.UpdateBug(expectedExternalId, config.OnCreateFieldName, config.OnCreateFieldValue)).Return(true);
 			}
