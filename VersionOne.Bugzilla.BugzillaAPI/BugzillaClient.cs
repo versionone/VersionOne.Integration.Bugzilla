@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Collections.Generic;
 using System.Net;
-using System.Runtime.Remoting.Messaging;
 using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
@@ -14,34 +13,36 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	    private readonly ILogger _logger;
 	    private readonly string _username;
         private readonly string _password;
-        public RestClient Client{ get; set; }
-		public string IntegrationUserToken { get; set; }
+	    private string _integrationUserToken;
 
-        public string CommentResolution = "Resolution has changed to {0} by VersionOne";
+        public RestClient Client { get; }
 	    
         public BugzillaClient(IBugzillaClientConfiguration configuration, ILogger logger)
 	    {
-            if (configuration.IgnoreSSLCert)
-            {
-                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-            }
+            SetSslIgnoreErrorMode(configuration);
             this._logger = logger;
 	        this._username = configuration.UserName;
 	        this._password = configuration.Password;
             Client = new RestClient(configuration.Url);
         }
 
-        public BugzillaClient(IBugzillaClientConfiguration configuration)
+	    
+	    public BugzillaClient(IBugzillaClientConfiguration configuration)
         {
-            if (configuration.IgnoreSSLCert)
-            {
-                System.Net.ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-            }
+            SetSslIgnoreErrorMode(configuration);
             this._username = configuration.UserName;
             this._password = configuration.Password;
             Client = new RestClient(configuration.Url);
         }
-        
+
+        private static void SetSslIgnoreErrorMode(IBugzillaClientConfiguration configuration)
+        {
+            if (configuration.IgnoreSSLCert)
+            {
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            }
+        }
+
         public string Login()
         {
             var req = new RestRequest("login?", Method.GET);
@@ -53,27 +54,27 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             var response = JObject.Parse(result.Content);
 
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            if (result.StatusCode != HttpStatusCode.OK)
             {
                 LogAndThrow("Error when trying to log in: ", response["message"].ToString());
             }
 
-            IntegrationUserToken = response["token"].ToString();
+            _integrationUserToken = response["token"].ToString();
 
-            return IntegrationUserToken;
+            return _integrationUserToken;
         }
 
         public void Logout()
         {
             var req = new RestRequest("logout?", Method.GET);
 
-            req.AddParameter("token", IntegrationUserToken);
+            req.AddParameter("token", _integrationUserToken);
 
             var result = Client.Get(req);
 
             var response = JObject.Parse(result.Content);
 
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            if (result.StatusCode != HttpStatusCode.OK)
             {
                 LogAndThrow("Error when trying to log out: ", response["message"].ToString());
             }
@@ -87,30 +88,30 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
 			var response = JObject.Parse(result.Content);
 
-		    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+		    if (result.StatusCode != HttpStatusCode.OK)
 		    {
                 LogAndThrow("Error when trying to search for bugs: ", response["message"].ToString());
             }
 
-            var bugIds = response["bugs"].Select(bug => (int)bug["id"]).ToList();
+            var bugIds = response["bugs"].Select(bug => (int) bug["id"]).ToList();
             return bugIds;
 		}
 
-		public IBug GetBug(int id)
+		public IBug GetBug(int bugId)
 		{
-			var req = new RestRequest("bug/" + id, Method.GET);
+			var req = new RestRequest("bug/" + bugId, Method.GET);
 			var result = Client.Get(req);
 
             var response = JObject.Parse(result.Content);
 
-		    if (result.StatusCode != System.Net.HttpStatusCode.OK)
+		    if (result.StatusCode != HttpStatusCode.OK)
 		    {
-                LogAndThrow($"Error when trying to get bug {id}: ", response["message"].ToString());
+                LogAndThrow($"Error when trying to get bug {bugId}: ", response["message"].ToString());
 		    }
 
             var bugResponse = response["bugs"].First;
 
-            var comment = GetFirstComment(id);
+            var comment = GetFirstComment(bugId);
 
             var bug = new Bug
             {
@@ -125,39 +126,40 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 IsOpen = bugResponse["is_open"].ToString(),
                 DependesOn = bugResponse["depends_on"].ToList()
 			};
-            bug.ProductId = FindProductId(bug);
-            return bug;
 
+            bug.ProductId = FindProductId(bug);
+
+            return bug;
 		}
 
 	    public string GetLastComment(int bugId)
 	    {
             var req = new RestRequest("bug/" + bugId + "/comment", Method.GET);
-            req.AddParameter("token", IntegrationUserToken);
+            req.AddParameter("token", _integrationUserToken);
 
             var result = Client.Get(req);
             
             var response = JObject.Parse(result.Content);
 
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            if (result.StatusCode != HttpStatusCode.OK)
             {
                 LogAndThrow($"Error when trying to get last comment for bug {bugId}: ", response["message"].ToString());
             }
             return (string) response["bugs"][$"{bugId}"]["comments"].ToList().Last()["text"];
         }
 
-        private string GetFirstComment(int id)
+        private string GetFirstComment(int bugId)
         {
-            var req = new RestRequest("bug/" + id + "/comment", Method.GET);
+            var req = new RestRequest("bug/" + bugId + "/comment", Method.GET);
             var result = Client.Get(req);
             var response = JObject.Parse(result.Content)["bugs"];
 
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            if (result.StatusCode != HttpStatusCode.OK)
             {
-                LogAndThrow($"Error when getting first comment for bug {id}: ", response["message"].ToString());
+                LogAndThrow($"Error when getting first comment for bug {bugId}: ", response["message"].ToString());
             }
 
-            return (string) response[id.ToString()]["comments"].ToList().First()["text"];
+            return (string) response[bugId.ToString()]["comments"].ToList().First()["text"];
         }
 
         public bool AcceptBug(int bugId, string newBugStatus)
@@ -187,11 +189,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         {
             var req = new RestRequest("bug/" + bugId, Method.PUT);
             req.AddParameter(fieldName, fieldValue);
-            req.AddParameter("token", IntegrationUserToken);
+            req.AddParameter("token", _integrationUserToken);
 
             var result = Client.Put(req);
             
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            if (result.StatusCode != HttpStatusCode.OK)
             {
                 var response = JObject.Parse(result.Content);
                 LogAndThrow($"Error when trying to update bug {bugId}: ", response["message"].ToString());
@@ -200,20 +202,20 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             return true;
         }
 
-        public bool ReassignBug(int bugId, string AssignToUser)
+        public bool ReassignBug(int bugId, string assignToUser)
         {
             var success = false;
             var bug = GetBug(bugId);
 
-            if (IsValidUser(AssignToUser))
+            if (IsValidUser(assignToUser))
             {
-                bug.AssignedTo = AssignToUser;
+                bug.AssignedTo = assignToUser;
 
                 var req = new RestRequest("bug/" + bug.ID, Method.PUT);
-                req.AddParameter("application/json", bug.GetReassignBugPayload(IntegrationUserToken), ParameterType.RequestBody);
+                req.AddParameter("application/json", bug.GetReassignBugPayload(_integrationUserToken), ParameterType.RequestBody);
                 var result = Client.Put(req);
 
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                if (result.StatusCode != HttpStatusCode.OK)
                 {
                    var response = JObject.Parse(result.Content);
                    LogAndThrow($"Error when trying to reassign bug {bug.ID}: ", response["message"].ToString());
@@ -232,11 +234,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 var req = new RestRequest("bug/" + bug.ID, Method.PUT);
 
                 req.AddParameter("status", status);
-                req.AddParameter("token", IntegrationUserToken);
+                req.AddParameter("token", _integrationUserToken);
 
                 var result = Client.Put(req);
                 
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                if (result.StatusCode != HttpStatusCode.OK)
                 {
                     var response = JObject.Parse(result.Content);
                     LogAndThrow($"Error when trying to change status for bug {bug.ID}: ", response["message"].ToString());
@@ -253,11 +255,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 req.AddParameter("remaining_time", 0);
                 req.AddParameter("resolution", resolution);
                 req.AddParameter("status", status);
-                req.AddParameter("token", IntegrationUserToken);
+                req.AddParameter("token", _integrationUserToken);
 
                 var result = Client.Put(req);
                 
-                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                if (result.StatusCode != HttpStatusCode.OK)
                 {
                     var response = JObject.Parse(result.Content);
                     LogAndThrow($"Error when trying to change status and resolve bug {bug.ID}: ", response["message"].ToString());
@@ -271,12 +273,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         private void CreateComment(IBug bug, string comment)
         {
             var req = new RestRequest("bug/" + bug.ID + "/comment", Method.POST);
-            req.AddParameter("token", IntegrationUserToken);
+            req.AddParameter("token", _integrationUserToken);
             req.AddParameter("comment", comment);
 
             var result = Client.Post(req);
             
-            if (result.StatusCode != System.Net.HttpStatusCode.Created)
+            if (result.StatusCode != HttpStatusCode.Created)
             {
                 var response = JObject.Parse(result.Content);
                 LogAndThrow($"Error when trying to create comment for bug {bug.ID}: ", response["message"].ToString());
@@ -287,7 +289,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
         {
             foreach (JToken bugId in bug.DependesOn)
             {
-                var dependantBug = GetBug((int)bugId);
+                var dependantBug = GetBug((int) bugId);
                 if (dependantBug.IsOpen.Equals("true"))
                 {
                     return true;
@@ -308,6 +310,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             }
 
             LogAndThrow("Error when checking if a status exists: ", $"Could not find the status {status}. Please check this status exists in Bugzilla.");
+
             return false;
         }
         
@@ -317,7 +320,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var restResponse = Client.Get(reqId);
             var response = JObject.Parse(restResponse.Content);
 
-            if (restResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            if (restResponse.StatusCode != HttpStatusCode.OK)
             {
                 LogAndThrow($"Error when trying to find product {bug.Product}: ", response["message"].ToString());
             }
@@ -331,20 +334,20 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             var req = new RestRequest("user/"+ userId, Method.GET);
             var result = Client.Get(req);
             
-            if (result.StatusCode != System.Net.HttpStatusCode.OK)
+            if (result.StatusCode != HttpStatusCode.OK)
             {
                 var response = JObject.Parse(result.Content);
                 LogAndThrow($"Error when checking for valid user {userId}: ", response["message"].ToString());
             }
             
-            return result.StatusCode == System.Net.HttpStatusCode.OK;
+            return result.StatusCode == HttpStatusCode.OK;
         }
 
 	    public bool IsCurrentLoginCredentialsValid()
 	    {
             var req = new RestRequest("valid_login", Method.GET);
             req.AddParameter("login", _username);
-            req.AddParameter("token", IntegrationUserToken);
+            req.AddParameter("token", _integrationUserToken);
 
             var result = Client.Get(req);
 	        var response = JObject.Parse(result.Content);

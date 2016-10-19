@@ -1,15 +1,9 @@
-using RestSharp;
 using System.Collections.Generic;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
 {
     public interface IBugzillaClient
 	{
-        //		Version Version { get; }
-        //
-        RestClient Client { get; set; }
-		string IntegrationUserToken { get; set; }
-        
         string Login();
 
         void Logout();
@@ -26,11 +20,10 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         bool ResolveBug(int bugId, string resolution);
 
-        bool ReassignBug(int bugId, string assignTo);
+        bool ReassignBug(int bugId, string assignToUser);
 
         bool IsValidUser(string userId);
         
 	    bool IsCurrentLoginCredentialsValid();
 	}
-    
 }
