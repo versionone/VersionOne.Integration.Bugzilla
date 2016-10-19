@@ -64,7 +64,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BugTests.cs" />
-    <Compile Include="BugzillaClientTest.cs" />
+    <Compile Include="Given_A_Logged_In_Bugzilla_Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
