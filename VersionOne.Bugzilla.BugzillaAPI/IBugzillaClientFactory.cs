@@ -1,6 +1,4 @@
-﻿using VersionOne.ServiceHost.Core.Logging;
-
-namespace VersionOne.Bugzilla.BugzillaAPI
+﻿namespace VersionOne.Bugzilla.BugzillaAPI
 {
     public interface IBugzillaClientFactory
     {
