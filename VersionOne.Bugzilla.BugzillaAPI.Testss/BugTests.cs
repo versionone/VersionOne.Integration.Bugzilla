@@ -3,7 +3,7 @@
 namespace VersionOne.Bugzilla.BugzillaAPI.Testss
 {
     [TestClass()]
-    public class given_a_Bug
+    public class Given_A_Bug
     {
         private IBug _bug;
         private string _expectedReassignToPayload;
@@ -17,7 +17,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Testss
         }
 
         [TestMethod]
-        public void it_should_give_appropriate_reassigneto_payloads()
+        public void it_should_give_appropriate_reassignto_payloads()
         {
             var integrationUser = "terry.densmore@versionone.com";
             _bug.AssignedTo = "denise@denise.com";
