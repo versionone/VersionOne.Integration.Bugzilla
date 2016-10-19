@@ -19,7 +19,6 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
         private const string expectedFilterId = "filtid";
         private const int productId = 333;
         private const string productName = "Expected Name";
-        private const int ownerId = 444;
         private const string v1ProjectId = "Scope:1234";
         private const string v1PriorityId = "WorkitemPriority:1";
         private const string expectedPriority = "Normal";
