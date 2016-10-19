@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.Integration.Bugz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.Bugzilla.BugzillaAPI", "VersionOne.Bugzilla.BugzillaAPI\VersionOne.Bugzilla.BugzillaAPI.csproj", "{BF7D1A4E-CA52-4263-B7B9-403396613490}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.Bugzilla.BugzillaAPI.Tests", "VersionOne.Bugzilla.BugzillaAPI.Testss\VersionOne.Bugzilla.BugzillaAPI.Tests.csproj", "{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.Bugzilla.BugzillaAPI.Tests", "VersionOne.Bugzilla.BugzillaAPI.Tests\VersionOne.Bugzilla.BugzillaAPI.Tests.csproj", "{D6A433D1-2DA1-4329-8BBF-F8AD222A320C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
