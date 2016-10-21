@@ -3,38 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using VersionOne.SDK.APIClient;
 
-namespace VersionOne.ServerConnector {
+namespace VersionOne.ServerConnector
+{
     // TODO extract interface and inject into VersionOneProcessor
-    internal class EntityFactory {
+    internal class EntityFactory
+    {
         private readonly IServices services;
-        private readonly IEnumerable<AttributeInfo> attributesToQuery; 
+        private readonly IEnumerable<AttributeInfo> attributesToQuery;
 
-        internal EntityFactory(IServices services, IEnumerable<AttributeInfo> attributesToQuery) {
+        internal EntityFactory(IServices services, IEnumerable<AttributeInfo> attributesToQuery)
+        {
             this.services = services;
             this.attributesToQuery = attributesToQuery;
         }
 
-        internal Asset Create(string assetTypeName, IEnumerable<AttributeValue> attributeValues) {
+        internal Asset Create(string assetTypeName, IEnumerable<AttributeValue> attributeValues)
+        {
             var assetType = services.Meta.GetAssetType(assetTypeName);
             var asset = services.New(assetType, Oid.Null);
 
-            foreach (var attributeValue in attributeValues) {
-                if(attributeValue is SingleAttributeValue) {
+            foreach (var attributeValue in attributeValues)
+            {
+                if (attributeValue is SingleAttributeValue)
+                {
                     asset.SetAttributeValue(assetType.GetAttributeDefinition(attributeValue.Name), ((SingleAttributeValue)attributeValue).Value);
-                } else if(attributeValue is MultipleAttributeValue) {
-                    var values = ((MultipleAttributeValue) attributeValue).Values;
+                }
+                else if (attributeValue is MultipleAttributeValue)
+                {
+                    var values = ((MultipleAttributeValue)attributeValue).Values;
                     var attributeDefinition = assetType.GetAttributeDefinition(attributeValue.Name);
 
-                    foreach (var value in values) {
+                    foreach (var value in values)
+                    {
                         asset.AddAttributeValue(attributeDefinition, value);
                     }
 
-                } else {
+                }
+                else
+                {
                     throw new NotSupportedException("Unknown Attribute Value type.");
                 }
             }
 
-            foreach (var attributeInfo in attributesToQuery.Where(attributeInfo => attributeInfo.Prefix == assetTypeName)) {
+            foreach (var attributeInfo in attributesToQuery.Where(attributeInfo => attributeInfo.Prefix == assetTypeName))
+            {
                 asset.EnsureAttribute(assetType.GetAttributeDefinition(attributeInfo.Attr));
             }
 
