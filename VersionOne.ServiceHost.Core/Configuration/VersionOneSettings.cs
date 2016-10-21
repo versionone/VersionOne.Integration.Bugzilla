@@ -3,9 +3,11 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace VersionOne.ServiceHost.Core.Configuration {
+namespace VersionOne.ServiceHost.Core.Configuration
+{
     [XmlRoot("Settings")]
-    public class VersionOneSettings {
+    public class VersionOneSettings
+    {
         private const string DefaultApiVersion = "6.5.0.0";
 
         [XmlElement("ApplicationUrl")]
@@ -20,20 +22,26 @@ namespace VersionOne.ServiceHost.Core.Configuration {
         public bool IntegratedAuth { get; set; }
         public ProxySettings ProxySettings { get; set; }
 
-        public VersionOneSettings() {
+        public VersionOneSettings()
+        {
             ApiVersion = DefaultApiVersion;
-            ProxySettings = new ProxySettings {Enabled = false, };
+            ProxySettings = new ProxySettings { Enabled = false, };
         }
 
-        public XmlElement ToXmlElement() {
+        public XmlElement ToXmlElement()
+        {
             var xmlSerializer = new XmlSerializer(GetType());
             var namespaces = new XmlSerializerNamespaces();
             namespaces.Add(string.Empty, string.Empty);
-            
-            using (var memoryStream = new MemoryStream()) {
-                try {
+
+            using (var memoryStream = new MemoryStream())
+            {
+                try
+                {
                     xmlSerializer.Serialize(memoryStream, this, namespaces);
-                } catch (InvalidOperationException) {
+                }
+                catch (InvalidOperationException)
+                {
                     return null;
                 }
 
@@ -44,8 +52,10 @@ namespace VersionOne.ServiceHost.Core.Configuration {
             }
         }
 
-        public static VersionOneSettings FromXmlElement(XmlElement element) {
-            if(element == null) {
+        public static VersionOneSettings FromXmlElement(XmlElement element)
+        {
+            if (element == null)
+            {
                 throw new ArgumentNullException("element");
             }
 
@@ -53,7 +63,7 @@ namespace VersionOne.ServiceHost.Core.Configuration {
             var namespaces = new XmlSerializerNamespaces();
             namespaces.Add(string.Empty, string.Empty);
 
-            return (VersionOneSettings) xmlSerializer.Deserialize(new XmlNodeReader(element));
+            return (VersionOneSettings)xmlSerializer.Deserialize(new XmlNodeReader(element));
         }
     }
 }
