@@ -6,18 +6,16 @@ using VersionOne.SDK.APIClient;
 namespace VersionOne.ServerConnector {
     // TODO extract interface and inject into VersionOneProcessor
     internal class EntityFactory {
-        private readonly IMetaModel metaModel;
         private readonly IServices services;
         private readonly IEnumerable<AttributeInfo> attributesToQuery; 
 
-        internal EntityFactory(IMetaModel metaModel, IServices services, IEnumerable<AttributeInfo> attributesToQuery) {
-            this.metaModel = metaModel;
+        internal EntityFactory(IServices services, IEnumerable<AttributeInfo> attributesToQuery) {
             this.services = services;
             this.attributesToQuery = attributesToQuery;
         }
 
         internal Asset Create(string assetTypeName, IEnumerable<AttributeValue> attributeValues) {
-            var assetType = metaModel.GetAssetType(assetTypeName);
+            var assetType = services.Meta.GetAssetType(assetTypeName);
             var asset = services.New(assetType, Oid.Null);
 
             foreach (var attributeValue in attributeValues) {
