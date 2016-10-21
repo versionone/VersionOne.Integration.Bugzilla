@@ -1,6 +1,7 @@
 using System.Xml.Serialization;
 using VersionOne.ServiceHost.ConfigurationTool.Validation;
 using VersionOne.ServiceHost.ConfigurationTool.Attributes;
+using VersionOne.ServiceHost.Core.Configuration;
 
 namespace VersionOne.ServiceHost.ConfigurationTool.Entities
 {
@@ -10,6 +11,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities
     [XmlRoot("Settings")]
     public class VersionOneSettings
     {
+        public const string AccessTokenAuthProperty = "AccessTokenAuth";
+        public const string AccessTokenProperty = "AccessToken";
         public const string ApplicationUrlProperty = "ApplicationUrl";
         public const string UsernameProperty = "Username";
         public const string PasswordProperty = "Password";
@@ -27,9 +30,14 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities
             set { }
         }
 
+        public AuthenticationTypes AuthenticationType { get; set; }
+
         [HelpString(HelpResourceKey = "V1PageVersionOneUrl")]
         [NonEmptyStringValidator]
         public string ApplicationUrl { get; set; }
+
+        [NonEmptyStringValidator]
+        public string AccessToken { get; set; }
 
         [NonEmptyStringValidator]
         public string Username { get; set; }

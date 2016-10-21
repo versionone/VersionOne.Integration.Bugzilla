@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using VersionOne.SDK.APIClient;
 using VersionOne.ServerConnector.Entities;
 using VersionOne.ServiceHost.ConfigurationTool.DL.Exceptions;
 using VersionOne.ServiceHost.ConfigurationTool.Entities;
+using VersionOne.ServiceHost.Core.Configuration;
 using ListValue = VersionOne.ServiceHost.ConfigurationTool.BZ.ListValue;
+using VersionOneSettings = VersionOne.ServiceHost.ConfigurationTool.Entities.VersionOneSettings;
 
 namespace VersionOne.ServiceHost.ConfigurationTool.DL {
     /// <summary>
@@ -21,11 +24,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         private const string TestStatusTypeToken = "TestStatus";
         private const string StoryStatusTypeToken = "StoryStatus";
         private const string WorkitemPriorityToken = "WorkitemPriority";
-        private const string MetaUrlSuffix = "meta.v1/";
-        private const string DataUrlSuffix = "rest-1.v1/";
         private const string ProjectTypeToken = "Scope";
 
-        private IMetaModel metaModel;
         private IServices services;
 
         public bool IsConnected { get; private set; }
@@ -43,24 +43,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         /// <param name="settings">settings for connection to VersionOne.</param>
         /// <returns>true, if validation succeeds; false, otherwise.</returns>
         public bool ValidateConnection(VersionOneSettings settings) {
-            var validator = !settings.IntegratedAuth
-                ? new V1ConnectionValidator(settings.ApplicationUrl, settings.Username, settings.Password, settings.IntegratedAuth, GetProxy(settings.ProxySettings))
-                : new V1ConnectionValidator(settings.ApplicationUrl, null, null, settings.IntegratedAuth, GetProxy(settings.ProxySettings));
-
-            try {
-                validator.CheckConnection();
-                validator.CheckAuthentication();
-            } catch (ConnectionException) {
-                IsConnected = false;
-                return false;
-            }
-
-            if (!settings.ApplicationUrl.EndsWith("/")) {
-                settings.ApplicationUrl += "/";
-            }
-
             Connect(settings);
-            return true;
+            return IsConnected;
         }
 
         /// <summary>
@@ -69,21 +53,43 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         /// <param name="settings">Connection settings</param>
         public void Connect(VersionOneSettings settings) {
             var url = settings.ApplicationUrl;
-            var username = settings.Username;
-            var password = settings.Password;
-            var integrated = settings.IntegratedAuth;
-            var proxy = GetProxy(settings.ProxySettings);
+            var accessToken = settings.AccessToken;
+            
+            try
+            {
 
-            try {
-                var metaConnector = new V1APIConnector(url + MetaUrlSuffix, username, password, integrated, proxy);
-                metaModel = new MetaModel(metaConnector);
+                var connector = SDK.APIClient.V1Connector
+                    .WithInstanceUrl(url)
+                    .WithUserAgentHeader("VersionOne.Integration.Bugzilla", Assembly.GetEntryAssembly().GetName().Version.ToString());
 
-                var dataConnector = new V1APIConnector(url + DataUrlSuffix, username, password, integrated, proxy);
-                services = new Services(metaModel, dataConnector);
+                ICanSetProxyOrEndpointOrGetConnector connectorWithAuth;
 
-                IsConnected = true;
-                ListPropertyValues = new Dictionary<string, IList<ListValue>>();
-            } catch (Exception) {
+                switch (settings.AuthenticationType)
+                {
+                    case AuthenticationTypes.AccessToken:
+                        connectorWithAuth = connector.WithAccessToken(accessToken);
+                        break;
+                    default:
+                        throw new Exception("Invalid authentication type");
+                }
+                if (settings.ProxySettings.Enabled)
+                {
+                    connectorWithAuth.WithProxy(GetProxy(settings.ProxySettings));
+                }
+
+                services = new Services(connectorWithAuth.Build());
+
+                if (!services.LoggedIn.IsNull)
+                {
+                    IsConnected = true;
+                    ListPropertyValues = new Dictionary<string, IList<ListValue>>();
+                }
+                else
+                    IsConnected = false;
+
+            }
+            catch (Exception)
+            {
                 IsConnected = false;
             }
         }
@@ -107,7 +113,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         // TODO it is known that primary workitem statuses do not have to be unique in VersionOne. In this case, the following method fails.
         private IDictionary<string, string> QueryPropertyValues(string propertyName) {
             var res = new Dictionary<string, string>();
-            var assetType = metaModel.GetAssetType(propertyName);
+            var assetType = services.Meta.GetAssetType(propertyName);
             var valueDef = assetType.GetAttributeDefinition("Name");
             IAttributeDefinition inactiveDef;
 
@@ -156,7 +162,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         /// </summary>
         /// <param name="assetTypeToken">AssetType token</param>
         public List<string> GetReferenceFieldList(string assetTypeToken) {
-            var attributeDefinitionAssetType = metaModel.GetAssetType("AttributeDefinition");
+            var attributeDefinitionAssetType = services.Meta.GetAssetType("AttributeDefinition");
 
             var nameAttributeDef = attributeDefinitionAssetType.GetAttributeDefinition("Name");
             var assetNameAttributeDef = attributeDefinitionAssetType.GetAttributeDefinition("Asset.AssetTypesMeAndDown.Name");
@@ -187,8 +193,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         /// <param name="fieldType">Field type</param>
         /// <returns>collection of custom list fields</returns>
         public IList<string> GetCustomFields(string assetTypeName, FieldType fieldType) {
-            var attrType = metaModel.GetAssetType("AttributeDefinition");
-            var assetType = metaModel.GetAssetType(assetTypeName);
+            var attrType = services.Meta.GetAssetType("AttributeDefinition");
+            var assetType = services.Meta.GetAssetType(assetTypeName);
             var isCustomAttributeDef = attrType.GetAttributeDefinition("IsCustom");
             var nameAttrDef = attrType.GetAttributeDefinition("Name");
 
@@ -240,7 +246,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         }
 
         private AssetList GetFieldList(IFilterTerm filter, IEnumerable<IAttributeDefinition> selection) {
-            var attributeDefinitionAssetType = metaModel.GetAssetType("AttributeDefinition");
+            var attributeDefinitionAssetType = services.Meta.GetAssetType("AttributeDefinition");
 
             var query = new Query(attributeDefinitionAssetType);
             foreach(var attribute in selection) {
@@ -254,7 +260,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         /// Get Source values from VersionOne server
         /// </summary>
         public List<string> GetSourceList() {
-            var assetType = metaModel.GetAssetType("StorySource");
+            var assetType = services.Meta.GetAssetType("StorySource");
             var nameDef = assetType.GetAttributeDefinition("Name");
             IAttributeDefinition inactiveDef;
 
@@ -273,7 +279,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         }
 
         public List<ProjectWrapper> GetProjectList() {
-            var projectType = metaModel.GetAssetType(ProjectTypeToken);
+            var projectType = services.Meta.GetAssetType(ProjectTypeToken);
             var scopeQuery = new Query(projectType, projectType.GetAttributeDefinition("Parent"));
             var stateTerm = new FilterTerm(projectType.GetAttributeDefinition("AssetState"));
             stateTerm.NotEqual(AssetState.Closed);
@@ -311,7 +317,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
             IAssetType assetType;
             
             try {
-                assetType = metaModel.GetAssetType(assetTypeName);
+                assetType = services.Meta.GetAssetType(assetTypeName);
             } catch (MetaException ex) {
                 throw new AssetTypeException(string.Format("{0} is unknown asset type.", assetTypeName), ex);
             }
@@ -362,7 +368,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
             IAssetType assetType;
             
             try {
-                assetType = metaModel.GetAssetType(propertyName);
+                assetType = services.Meta.GetAssetType(propertyName);
             } catch(MetaException ex) {
                 throw new AssetTypeException(string.Format("{0} is unknown asset type.", propertyName), ex);
             }
