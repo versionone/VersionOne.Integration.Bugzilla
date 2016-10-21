@@ -11,8 +11,6 @@ namespace VersionOne.ServerConnector
     public class QueryBuilder : IQueryBuilder
     {
         private IServices services;
-        private IMetaModel metaModel;
-        private ILocalizer localizer;
 
         private SortBy sortBy = null;
 
@@ -23,11 +21,9 @@ namespace VersionOne.ServerConnector
         public IEntityFieldTypeResolver TypeResolver { get { return typeResolver; } }
         public IEnumerable<AttributeInfo> AttributesToQuery { get { return attributesToQuery; } }
 
-        public void Setup(IServices services, IMetaModel metaModel, ILocalizer localizer)
+        public void Setup(IServices services)
         {
             this.services = services;
-            this.metaModel = metaModel;
-            this.localizer = localizer;
             TypeResolver.Reset();
             ListPropertyValues = GetListPropertyValues();
         }
@@ -64,7 +60,7 @@ namespace VersionOne.ServerConnector
         {
             try
             {
-                var workitemType = metaModel.GetAssetType(workitemTypeName);
+                var workitemType = services.Meta.GetAssetType(workitemTypeName);
                 var query = new Query(workitemType) { Filter = filter };
 
                 if (sortBy != null)
@@ -84,7 +80,7 @@ namespace VersionOne.ServerConnector
 
         public AssetList Query(string workitemTypeName, IFilter filter)
         {
-            return Query(workitemTypeName, filter.GetFilter(metaModel.GetAssetType(workitemTypeName)));
+            return Query(workitemTypeName, filter.GetFilter(services.Meta.GetAssetType(workitemTypeName)));
         }
 
         private void AddSelection(Query query, string typePrefix, IAssetType type)
@@ -175,7 +171,7 @@ namespace VersionOne.ServerConnector
 
         private string GetFieldType(string typeToken, string fieldName)
         {
-            var type = metaModel.GetAssetType(typeToken);
+            var type = services.Meta.GetAssetType(typeToken);
             var attributeDefinition = type.GetAttributeDefinition(fieldName);
 
             if (attributeDefinition.AttributeType != AttributeType.Relation)
@@ -203,12 +199,12 @@ namespace VersionOne.ServerConnector
 
         public string Localize(string text)
         {
-            return text == null ? "" : localizer.Resolve(text);
+            return text == null ? "" : services.Localization(text);
         }
 
         private Query GetPropertyValuesQuery(string propertyName, out IAttributeDefinition nameDef)
         {
-            var assetType = metaModel.GetAssetType(propertyName);
+            var assetType = services.Meta.GetAssetType(propertyName);
             nameDef = assetType.GetAttributeDefinition(Entity.NameProperty);
 
             IAttributeDefinition inactiveDef;
