@@ -10,9 +10,12 @@ namespace VersionOne.ServiceHost.Core.Configuration
     {
         private const string DefaultApiVersion = "6.5.0.0";
 
+        public AuthenticationTypes AuthenticationType { get; set; }
+
         [XmlElement("ApplicationUrl")]
         public string Url { get; set; }
 
+        public string AccessToken { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
 
@@ -63,7 +66,7 @@ namespace VersionOne.ServiceHost.Core.Configuration
             var namespaces = new XmlSerializerNamespaces();
             namespaces.Add(string.Empty, string.Empty);
 
-            return (VersionOneSettings)xmlSerializer.Deserialize(new XmlNodeReader(element));
+            return (VersionOneSettings) xmlSerializer.Deserialize(new XmlNodeReader(element));
         }
     }
 }
