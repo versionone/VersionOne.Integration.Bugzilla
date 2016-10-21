@@ -21,7 +21,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencie
 		Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WinForms.dll = Dependencies\Microsoft.Practices.EnterpriseLibrary.Validation.Integration.WinForms.dll
 		Dependencies\Microsoft.Practices.ObjectBuilder2.dll = Dependencies\Microsoft.Practices.ObjectBuilder2.dll
 		Dependencies\Rhino.Mocks.dll = Dependencies\Rhino.Mocks.dll
-		Dependencies\VersionOne.SDK.APIClient.dll = Dependencies\VersionOne.SDK.APIClient.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionOne.ServiceHost.ConfigurationTool", "VersionOne.ServiceHost.ConfigurationTool\VersionOne.ServiceHost.ConfigurationTool.csproj", "{424084D5-C8B1-4593-B837-E1A7083E30AE}"
