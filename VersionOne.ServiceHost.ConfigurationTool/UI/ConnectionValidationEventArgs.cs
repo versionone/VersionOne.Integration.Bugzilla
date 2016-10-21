@@ -1,10 +1,12 @@
 using System;
-using VersionOne.ServiceHost.ConfigurationTool.Entities;
+using VersionOne.ServiceHost.Core.Configuration;
+using VersionOneSettings = VersionOne.ServiceHost.ConfigurationTool.Entities.VersionOneSettings;
 
 namespace VersionOne.ServiceHost.ConfigurationTool.UI
 {
     public class ConnectionValidationEventArgs : EventArgs
     {
+        private AuthenticationTypes authenticationType;
         private string url;
         private string username;
         private string password;
@@ -15,6 +17,11 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI
         private string proxyPassword;
         private string proxyDomain;
         private readonly VersionOneSettings versionOneSettings = new VersionOneSettings();
+
+        public AuthenticationTypes AuthenticationType
+        {
+            get { return authenticationType; }
+        }
 
         public string Url
         {
@@ -73,13 +80,16 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI
         /// <param name="username">VersionOne username.</param>
         /// <param name="password">VersionOne password.</param>
         /// <param name="integrated">Use integrated authentication.</param>
-        public ConnectionValidationEventArgs(string url, string username, string password, bool integrated)
+        /// <param name="authenticationType">VersionOne authentication type</param>
+        public ConnectionValidationEventArgs(string url, string username, string password, bool integrated, AuthenticationTypes authenticationType)
         {
+            this.authenticationType = authenticationType;
             this.url = url;
             this.username = username;
             this.password = password;
             this.integrated = integrated;
             this.useProxy = false;
+            this.versionOneSettings.AuthenticationType = authenticationType;
             this.versionOneSettings.ApplicationUrl = url;
             this.versionOneSettings.Username = username;
             this.versionOneSettings.Password = password;
@@ -92,6 +102,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI
         /// <param name="connectionSettings">Connection settings for VersionOne.</param>
         public ConnectionValidationEventArgs(VersionOneSettings connectionSettings)
         {
+            this.authenticationType = connectionSettings.AuthenticationType;
             this.url = connectionSettings.ApplicationUrl;
             this.username = connectionSettings.Username;
             this.password = connectionSettings.Password;
