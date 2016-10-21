@@ -1,8 +1,10 @@
 using System;
 using VersionOne.ServiceHost.ConfigurationTool.Entities;
 
-namespace VersionOne.ServiceHost.ConfigurationTool.UI {
-    public class ConnectionValidationEventArgs : EventArgs {
+namespace VersionOne.ServiceHost.ConfigurationTool.UI
+{
+    public class ConnectionValidationEventArgs : EventArgs
+    {
         private string url;
         private string username;
         private string password;
@@ -14,43 +16,53 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI {
         private string proxyDomain;
         private readonly VersionOneSettings versionOneSettings = new VersionOneSettings();
 
-        public string Url {
+        public string Url
+        {
             get { return url; }
         }
 
-        public string Username {
+        public string Username
+        {
             get { return username; }
         }
 
-        public string Password {
+        public string Password
+        {
             get { return password; }
         }
 
-        public bool Integrated {
+        public bool Integrated
+        {
             get { return integrated; }
         }
 
-        public bool UserProxy {
+        public bool UserProxy
+        {
             get { return useProxy; }
         }
 
-        public string ProxyUri {
+        public string ProxyUri
+        {
             get { return proxyUri; }
         }
 
-        public string ProxyUsername {
+        public string ProxyUsername
+        {
             get { return proxyUsername; }
         }
 
-        public string ProxyPassword {
+        public string ProxyPassword
+        {
             get { return proxyPassword; }
         }
 
-        public string ProxyDomain {
+        public string ProxyDomain
+        {
             get { return proxyDomain; }
         }
 
-        public VersionOneSettings VersionOneSettings {
+        public VersionOneSettings VersionOneSettings
+        {
             get { return versionOneSettings; }
         }
 
@@ -61,7 +73,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI {
         /// <param name="username">VersionOne username.</param>
         /// <param name="password">VersionOne password.</param>
         /// <param name="integrated">Use integrated authentication.</param>
-        public ConnectionValidationEventArgs(string url, string username, string password, bool integrated) {
+        public ConnectionValidationEventArgs(string url, string username, string password, bool integrated)
+        {
             this.url = url;
             this.username = username;
             this.password = password;
@@ -77,7 +90,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI {
         /// Validate with proxy settings.
         /// </summary>
         /// <param name="connectionSettings">Connection settings for VersionOne.</param>
-        public ConnectionValidationEventArgs(VersionOneSettings connectionSettings) {
+        public ConnectionValidationEventArgs(VersionOneSettings connectionSettings)
+        {
             this.url = connectionSettings.ApplicationUrl;
             this.username = connectionSettings.Username;
             this.password = connectionSettings.Password;
