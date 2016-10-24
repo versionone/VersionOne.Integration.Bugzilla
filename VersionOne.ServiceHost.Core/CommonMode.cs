@@ -46,7 +46,7 @@ namespace VersionOne.ServiceHost {
                 var version = Assembly.GetEntryAssembly().GetName().Version;
                 Logger.Log(LogMessage.SeverityType.Info, string.Format("    ServiceHost version is {0}", version));
 
-                var sdkVersion = typeof (V1Central).Assembly.GetName().Version;
+                var sdkVersion = typeof (V1Connector).Assembly.GetName().Version;
                 Logger.Log(LogMessage.SeverityType.Info, string.Format("    VersionOne SDK version is {0}", sdkVersion));
 
                 Logger.Log(LogMessage.SeverityType.Info, "End of diagnostic section.");
