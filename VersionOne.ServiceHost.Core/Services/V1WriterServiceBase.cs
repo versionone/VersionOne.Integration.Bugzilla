@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Xml;
 using VersionOne.SDK.APIClient;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.Profile;
+using VersionOne.ServiceHost.Core.Configuration;
 using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Core.Services
@@ -11,7 +13,7 @@ namespace VersionOne.ServiceHost.Core.Services
     // TODO apply ServerConnector
     public abstract class V1WriterServiceBase : IHostedService
     {
-        private ICentral central;
+        private IServices services;
         protected XmlElement Config;
         protected IEventManager EventManager;
         protected ILogger Logger;
@@ -19,19 +21,48 @@ namespace VersionOne.ServiceHost.Core.Services
         private const string MemberType = "Member";
         private const string DefaultRoleNameProperty = "DefaultRole.Name";
 
-        protected virtual ICentral Central
+        protected virtual IServices Services
         {
             get
             {
-                if (central == null)
+                if (services == null)
                 {
                     try
                     {
-                        var c = new V1Central(Config["Settings"]);
-                        c.Validate();
-                        central = c;
+                        var settings = VersionOneSettings.FromXmlElement(Config);
 
-                        LogVersionOneConnectionInformation();
+                        var connector = V1Connector
+                                    .WithInstanceUrl(settings.Url)
+                                    .WithUserAgentHeader("VersionOne.Integration.JIRASync", Assembly.GetEntryAssembly().GetName().Version.ToString());
+
+                        ICanSetProxyOrEndpointOrGetConnector connectorWithAuth;
+
+                        switch (settings.AuthenticationType)
+                        {
+                            case AuthenticationTypes.AccessToken:
+                                connectorWithAuth = connector.WithAccessToken(settings.AccessToken);
+                                break;
+                            default:
+                                throw new Exception("Invalid authentication type");
+                        }
+
+                        if (settings.ProxySettings.Enabled)
+                        {
+                            connectorWithAuth.WithProxy(
+                                new ProxyProvider(
+                                        new Uri(settings.ProxySettings.Url), 
+                                        settings.ProxySettings.Username, 
+                                        settings.ProxySettings.Password, 
+                                        settings.ProxySettings.Domain)
+                                    );
+                        }
+
+                        services = new SDK.APIClient.Services(connectorWithAuth.Build());
+
+                        if (!services.LoggedIn.IsNull)
+                        {
+                            LogVersionOneConnectionInformation();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -40,7 +71,7 @@ namespace VersionOne.ServiceHost.Core.Services
                     }
                 }
 
-                return central;
+                return services;
             }
         }
 
@@ -48,8 +79,8 @@ namespace VersionOne.ServiceHost.Core.Services
         {
             try
             {
-                var metaVersion = ((MetaModel)Central.MetaModel).Version.ToString();
-                var memberOid = Central.Services.LoggedIn.Momentless.ToString();
+                var metaVersion = ((MetaModel) Services.Meta).Version.ToString();
+                var memberOid = Services.LoggedIn.Momentless.ToString();
                 var defaultRole = GetLoggedInMemberRole();
 
                 Logger.LogVersionOneConnectionInformation(LogMessage.SeverityType.Info, metaVersion, memberOid, defaultRole);
@@ -62,13 +93,13 @@ namespace VersionOne.ServiceHost.Core.Services
 
         private string GetLoggedInMemberRole()
         {
-            var query = new Query(Central.Services.LoggedIn);
-            var defaultRoleAttribute = Central.MetaModel.GetAssetType(MemberType).GetAttributeDefinition(DefaultRoleNameProperty);
+            var query = new Query(Services.LoggedIn);
+            var defaultRoleAttribute = Services.Meta.GetAssetType(MemberType).GetAttributeDefinition(DefaultRoleNameProperty);
             query.Selection.Add(defaultRoleAttribute);
 
-            var asset = Central.Services.Retrieve(query).Assets[0];
+            var asset = Services.Retrieve(query).Assets[0];
             var role = asset.GetAttribute(defaultRoleAttribute);
-            return Central.Loc.Resolve(role.Value.ToString());
+            return Services.Localization(role.Value.ToString());
         }
 
         public virtual void Initialize(XmlElement config, IEventManager eventManager, IProfile profile)
@@ -120,7 +151,7 @@ namespace VersionOne.ServiceHost.Core.Services
         {
             foreach (var neededAssetType in neededassettypes)
             {
-                var assettype = Central.MetaModel.GetAssetType(neededAssetType.Name);
+                var assettype = Services.Meta.GetAssetType(neededAssetType.Name);
 
                 foreach (var attributeDefinitionName in neededAssetType.AttributeDefinitionNames)
                 {
@@ -133,32 +164,32 @@ namespace VersionOne.ServiceHost.Core.Services
 
         protected IAssetType RequestType
         {
-            get { return Central.MetaModel.GetAssetType("Request"); }
+            get { return Services.Meta.GetAssetType("Request"); }
         }
 
         protected IAssetType DefectType
         {
-            get { return Central.MetaModel.GetAssetType("Defect"); }
+            get { return Services.Meta.GetAssetType("Defect"); }
         }
 
         protected IAssetType StoryType
         {
-            get { return Central.MetaModel.GetAssetType("Story"); }
+            get { return Services.Meta.GetAssetType("Story"); }
         }
 
         protected IAssetType ReleaseVersionType
         {
-            get { return Central.MetaModel.GetAssetType("StoryCategory"); }
+            get { return Services.Meta.GetAssetType("StoryCategory"); }
         }
 
         protected IAssetType LinkType
         {
-            get { return Central.MetaModel.GetAssetType("Link"); }
+            get { return Services.Meta.GetAssetType("Link"); }
         }
 
         protected IAssetType NoteType
         {
-            get { return Central.MetaModel.GetAssetType("Note"); }
+            get { return Services.Meta.GetAssetType("Note"); }
         }
 
         protected IAttributeDefinition DefectName
@@ -233,7 +264,7 @@ namespace VersionOne.ServiceHost.Core.Services
 
         protected IOperation RequestInactivate
         {
-            get { return Central.MetaModel.GetOperation("Request.Inactivate"); }
+            get { return Services.Meta.GetOperation("Request.Inactivate"); }
         }
 
         protected IAttributeDefinition StoryName
