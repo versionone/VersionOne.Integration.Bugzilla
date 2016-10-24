@@ -31,7 +31,7 @@ namespace VersionOne.ServiceHost.Core.Logging {
             try {
                 var entity = VersionOneSettings.FromXmlElement(config);
                 Log(severity, "    VersionOne URL: " + entity.Url);
-                Log(severity, string.Format("    Using proxy server: {0}, Integrated authentication: {1}", entity.ProxySettings != null && entity.ProxySettings.Enabled, entity.IntegratedAuth));
+                Log(severity, string.Format("    Using proxy server: {0}, Authentication Type: {1}", entity.ProxySettings != null && entity.ProxySettings.Enabled, entity.AuthenticationType));
             } catch(Exception ex) {
                 Log(LogMessage.SeverityType.Warning, "Failed to log VersionOne configuration data.", ex);
             }
