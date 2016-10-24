@@ -20,6 +20,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             AddControlTextValidation<VersionOneSettings>(txtServerUrl, VersionOneSettings.ApplicationUrlProperty);
             AddControlTextValidation<VersionOneSettings>(txtPassword, VersionOneSettings.PasswordProperty);
             AddControlTextValidation<VersionOneSettings>(txtUsername, VersionOneSettings.UsernameProperty);
+            AddControlTextValidation<VersionOneSettings>(txtAccessToken, VersionOneSettings.AccessTokenProperty);
 
             CheckProxyForm();
         }
@@ -28,6 +29,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             AddControlBinding(txtServerUrl, Model.Settings, VersionOneSettings.ApplicationUrlProperty);
             AddControlBinding(txtUsername, Model.Settings, VersionOneSettings.UsernameProperty);
             AddControlBinding(txtPassword, Model.Settings, VersionOneSettings.PasswordProperty);
+            AddControlBinding(txtAccessToken, Model.Settings, VersionOneSettings.AccessTokenProperty);
             AddControlBinding(chkUseIntegratedAuth, Model.Settings, VersionOneSettings.IntegratedAuthProperty);
             AddControlBinding(chkUseProxy, Model.ProxySettings, ProxyConnectionSettings.EnabledProperty);
             AddControlBinding(txtProxyUri, Model.ProxySettings, ProxyConnectionSettings.UriProperty);
@@ -79,6 +81,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
                 IntegratedAuth = chkUseIntegratedAuth.Checked,
                 Username = txtUsername.Text,
                 Password = txtPassword.Text,
+                AccessToken = txtAccessToken.Text,
                 ProxySettings = new ProxyConnectionSettings {
                     Enabled = chkUseProxy.Checked,
                     Domain = txtProxyDomain.Text,

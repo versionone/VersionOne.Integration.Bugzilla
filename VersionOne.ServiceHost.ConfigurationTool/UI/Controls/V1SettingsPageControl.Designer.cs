@@ -41,6 +41,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.txtProxyPassword = new System.Windows.Forms.TextBox();
             this.lblProxyDomain = new System.Windows.Forms.Label();
             this.txtProxyDomain = new System.Windows.Forms.TextBox();
+            this.lblAccessToken = new System.Windows.Forms.Label();
+            this.txtAccessToken = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // lblV1ConnectionValidationResult
@@ -65,35 +67,52 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(106, 117);
-            this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(375, 20);
-            this.txtPassword.TabIndex = 6;
+//            this.txtPassword.Location = new System.Drawing.Point(106, 117);
+//            this.txtPassword.Name = "txtPassword";
+//            this.txtPassword.Size = new System.Drawing.Size(375, 20);
+//            this.txtPassword.TabIndex = 6;
             // 
             // lblPassword
             // 
-            this.lblPassword.AutoSize = true;
-            this.lblPassword.Location = new System.Drawing.Point(17, 120);
-            this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(53, 13);
-            this.lblPassword.TabIndex = 5;
-            this.lblPassword.Text = "Password";
+//            this.lblPassword.AutoSize = true;
+//            this.lblPassword.Location = new System.Drawing.Point(17, 120);
+//            this.lblPassword.Name = "lblPassword";
+//            this.lblPassword.Size = new System.Drawing.Size(53, 13);
+//            this.lblPassword.TabIndex = 5;
+//            this.lblPassword.Text = "Password";
             // 
             // txtUsername
             // 
-            this.txtUsername.Location = new System.Drawing.Point(106, 77);
-            this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(375, 20);
-            this.txtUsername.TabIndex = 4;
+//            this.txtUsername.Location = new System.Drawing.Point(106, 77);
+//            this.txtUsername.Name = "txtUsername";
+//            this.txtUsername.Size = new System.Drawing.Size(375, 20);
+//            this.txtUsername.TabIndex = 4;
             // 
             // lblUsername
             // 
-            this.lblUsername.AutoSize = true;
-            this.lblUsername.Location = new System.Drawing.Point(17, 80);
-            this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(55, 13);
-            this.lblUsername.TabIndex = 3;
-            this.lblUsername.Text = "Username";
+//            this.lblUsername.AutoSize = true;
+//            this.lblUsername.Location = new System.Drawing.Point(17, 80);
+//            this.lblUsername.Name = "lblUsername";
+//            this.lblUsername.Size = new System.Drawing.Size(55, 13);
+//            this.lblUsername.TabIndex = 3;
+//            this.lblUsername.Text = "Username";
+            //
+            // txtAccessToken
+            //
+            this.txtAccessToken.Location = new System.Drawing.Point(106, 77);
+            this.txtAccessToken.Name = "txtAccessToken";
+            this.txtAccessToken.Size = new System.Drawing.Size(375, 20);
+            this.txtAccessToken.TabIndex = 4;
+            // 
+            // lblAccessToken
+            // 
+            this.lblAccessToken.AutoSize = true;
+            this.lblAccessToken.Location = new System.Drawing.Point(17, 80);
+            this.lblAccessToken.Name = "lblAccessToken";
+            this.lblAccessToken.Size = new System.Drawing.Size(76, 13);
+            this.lblAccessToken.TabIndex = 3;
+            this.lblAccessToken.Text = "Access Token";
+
             // 
             // txtServerUrl
             // 
@@ -214,6 +233,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.Controls.Add(this.btnVerifyV1Connection);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.lblPassword);
+            this.Controls.Add(this.lblAccessToken);
+            this.Controls.Add(this.txtAccessToken);
             this.Controls.Add(this.txtUsername);
             this.Controls.Add(this.lblUsername);
             this.Controls.Add(this.txtServerUrl);
@@ -246,5 +267,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
         private System.Windows.Forms.TextBox txtProxyPassword;
         private System.Windows.Forms.Label lblProxyDomain;
         private System.Windows.Forms.TextBox txtProxyDomain;
+        private System.Windows.Forms.Label lblAccessToken;
+        private System.Windows.Forms.TextBox txtAccessToken;
+
     }
 }
