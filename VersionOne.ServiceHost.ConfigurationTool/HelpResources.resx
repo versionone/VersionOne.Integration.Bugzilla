@@ -383,9 +383,6 @@ If a mapping of Quality Center to VersionOne priority is omitted here, created V
   <data name="TestsReference" xml:space="preserve">
     <value>VersionOne Field name to search for test identifier. It's recommended that you use the Reference field; however if you are already using this field for another purpose, you may choose another text field, including custom fields.</value>
   </data>
-  <data name="V1PageIntegratedAuth" xml:space="preserve">
-    <value>Whether to use Windows integrated authentication instead of username/password pair.</value>
-  </data>
   <data name="V1PageProxyEnabled" xml:space="preserve">
     <value>Enabling proxy server affects VersionOne communication. Be sure to enable it if server is not accessible directly.</value>
   </data>
