@@ -25,13 +25,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
         private void InitializeComponent() {
             this.lblV1ConnectionValidationResult = new System.Windows.Forms.Label();
             this.btnVerifyV1Connection = new System.Windows.Forms.Button();
-            this.txtPassword = new System.Windows.Forms.TextBox();
-            this.lblPassword = new System.Windows.Forms.Label();
-            this.txtUsername = new System.Windows.Forms.TextBox();
-            this.lblUsername = new System.Windows.Forms.Label();
             this.txtServerUrl = new System.Windows.Forms.TextBox();
             this.lblServerUrl = new System.Windows.Forms.Label();
-            this.chkUseIntegratedAuth = new System.Windows.Forms.CheckBox();
             this.chkUseProxy = new System.Windows.Forms.CheckBox();
             this.lblProxyUri = new System.Windows.Forms.Label();
             this.lblProxyUserName = new System.Windows.Forms.Label();
@@ -64,38 +59,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.btnVerifyV1Connection.TabIndex = 17;
             this.btnVerifyV1Connection.Text = "Validate";
             this.btnVerifyV1Connection.UseVisualStyleBackColor = true;
-            // 
-            // txtPassword
-            // 
-//            this.txtPassword.Location = new System.Drawing.Point(106, 117);
-//            this.txtPassword.Name = "txtPassword";
-//            this.txtPassword.Size = new System.Drawing.Size(375, 20);
-//            this.txtPassword.TabIndex = 6;
-            // 
-            // lblPassword
-            // 
-//            this.lblPassword.AutoSize = true;
-//            this.lblPassword.Location = new System.Drawing.Point(17, 120);
-//            this.lblPassword.Name = "lblPassword";
-//            this.lblPassword.Size = new System.Drawing.Size(53, 13);
-//            this.lblPassword.TabIndex = 5;
-//            this.lblPassword.Text = "Password";
-            // 
-            // txtUsername
-            // 
-//            this.txtUsername.Location = new System.Drawing.Point(106, 77);
-//            this.txtUsername.Name = "txtUsername";
-//            this.txtUsername.Size = new System.Drawing.Size(375, 20);
-//            this.txtUsername.TabIndex = 4;
-            // 
-            // lblUsername
-            // 
-//            this.lblUsername.AutoSize = true;
-//            this.lblUsername.Location = new System.Drawing.Point(17, 80);
-//            this.lblUsername.Name = "lblUsername";
-//            this.lblUsername.Size = new System.Drawing.Size(55, 13);
-//            this.lblUsername.TabIndex = 3;
-//            this.lblUsername.Text = "Username";
             //
             // txtAccessToken
             //
@@ -129,17 +92,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.lblServerUrl.Size = new System.Drawing.Size(63, 13);
             this.lblServerUrl.TabIndex = 1;
             this.lblServerUrl.Text = "Server URL";
-            // 
-            // chkUseIntegratedAuth
-            // 
-            this.chkUseIntegratedAuth.AutoSize = true;
-            this.chkUseIntegratedAuth.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkUseIntegratedAuth.Location = new System.Drawing.Point(267, 10);
-            this.chkUseIntegratedAuth.Name = "chkUseIntegratedAuth";
-            this.chkUseIntegratedAuth.Size = new System.Drawing.Size(214, 17);
-            this.chkUseIntegratedAuth.TabIndex = 0;
-            this.chkUseIntegratedAuth.Text = "Use Windows Integrated Authentication";
-            this.chkUseIntegratedAuth.UseVisualStyleBackColor = true;
             // 
             // chkUseProxy
             // 
@@ -231,15 +183,10 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.Controls.Add(this.chkUseProxy);
             this.Controls.Add(this.lblV1ConnectionValidationResult);
             this.Controls.Add(this.btnVerifyV1Connection);
-            this.Controls.Add(this.txtPassword);
-            this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.lblAccessToken);
             this.Controls.Add(this.txtAccessToken);
-            this.Controls.Add(this.txtUsername);
-            this.Controls.Add(this.lblUsername);
             this.Controls.Add(this.txtServerUrl);
             this.Controls.Add(this.lblServerUrl);
-            this.Controls.Add(this.chkUseIntegratedAuth);
             this.Name = "V1SettingsPageControl";
             this.Size = new System.Drawing.Size(540, 391);
             this.ResumeLayout(false);
@@ -251,13 +198,8 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
 
         private System.Windows.Forms.Label lblV1ConnectionValidationResult;
         private System.Windows.Forms.Button btnVerifyV1Connection;
-        private System.Windows.Forms.TextBox txtPassword;
-        private System.Windows.Forms.Label lblPassword;
-        private System.Windows.Forms.TextBox txtUsername;
-        private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.TextBox txtServerUrl;
         private System.Windows.Forms.Label lblServerUrl;
-        private System.Windows.Forms.CheckBox chkUseIntegratedAuth;
         private System.Windows.Forms.CheckBox chkUseProxy;
         private System.Windows.Forms.Label lblProxyUri;
         private System.Windows.Forms.Label lblProxyUserName;

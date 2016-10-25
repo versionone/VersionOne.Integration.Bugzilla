@@ -8,9 +8,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI
     {
         private AuthenticationTypes authenticationType;
         private string url;
-        private string username;
-        private string password;
-        private bool integrated;
         private bool useProxy;
         private string proxyUri;
         private string proxyUsername;
@@ -27,22 +24,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI
         {
             get { return url; }
         }
-
-        public string Username
-        {
-            get { return username; }
-        }
-
-        public string Password
-        {
-            get { return password; }
-        }
-
-        public bool Integrated
-        {
-            get { return integrated; }
-        }
-
+        
         public bool UserProxy
         {
             get { return useProxy; }
@@ -77,23 +59,14 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI
         /// Validation without proxy.
         /// </summary>
         /// <param name="url">URL to VersionOne instance.</param>
-        /// <param name="username">VersionOne username.</param>
-        /// <param name="password">VersionOne password.</param>
-        /// <param name="integrated">Use integrated authentication.</param>
         /// <param name="authenticationType">VersionOne authentication type</param>
-        public ConnectionValidationEventArgs(string url, string username, string password, bool integrated, AuthenticationTypes authenticationType)
+        public ConnectionValidationEventArgs(string url, AuthenticationTypes authenticationType)
         {
             this.authenticationType = authenticationType;
             this.url = url;
-            this.username = username;
-            this.password = password;
-            this.integrated = integrated;
             this.useProxy = false;
             this.versionOneSettings.AuthenticationType = authenticationType;
             this.versionOneSettings.ApplicationUrl = url;
-            this.versionOneSettings.Username = username;
-            this.versionOneSettings.Password = password;
-            this.versionOneSettings.IntegratedAuth = integrated;
         }
 
         /// <summary>
@@ -104,9 +77,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI
         {
             this.authenticationType = connectionSettings.AuthenticationType;
             this.url = connectionSettings.ApplicationUrl;
-            this.username = connectionSettings.Username;
-            this.password = connectionSettings.Password;
-            this.integrated = connectionSettings.IntegratedAuth;
             this.useProxy = connectionSettings.ProxySettings.Enabled;
             this.proxyDomain = connectionSettings.ProxySettings.Domain;
             this.proxyUri = connectionSettings.ProxySettings.Uri;

@@ -14,9 +14,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities
         public const string AccessTokenAuthProperty = "AccessTokenAuth";
         public const string AccessTokenProperty = "AccessToken";
         public const string ApplicationUrlProperty = "ApplicationUrl";
-        public const string UsernameProperty = "Username";
-        public const string PasswordProperty = "Password";
-        public const string IntegratedAuthProperty = "IntegratedAuth";
 
         public VersionOneSettings()
         {
@@ -38,16 +35,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities
 
         [NonEmptyStringValidator]
         public string AccessToken { get; set; }
-
-        [NonEmptyStringValidator]
-        public string Username { get; set; }
-
-        [NonEmptyStringValidator]
-        public string Password { get; set; }
-
-        [HelpString(HelpResourceKey = "V1PageIntegratedAuth")]
-        public bool IntegratedAuth { get; set; }
-
+        
         public ProxyConnectionSettings ProxySettings { get; set; }
     }
 }

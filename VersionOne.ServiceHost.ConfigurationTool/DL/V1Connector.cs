@@ -100,7 +100,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
             }
             
             var uri = new Uri(proxySettings.Uri);
-            return new ProxyProvider(uri,proxySettings.UserName, proxySettings.Password, proxySettings.Domain);
+            return new ProxyProvider(uri, proxySettings.UserName, proxySettings.Password, proxySettings.Domain);
         }
 
         /// <summary>

@@ -16,13 +16,10 @@ namespace VersionOne.ServiceHost.Core.Configuration
         public string Url { get; set; }
 
         public string AccessToken { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-
+        
         [XmlElement("APIVersion")]
         public string ApiVersion { get; set; }
 
-        public bool IntegratedAuth { get; set; }
         public ProxySettings ProxySettings { get; set; }
 
         public VersionOneSettings()

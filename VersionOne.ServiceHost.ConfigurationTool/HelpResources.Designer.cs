@@ -1095,15 +1095,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Whether to use Windows integrated authentication instead of username/password pair..
-        /// </summary>
-        internal static string V1PageIntegratedAuth {
-            get {
-                return ResourceManager.GetString("V1PageIntegratedAuth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enabling proxy server affects VersionOne communication. Be sure to enable it if server is not accessible directly..
         /// </summary>
         internal static string V1PageProxyEnabled {
