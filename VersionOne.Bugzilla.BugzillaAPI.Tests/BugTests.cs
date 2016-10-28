@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace VersionOne.Bugzilla.BugzillaAPI.Testss
+namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 {
     [TestClass()]
     public class Given_A_Bug
