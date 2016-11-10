@@ -16,11 +16,13 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         [TestInitialize()]
         public void SetContext()
         {
+            var liveInstanceOfBugzillaThatHasRestfulApi = "http://184.170.225.111/bugzilla/rest/";
+
             IBugzillaClientConfiguration bugzillaClientConfiguration = new BugzillaClientConfiguration
             {
                 UserName = "terry.densmore@versionone.com",
                 Password = "admin1425",
-                Url = "http://184.170.227.113/bugzilla/rest/"
+                Url = liveInstanceOfBugzillaThatHasRestfulApi
             };
 
             ILogger logger = MockRepository.GenerateMock<ILogger>();
