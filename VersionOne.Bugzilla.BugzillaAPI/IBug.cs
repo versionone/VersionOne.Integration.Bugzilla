@@ -4,17 +4,17 @@ using Newtonsoft.Json.Linq;
 namespace VersionOne.Bugzilla.BugzillaAPI
 {
     public interface IBug {
-        string ID { get; set; }
-        string Name { get; set; }
-        string Priority { get; set; }
-        string Product { get; set; }
+        string ID { get; }
+        string Name { get; }
+        string Priority { get; }
+        string Product { get; }
         int ProductId { get; set; }
-        string ComponentID { get; set; }
+        string Component { get; }
         string AssignedTo { get; set; }
-        string Description { get; set; }
-        string Status { get; set; }
-        List<JToken> DependesOn { get; set; }
-        string IsOpen { get; set; }
+        string Description { get; }
+        string Status { get; }
+        IEnumerable<int> DependesOn { get; }
+        bool IsOpen { get; }
         string GetReassignBugPayload(string integrationUserToken);
     }
 }

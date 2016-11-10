@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
@@ -109,23 +110,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 LogAndThrow($"Error when trying to get bug {bugId}: ", response["message"].ToString());
 		    }
 
-            var bugResponse = response["bugs"].First;
+            var bugData = response["bugs"].First;
 
             var comment = GetFirstComment(bugId);
 
-            var bug = new Bug
-            {
-                ID = bugResponse["id"].ToString(),
-                Name = bugResponse["summary"].ToString(),
-                AssignedTo = bugResponse["assigned_to"].ToString(),
-                ComponentID = bugResponse["component"].ToString(),
-                Priority = bugResponse["priority"].ToString(),
-                Product = bugResponse["product"].ToString(),
-                Status = bugResponse["status"].ToString(),
-                Description = comment,
-                IsOpen = bugResponse["is_open"].ToString(),
-                DependesOn = bugResponse["depends_on"].ToList()
-			};
+		    var bug = new Bug(bugData, comment);
 
             bug.ProductId = FindProductId(bug);
 
@@ -177,7 +166,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             if (resolution.Equals(Resolution.FIXED.ToString()) && HasOpenDependencies(bug))
             {
-                LogAndThrow($"Error when trying to resolve bug {bugId}: ", String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count, bugId));
+                LogAndThrow($"Error when trying to resolve bug {bugId}: ", String.Format("Still {0} unresolved bugs for bugID {1}", bug.DependesOn.Count(), bugId));
             }
             
              ChangeStatusAndResolve(bug, Status.RESOLVED.ToString(), resolution);
@@ -287,15 +276,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         private bool HasOpenDependencies(IBug bug)
         {
-            foreach (JToken bugId in bug.DependesOn)
-            {
-                var dependantBug = GetBug((int) bugId);
-                if (dependantBug.IsOpen.Equals("True"))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return bug.DependesOn.Select(bugId => GetBug(bugId)).Any(dependantBug => dependantBug.IsOpen);
         }
 
         private bool StatusExists(string status)

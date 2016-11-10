@@ -124,11 +124,10 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         public void when_calling_resolve_bug_with_fixed_for_a_bug_with_open_dependencies_should_throw_an_exception()
         {
             var bugWithDependencyId = 127;
-            var theDependantBugId = 128;
 
             var bugWithDependency = _client.GetBug(bugWithDependencyId);
 
-            Assert.IsTrue(bugWithDependency.DependesOn.Count > 0);
+            Assert.IsTrue(bugWithDependency.DependesOn.Count() > 0);
 
             _client.ResolveBug(bugWithDependencyId, Resolution.FIXED.ToString());
         }

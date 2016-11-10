@@ -192,15 +192,15 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
             
             for (int index = 0; index < size; index++)
             {
-                var bug = new Bug();
-                bug.ID = $"{index + 1}";
-                bug.AssignedTo = assignTo;
-                bug.ComponentID = $"{random.Next()}";
-                bug.Description = Guid.NewGuid().ToString();
-                bug.Name = Guid.NewGuid().ToString();
-                bug.ProductId = productId;
-                bug.Priority = expectedPriority;
-                result.Add(bug);
+//                var bug = new Bug();
+//                bug.ID = $"{index + 1}";
+//                bug.AssignedTo = assignTo;
+//                bug.Component = $"{random.Next()}";
+//                bug.Description = Guid.NewGuid().ToString();
+//                bug.Name = Guid.NewGuid().ToString();
+//                bug.ProductId = productId;
+//                bug.Priority = expectedPriority;
+//                result.Add(bug);
             }
 
             return result;
