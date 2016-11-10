@@ -290,7 +290,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
             foreach (JToken bugId in bug.DependesOn)
             {
                 var dependantBug = GetBug((int) bugId);
-                if (dependantBug.IsOpen.Equals("true"))
+                if (dependantBug.IsOpen.Equals("True"))
                 {
                     return true;
                 }

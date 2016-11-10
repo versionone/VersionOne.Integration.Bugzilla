@@ -120,6 +120,20 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Exception))]
+        public void when_calling_resolve_bug_with_fixed_for_a_bug_with_open_dependencies_should_throw_an_exception()
+        {
+            var bugWithDependencyId = 127;
+            var theDependantBugId = 128;
+
+            var bugWithDependency = _client.GetBug(bugWithDependencyId);
+
+            Assert.IsTrue(bugWithDependency.DependesOn.Count > 0);
+
+            _client.ResolveBug(bugWithDependencyId, Resolution.FIXED.ToString());
+        }
+
+        [TestMethod]
         public void when_calling_reassign_bug_it_should_change_the_assigned_bug()
         {
             int ID = 7;
