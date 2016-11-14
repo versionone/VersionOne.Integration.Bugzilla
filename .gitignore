@@ -35,6 +35,7 @@ Ankh.NoLoad
 __MVC_BACKUP/
 UpgradeLog.XML
 _UpgradeReport_Files/
+.vs/config/applicationhost.config
 
 ## Tooling ##
 _ReSharper*/
