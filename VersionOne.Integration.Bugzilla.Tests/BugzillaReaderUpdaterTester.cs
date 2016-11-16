@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
+using VersionOne.Bugzilla.BugzillaAPI;
 using VersionOne.ServiceHost.BugzillaServices;
 using VersionOne.ServiceHost.Core.Configuration;
+using VersionOne.ServiceHost.Core.Logging;
+using VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla;
 using VersionOne.ServiceHost.WorkitemServices;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VersionOne.Bugzilla.BugzillaAPI;
 
-namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
+namespace VersionOne.Integration.Bugzilla.Tests
 {
     [TestClass]
 	public class BugzillaReaderUpdaterTester
@@ -157,6 +159,8 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 
             Expect.Call(mocks.Client.Logout);
 
+            Expect.Call(mocks.Client.AcceptBug(Arg<int>.Is.Anything, Arg<string>.Is.Anything)).Return(true);
+
             if (!string.IsNullOrEmpty(config.OnCreateFieldName))
 			{
 				Expect.Call(mocks.Client.UpdateBug(expectedExternalId, config.OnCreateFieldName, config.OnCreateFieldValue)).Return(true);
@@ -231,4 +235,52 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 		}
 
 	}
+
+    [TestClass]
+    public class Given_A_Defect_Was_Created_In_VersionOne
+    {
+        [TestClass]
+        public class When_Updating_Bugzilla
+        {
+            private BugzillaReaderUpdater _bugzillaReaderUpdater;
+            private IBugzillaClient _bugZillaClient;
+
+
+            [TestInitialize()]
+            public void Setup()
+            {
+                _bugZillaClient = MockRepository.GenerateMock<IBugzillaClient>();
+                _bugZillaClient.Stub(client => client.Login()).Return("123");
+                _bugZillaClient.Stub(client => client.AcceptBug(Arg<int>.Is.Anything, Arg<string>.Is.Anything)).Return(true);
+
+                var bugZillaClientFactory = MockRepository.GenerateMock<IBugzillaClientFactory>();
+                bugZillaClientFactory.Stub(factory => factory.CreateNew()).Return(_bugZillaClient);
+
+                var logger = MockRepository.GenerateMock<ILogger>();
+
+                var config = new BugzillaServiceConfiguration();
+                var bugZillaBugStatusToSet = "IN_PROGRESS";
+                config.OnCreateResolveValue = bugZillaBugStatusToSet;
+
+                _bugzillaReaderUpdater = new BugzillaReaderUpdater(config, bugZillaClientFactory, logger);
+
+                var versionOneDefect = new Defect(string.Empty, String.Empty, String.Empty, string.Empty);
+                var bugId = "1";
+                versionOneDefect.ExternalId = bugId;
+
+                var versionOneWorkitemCreationResult = new WorkitemCreationResult(versionOneDefect);
+
+                _bugzillaReaderUpdater.OnDefectCreated(versionOneWorkitemCreationResult);
+            }
+
+            [TestMethod]
+            public void The_Bugzilla_Client_Accepts_The_Bug()
+            {
+                var expectedBugId = 1;
+                var expectedStatus = "IN_PROGRESS";
+                _bugZillaClient.AssertWasCalled(client => client.AcceptBug(expectedBugId, expectedStatus));
+            }
+        }
+        
+    }
 }

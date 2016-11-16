@@ -73,7 +73,7 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
             bugzillaClient.Login();
             
-            if (configuration.OnCreateAccept && !bugzillaClient.AcceptBug(bugId, configuration.OnCreateResolveValue)) 
+            if (!bugzillaClient.AcceptBug(bugId, configuration.OnCreateResolveValue)) 
             {
 				logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to accept bug {0}.", bugId));
 			}
