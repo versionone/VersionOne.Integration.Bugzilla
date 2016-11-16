@@ -12,7 +12,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         private string _commentWhenCreated;
 
         [TestInitialize()]
-        public void SetContext()
+        public void Setup()
         {
             var representativeResponseFromBugzillaRestAPIForGettingABug = JObject.Parse("{\"bugs\":[{\"summary\":\"This one has a depencancy\",\"creator_detail\":{\"email\":\"terry.densmore@versionone.com\",\"name\":\"terry.densmore@versionone.com\",\"id\":1,\"real_name\":\"Terry Densmore\"},\"priority\":\"---\",\"deadline\":null,\"status\":\"CONFIRMED\",\"depends_on\":[128],\"groups\":[],\"cf_upper\":null,\"classification\":\"Unclassified\",\"id\":127,\"keywords\":[],\"last_change_time\":\"2016-11-10T15:01:07Z\",\"assigned_to\":\"terry.densmore@versionone.com\",\"url\":\"\",\"product\":\"TestProduct\",\"creator\":\"terry.densmore@versionone.com\",\"cf_versiononeurl\":\"\",\"resolution\":\"\",\"flags\":[],\"cf_versiononestate\":\"---\",\"version\":\"unspecified\",\"cf_upperurl\":\"\",\"component\":\"TestComponent\",\"qa_contact\":\"\",\"see_also\":[],\"creation_time\":\"2016-11-10T14:54:38Z\",\"cc\":[],\"platform\":\"PC\",\"assigned_to_detail\":{\"email\":\"terry.densmore@versionone.com\",\"name\":\"terry.densmore@versionone.com\",\"id\":1,\"real_name\":\"Terry Densmore\"},\"target_milestone\":\"---\",\"blocks\":[],\"is_open\":true,\"cc_detail\":[],\"whiteboard\":\"\",\"severity\":\"enhancement\",\"op_sys\":\"Windows\",\"alias\":[],\"is_creator_accessible\":true,\"is_cc_accessible\":true,\"dupe_of\":null,\"is_confirmed\":true}],\"faults\":[]}");
             var representativeBugData = representativeResponseFromBugzillaRestAPIForGettingABug["bugs"].First;
@@ -25,7 +25,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         }
 
         [TestMethod]
-        public void it_should_give_appropriate_reassignto_payloads()
+        public void It_Should_Give_Appropriate_Reassignto_Payloads()
         {
             var integrationUser = "terry.densmore@versionone.com";
             _bug.AssignedTo = "denise@denise.com";
@@ -34,42 +34,42 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         }
 
         [TestMethod]
-        public void it_should_have_an_id()
+        public void It_Should_Have_An_ID()
         {
             var expectedId = "127";
             Assert.IsTrue(_bug.ID == expectedId);
         }
 
         [TestMethod]
-        public void it_should_have_a_name()
+        public void It_Should_Have_A_Name()
         {
             var expectedName = "This one has a depencancy";
             Assert.IsTrue(_bug.Name == expectedName);
         }
 
         [TestMethod]
-        public void it_should_have_an_assigned_to()
+        public void It_Should_Have_An_Assigned_To()
         {
             var expectedAssignedTo = "terry.densmore@versionone.com";
             Assert.IsTrue(_bug.AssignedTo == expectedAssignedTo);
         }
 
         [TestMethod]
-        public void it_should_have_an_associated_component()
+        public void It_Should_Have_An_Associated_Component()
         {
             var expectedComponent = "TestComponent";
             Assert.IsTrue(_bug.Component == expectedComponent);
         }
 
         [TestMethod]
-        public void it_should_have_a_priority()
+        public void It_Should_Have_A_Priority()
         {
             var expectedPriority = "---";
             Assert.IsTrue(_bug.Priority == expectedPriority);
         }
 
         [TestMethod]
-        public void it_should_have_a_product()
+        public void It_Should_Have_A_Product()
         {
             var expectedProduct = "TestProduct";
             Assert.IsTrue(_bug.Product == expectedProduct);
@@ -77,26 +77,26 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 
 
         [TestMethod]
-        public void it_should_have_a_status()
+        public void It_Should_Have_A_Status()
         {
             var expectedStatus = "CONFIRMED";
             Assert.IsTrue(_bug.Status == expectedStatus);
         }
 
         [TestMethod]
-        public void it_should_have_a_description()
+        public void It_Should_Have_A_Description()
         {
             Assert.IsTrue(_bug.Description == _commentWhenCreated);
         }
 
         [TestMethod]
-        public void it_should_indicate_if_it_is_open()
+        public void It_Should_Indicate_If_It_Is_Open()
         {
             Assert.IsTrue(_bug.IsOpen);
         }
 
         [TestMethod]
-        public void it_should_indicate_if_it_has_dependencies()
+        public void It_Should_Indicate_If_It_Has_Dependencies()
         {
             Assert.IsTrue(_bug.DependesOn.Count() > 0);
         }

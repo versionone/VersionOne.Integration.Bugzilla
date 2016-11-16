@@ -16,7 +16,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         [TestInitialize()]
         public void SetContext()
         {
-            var liveInstanceOfBugzillaThatHasRestfulApi = "http://184.170.225.111/bugzilla/rest/";
+            var liveInstanceOfBugzillaThatHasRestfulApi = "http://184.170.227.113/bugzilla/rest/";
 
             IBugzillaClientConfiguration bugzillaClientConfiguration = new BugzillaClientConfiguration
             {
@@ -123,7 +123,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         [ExpectedException(typeof(Exception))]
         public void when_calling_resolve_bug_with_fixed_for_a_bug_with_open_dependencies_should_throw_an_exception()
         {
-            var bugWithDependencyId = 127;
+            var bugWithDependencyId = 157;
 
             var bugWithDependency = _client.GetBug(bugWithDependencyId);
 
