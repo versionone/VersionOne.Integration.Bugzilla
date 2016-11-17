@@ -129,9 +129,6 @@
   <data name="BugzillaCloseResolveValue" xml:space="preserve">
     <value>Status to resolve bug to once it gets closed in VersionOne. (optional)</value>
   </data>
-  <data name="BugzillaCreateAccept" xml:space="preserve">
-    <value>Check to mark the bug accepted once it gets created in VersionOne. (optional)</value>
-  </data>
   <data name="BugzillaCreateFieldId" xml:space="preserve">
     <value>Name of the Bugzilla field to update when a VersionOne defect is created. (optional)</value>
   </data>
@@ -142,7 +139,7 @@
     <value>User ID to assign bug to once it gets created in VersionOne. (optional)</value>
   </data>
   <data name="BugzillaCreateResolve" xml:space="preserve">
-    <value>Status to resolve bug to once it gets created in VersionOne. (optional)</value>
+    <value>Status to resolve bug to once it gets created in VersionOne.</value>
   </data>
   <data name="BugzillaPriorityMappings" xml:space="preserve">
     <value>Issue priority mappings. 
