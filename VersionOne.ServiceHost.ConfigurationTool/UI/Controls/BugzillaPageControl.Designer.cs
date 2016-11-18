@@ -324,20 +324,9 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.grpUpdateBugs.TabStop = false;
             this.grpUpdateBugs.Text = "Update Bugzilla Bugs";
             // 
-            // chkCloseAccept
-            // 
-            this.chkCloseAccept.AutoSize = true;
-            this.chkCloseAccept.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkCloseAccept.Location = new System.Drawing.Point(181, 47);
-            this.chkCloseAccept.Name = "chkCloseAccept";
-            this.chkCloseAccept.Size = new System.Drawing.Size(116, 17);
-            this.chkCloseAccept.TabIndex = 3;
-            this.chkCloseAccept.Text = "Close Accept         ";
-            this.chkCloseAccept.UseVisualStyleBackColor = true;
-            // 
             // txtCreateResolveValue
             // 
-            this.txtCreateResolveValue.Location = new System.Drawing.Point(152, 70);
+            this.txtCreateResolveValue.Location = new System.Drawing.Point(152, 47);
             this.txtCreateResolveValue.Name = "txtCreateResolveValue";
             this.txtCreateResolveValue.Size = new System.Drawing.Size(301, 20);
             this.txtCreateResolveValue.TabIndex = 5;
@@ -345,11 +334,22 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             // lblCreateResolveValue
             // 
             this.lblCreateResolveValue.AutoSize = true;
-            this.lblCreateResolveValue.Location = new System.Drawing.Point(10, 73);
+            this.lblCreateResolveValue.Location = new System.Drawing.Point(10, 50);
             this.lblCreateResolveValue.Name = "lblCreateResolveValue";
             this.lblCreateResolveValue.Size = new System.Drawing.Size(110, 13);
             this.lblCreateResolveValue.TabIndex = 4;
             this.lblCreateResolveValue.Text = "Create Resolve Value";
+            // 
+            // chkCloseAccept
+            // 
+            this.chkCloseAccept.AutoSize = true;
+            this.chkCloseAccept.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkCloseAccept.Location = new System.Drawing.Point(9, 75);
+            this.chkCloseAccept.Name = "chkCloseAccept";
+            this.chkCloseAccept.Size = new System.Drawing.Size(121, 17);
+            this.chkCloseAccept.TabIndex = 3;
+            this.chkCloseAccept.Text = "Close Accept         ";
+            this.chkCloseAccept.UseVisualStyleBackColor = true;
             // 
             // txtCloseResolveValue
             // 
