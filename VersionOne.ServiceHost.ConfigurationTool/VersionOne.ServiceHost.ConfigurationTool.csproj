@@ -102,9 +102,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="VersionOne.SDK.APIClient, Version=12.0.716.43782, Culture=neutral, PublicKeyToken=e0f410c10d2e7630, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\VersionOne.SDK.APIClient.dll</HintPath>
+    <Reference Include="VersionOne.SDK.APIClient, Version=15.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VersionOne.SDK.APIClient.15.1.0.0\lib\net451\VersionOne.SDK.APIClient.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -323,6 +323,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\VersionOne.Bugzilla.BugzillaAPI\VersionOne.Bugzilla.BugzillaAPI.csproj">
+      <Project>{bf7d1a4e-ca52-4263-b7b9-403396613490}</Project>
+      <Name>VersionOne.Bugzilla.BugzillaAPI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VersionOne.Bugzilla.XmlRpcProxy\VersionOne.Bugzilla.XmlRpcProxy.csproj">
       <Project>{9F8C4AA1-00CB-4640-9764-7691230C1EE5}</Project>
       <Name>VersionOne.Bugzilla.XmlRpcProxy</Name>

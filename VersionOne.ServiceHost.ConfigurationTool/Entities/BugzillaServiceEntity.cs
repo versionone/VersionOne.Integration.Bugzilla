@@ -22,7 +22,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
         public const string LinkFieldProperty = "LinkField";
         public const string CreateFieldIdProperty = "CreateFieldId";
         public const string CreateFieldValueProperty = "CreateFieldValue";
-        public const string CreateAcceptProperty = "CreateAccept";
         public const string CreateReassignValueProperty = "CreateReassignValue";
         public const string CreateResolveValueProperty = "CreateResolveValue";
         public const string CloseFieldIdProperty = "CloseFieldId";
@@ -35,7 +34,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
 
         public BugzillaServiceEntity () {
             CreateTimer(TimerEntity.DefaultTimerIntervalMinutes);
-            CreateAccept = new NullableBool();
             CloseAccept = new NullableBool();
 
             AssignButtonPressed = true;
@@ -45,7 +43,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
         }
 
         [NonEmptyStringValidator]
-        [RegexValidator(@"^[a-z]+:\/\/.+?\.cgi$", MessageTemplate = "URL must be valid and has to contain CGI file.")]
         [HelpString(HelpResourceKey="BugzillaUrl")]
         [XmlElement("BugzillaUrl")]
         public string Url { get; set; }
@@ -92,10 +89,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
 
         [HelpString(HelpResourceKey="BugzillaCreateFieldValue")]
         public string CreateFieldValue { get; set; }
-
-        [HelpString(HelpResourceKey="BugzillaCreateAccept")]
-        public NullableBool CreateAccept { get; set; }
-
+        
         [HelpString(HelpResourceKey="BugzillaCreateReassignValue")]
         public string CreateReassignValue { get; set; }
 
@@ -168,14 +162,13 @@ namespace VersionOne.ServiceHost.ConfigurationTool.Entities {
             var other = (BugzillaServiceEntity)obj;
             return NullableBool.Equals(other.CloseAccept, CloseAccept) && string.Equals(other.CloseFieldId, CloseFieldId) &&
                 string.Equals(other.CloseFieldValue, CloseFieldValue) && string.Equals(other.CloseReassignValue, CloseReassignValue) && 
-                string.Equals(other.CloseResolveValue, CloseResolveValue) && NullableBool.Equals(other.CreateAccept, CreateAccept) && 
-                string.Equals(other.CreateFieldId, CreateFieldId) && string.Equals(other.CreateFieldValue, CreateFieldValue) && 
-                string.Equals(other.CreateReassignValue, CreateReassignValue) && string.Equals(other.CreateResolveValue, CreateResolveValue) && 
-                string.Equals(other.LinkField, LinkField) && string.Equals(other.Password, Password) && 
-                string.Equals(other.UserName, UserName) && string.Equals(other.SearchName, SearchName) && 
-                string.Equals(other.SourceName, SourceName) && string.Equals(other.Url, Url) && 
-                string.Equals(other.UrlTemplate, UrlTemplate) && string.Equals(other.UrlTitle, UrlTitle) &&
-                NullableBool.Equals(other.IgnoreCertificate, IgnoreCertificate);
+                string.Equals(other.CloseResolveValue, CloseResolveValue) && string.Equals(other.CreateFieldId, CreateFieldId) && 
+                string.Equals(other.CreateFieldValue, CreateFieldValue) && string.Equals(other.CreateReassignValue, CreateReassignValue) && 
+                string.Equals(other.CreateResolveValue, CreateResolveValue) && string.Equals(other.LinkField, LinkField) && 
+                string.Equals(other.Password, Password) && string.Equals(other.UserName, UserName) && 
+                string.Equals(other.SearchName, SearchName) && string.Equals(other.SourceName, SourceName) && 
+                string.Equals(other.Url, Url) && string.Equals(other.UrlTemplate, UrlTemplate) && 
+                string.Equals(other.UrlTitle, UrlTitle) && NullableBool.Equals(other.IgnoreCertificate, IgnoreCertificate);
         }
 
         public override int GetHashCode() {

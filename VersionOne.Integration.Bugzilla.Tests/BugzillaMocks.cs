@@ -1,5 +1,5 @@
 using Rhino.Mocks;
-using VersionOne.Bugzilla.XmlRpcProxy;
+using VersionOne.Bugzilla.BugzillaAPI;
 using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
@@ -13,7 +13,7 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 		{
 			repository = new MockRepository();
 			client = repository.StrictMock<IBugzillaClient>();
-			serviceFactory = repository.DynamicMock<IBugzillaClientFactory>();
+			_clientFactory = repository.DynamicMock<IBugzillaClientFactory>();
 			logger = repository.Stub<ILogger>();
 		}
 
@@ -29,10 +29,10 @@ namespace VersionOne.ServiceHost.Tests.WorkitemServices.Bugzilla
 			get { return client; }
 		}
 
-		private IBugzillaClientFactory serviceFactory;
-		public IBugzillaClientFactory ServiceFactory
+		private IBugzillaClientFactory _clientFactory;
+		public IBugzillaClientFactory ClientFactory
 		{
-			get { return serviceFactory; }
+			get { return _clientFactory; }
 		}
 
 		private ILogger logger;

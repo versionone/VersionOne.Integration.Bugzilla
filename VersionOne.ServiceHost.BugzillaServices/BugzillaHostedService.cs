@@ -1,12 +1,13 @@
 using System;
 using System.Xml;
-using VersionOne.Bugzilla.XmlRpcProxy;
+//using VersionOne.Bugzilla.XmlRpcProxy;
 using VersionOne.Profile;
 using VersionOne.ServiceHost.Core.Logging;
 using VersionOne.ServiceHost.Core.Services;
 using VersionOne.ServiceHost.Core.Utility;
 using VersionOne.ServiceHost.Eventing;
 using VersionOne.ServiceHost.WorkitemServices;
+using VersionOne.Bugzilla.BugzillaAPI;
 
 namespace VersionOne.ServiceHost.BugzillaServices {
     public class BugzillaHostedService : IHostedService {
@@ -15,6 +16,7 @@ namespace VersionOne.ServiceHost.BugzillaServices {
         private IEventManager eventManager;
         private string sourceFieldValue;
         private ILogger logger;
+        private IBugzillaClientFactory bugzillaClientFactory;
 
         private const string ProjectMappingsNode = "ProjectMappings";
         private const string PriorityMappingsNode = "PriorityMappings";
@@ -35,8 +37,10 @@ namespace VersionOne.ServiceHost.BugzillaServices {
 
             this.eventManager = eventManager;
             logger = new Logger(eventManager);
+            var bugzillaClientConfiguration = new BugzillaClientConfiguration { UserName = bugzillaConfig.UserName, Password = bugzillaConfig.Password, Url = bugzillaConfig.Url, IgnoreSSLCert = bugzillaConfig.IgnoreCert};
+            bugzillaClientFactory = new BugzillaClientFactory(bugzillaClientConfiguration, logger);
 
-            var readerUpdater = new BugzillaReaderUpdater(bugzillaConfig, new BugzillaClientFactory(), logger);
+            var readerUpdater = new BugzillaReaderUpdater(bugzillaConfig, bugzillaClientFactory, logger);
             bugzillaReader = readerUpdater;
             bugzillaUpdater = readerUpdater;
 

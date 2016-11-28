@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using VersionOne.SDK.APIClient;
 using VersionOne.ServerConnector.Entities;
@@ -9,9 +10,11 @@ using VersionOne.ServiceHost.Core.Configuration;
 using VersionOne.ServiceHost.Core.Logging;
 using System.Xml;
 
-namespace VersionOne.ServerConnector {
+namespace VersionOne.ServerConnector
+{
 
-    public class VersionOneProcessor : IVersionOneProcessor {
+    public class VersionOneProcessor : IVersionOneProcessor
+    {
         public const string ScopeType = "Scope";
         public const string FeatureGroupType = "Theme";
         public const string StoryType = "Story";
@@ -29,7 +32,7 @@ namespace VersionOne.ServerConnector {
 
         public const string SystemAdminRoleName = "Role.Name'System Admin";
         public const string SystemAdminRoleId = "Role:1";
-        
+
         public const string OwnersAttribute = "Owners";
         public const string AssetStateAttribute = "AssetState";
         public const string AssetTypeAttribute = "AssetType";
@@ -47,14 +50,13 @@ namespace VersionOne.ServerConnector {
         private const string AssetAttribute = "Asset";
 
         private IServices services;
-        private IMetaModel metaModel;
-        private ILocalizer localizer;
-        private readonly ILogger logger; 
+        private readonly ILogger logger;
         private readonly XmlElement configuration;
 
         private IQueryBuilder queryBuilder;
 
-        private IDictionary<string, PropertyValues> ListPropertyValues {
+        private IDictionary<string, PropertyValues> ListPropertyValues
+        {
             get { return queryBuilder.ListPropertyValues; }
         }
 
@@ -62,7 +64,8 @@ namespace VersionOne.ServerConnector {
 
         public VersionOneProcessor(VersionOneSettings settings) : this(settings, null) { }
 
-        public VersionOneProcessor(XmlElement config, ILogger logger) {
+        public VersionOneProcessor(XmlElement config, ILogger logger)
+        {
             configuration = config;
             this.logger = logger;
 
@@ -71,26 +74,51 @@ namespace VersionOne.ServerConnector {
 
         public VersionOneProcessor(XmlElement config) : this(config, null) { }
 
-        private void Connect() {
-            var connector = new V1Central(configuration);
-            connector.Validate();
-            services = connector.Services;
-            metaModel = connector.MetaModel;
-            localizer = connector.Loc;
+        private void Connect()
+        {
+            var settings = VersionOneSettings.FromXmlElement(configuration);
 
-            queryBuilder.Setup(services, metaModel, connector.Loc);
+            var connector = V1Connector
+                .WithInstanceUrl(settings.Url)
+                .WithUserAgentHeader("VersionOne.Integration.Bugzilla", Assembly.GetEntryAssembly().GetName().Version.ToString());
+
+            ICanSetProxyOrEndpointOrGetConnector connectorWithAuth;
+
+            switch (settings.AuthenticationType)
+            {
+                case AuthenticationTypes.AccessToken:
+                    connectorWithAuth = connector.WithAccessToken(settings.AccessToken);
+                    break;
+                default:
+                    throw new Exception("Invalid authentication type");
+            }
+
+            if (settings.ProxySettings.Enabled)
+            {
+                connectorWithAuth.WithProxy(
+                new ProxyProvider(new Uri(settings.ProxySettings.Url), settings.ProxySettings.Username, settings.ProxySettings.Password, settings.ProxySettings.Domain));
+
+            }
+
+            services = new Services(connectorWithAuth.Build());
+
+            queryBuilder.Setup(services);
         }
 
-        protected void Connect(IServices testServices, IMetaModel testMetaData, IQueryBuilder testQueryBuilder) {
+        protected void Connect(IServices testServices, IQueryBuilder testQueryBuilder)
+        {
             services = testServices;
-            metaModel = testMetaData;
             queryBuilder = testQueryBuilder;
         }
 
-        public bool ValidateConnection() {
-            try {
-                Connect();                
-            } catch(Exception ex) {
+        public bool ValidateConnection()
+        {
+            try
+            {
+                Connect();
+            }
+            catch (Exception ex)
+            {
                 logger.MaybeLog(LogMessage.SeverityType.Error, "Connection is not valid. " + ex.Message);
                 return false;
             }
@@ -98,231 +126,316 @@ namespace VersionOne.ServerConnector {
             return true;
         }
 
-        public Member GetLoggedInMember() {
+        public Member GetLoggedInMember()
+        {
             return GetMembers(Filter.Empty()).FirstOrDefault(item => item.Asset.Oid.Equals(services.LoggedIn));
         }
 
-        public ICollection<Member> GetMembers(IFilter filter) {
+        public ICollection<Member> GetMembers(IFilter filter)
+        {
             return queryBuilder.Query(MemberType, filter).Select(item => new Member(item)).ToList();
-        } 
+        }
 
         // TODO make this Story-agnostic. In case of criteria based ex. on Story-only custom fields current filter approach won't let an easy solution.
-        public IList<FeatureGroup> GetFeatureGroups(IFilter filter, IFilter childrenFilter) {
+        public IList<FeatureGroup> GetFeatureGroups(IFilter filter, IFilter childrenFilter)
+        {
             var allMembers = GetMembers(Filter.Empty());
 
             return queryBuilder.Query(FeatureGroupType, filter)
                 .Select(asset => new FeatureGroup(
-                    asset, ListPropertyValues, 
-                    GetWorkitems(StoryType, GroupFilter.And(Filter.Equal(Entity.ParentAndUpProperty, asset.Oid.Momentless.Token), childrenFilter)), 
+                    asset, ListPropertyValues,
+                    GetWorkitems(StoryType, GroupFilter.And(Filter.Equal(Entity.ParentAndUpProperty, asset.Oid.Momentless.Token), childrenFilter)),
                     ChooseOwners(asset, allMembers),
                     queryBuilder.TypeResolver))
                 .ToList();
         }
 
-        public void SaveEntities<T>(ICollection<T> entities) where T : BaseEntity {
-            if(entities == null || entities.Count == 0) {
+        public void SaveEntities<T>(ICollection<T> entities) where T : BaseEntity
+        {
+            if (entities == null || entities.Count == 0)
+            {
                 return;
             }
 
-            foreach(var entity in entities) {
+            foreach (var entity in entities)
+            {
                 Save(entity);
             }
         }
 
-        public void Save(BaseEntity entity) {
-            try {
+        public void Save(BaseEntity entity)
+        {
+            try
+            {
                 services.Save(entity.Asset);
-            } catch(V1Exception ex) {
+            }
+            catch (V1Exception ex)
+            {
                 logger.MaybeLog(LogMessage.SeverityType.Error, string.Format(queryBuilder.Localize(GetMessageFromException(ex)) + " '{0}' ({1}).", entity.Asset.Oid.Token, entity.TypeToken));
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.MaybeLog(LogMessage.SeverityType.Error, "Internal error: " + ex.Message);
             }
         }
 
-        private static string GetMessageFromException(V1Exception exception) {
+        private static string GetMessageFromException(V1Exception exception)
+        {
             var message = exception.Message;
 
             return message.Split(':')[0];
         }
 
-        public void CloseWorkitem(PrimaryWorkitem workitem) {
-            try {
+        public void CloseWorkitem(PrimaryWorkitem workitem)
+        {
+            try
+            {
                 var closeOperation = workitem.Asset.AssetType.GetOperation(InactivateOperation);
                 services.ExecuteOperation(closeOperation, workitem.Asset.Oid);
-            } catch (V1Exception ex) {
+            }
+            catch (V1Exception ex)
+            {
                 throw new VersionOneException(queryBuilder.Localize(ex.Message));
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new VersionOneException(ex.Message);
             }
         }
 
-        public IList<ValueId> GetWorkitemStatuses() {
-            try {
+        public IList<ValueId> GetWorkitemStatuses()
+        {
+            try
+            {
                 return queryBuilder.QueryPropertyValues(WorkitemStatusType).ToList();
-            } catch (V1Exception ex) {
+            }
+            catch (V1Exception ex)
+            {
                 throw new VersionOneException(queryBuilder.Localize(ex.Message));
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new VersionOneException(ex.Message);
             }
         }
 
-        public IList<ValueId> GetBuildRunStatuses() {
-            try {
+        public IList<ValueId> GetBuildRunStatuses()
+        {
+            try
+            {
                 return queryBuilder.QueryPropertyValues(BuildRunStatusType).ToList();
-            } catch (V1Exception ex) {
+            }
+            catch (V1Exception ex)
+            {
                 throw new VersionOneException(queryBuilder.Localize(ex.Message));
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new VersionOneException(ex.Message);
             }
         }
 
-        public ValueId CreateWorkitemStatus(string statusName) {
-            try {
+        public ValueId CreateWorkitemStatus(string statusName)
+        {
+            try
+            {
                 var statusAsset = GetEntityFactory().Create(WorkitemStatusType, new[] {
                     AttributeValue.Single(Entity.NameProperty, statusName)
                 });
                 return new ValueId(statusAsset.Oid.Momentless, statusName);
-            } catch (V1Exception ex) {
+            }
+            catch (V1Exception ex)
+            {
                 throw new VersionOneException(queryBuilder.Localize(ex.Message));
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new VersionOneException(ex.Message);
             }
         }
 
-        public ValueId CreateWorkitemPriority(string priorityName) {
-            try {
+        public ValueId CreateWorkitemPriority(string priorityName)
+        {
+            try
+            {
                 var statusAsset = GetEntityFactory().Create(WorkitemPriorityType, new[] {
                     AttributeValue.Single(Entity.NameProperty, priorityName)
                 });
                 return new ValueId(statusAsset.Oid.Momentless, priorityName);
-            } catch (V1Exception ex) {
+            }
+            catch (V1Exception ex)
+            {
                 throw new VersionOneException(queryBuilder.Localize(ex.Message));
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new VersionOneException(ex.Message);
             }
         }
 
-        public void UpdateProject(string projectId, Link link) {
-            try {
-                if(link != null && !string.IsNullOrEmpty(link.Url)) {
+        public void UpdateProject(string projectId, Link link)
+        {
+            try
+            {
+                if (link != null && !string.IsNullOrEmpty(link.Url))
+                {
                     var projectAsset = GetProjectById(projectId);
                     AddLinkToAsset(projectAsset, link);
                 }
-            } catch (V1Exception ex) {
+            }
+            catch (V1Exception ex)
+            {
                 throw new VersionOneException(queryBuilder.Localize(ex.Message));
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new VersionOneException(ex.Message);
             }
         }
 
-        public string GetWorkitemLink(Workitem workitem) {
+        public string GetWorkitemLink(Workitem workitem)
+        {
             return string.Format("{0}assetdetail.v1?oid={1}", configuration["ApplicationUrl"].InnerText, workitem.Id);
         }
 
-        public string GetSummaryLink(Workitem workitem) {
+        public string GetSummaryLink(Workitem workitem)
+        {
             return string.Format("{0}{1}.mvc/Summary?oidToken={2}", configuration["ApplicationUrl"].InnerText, workitem.TypeName.ToLower(), workitem.Id);
         }
 
-        public PropertyValues GetAvailableListValues(string typeToken, string fieldName) {
-            try {
-                var type = metaModel.GetAssetType(typeToken);
+        public PropertyValues GetAvailableListValues(string typeToken, string fieldName)
+        {
+            try
+            {
+                var type = services.Meta.GetAssetType(typeToken);
                 var attributeDefinition = type.GetAttributeDefinition(fieldName);
-                
-                if(attributeDefinition.AttributeType != AttributeType.Relation) {
+
+                if (attributeDefinition.AttributeType != AttributeType.Relation)
+                {
                     throw new VersionOneException("Not a Relation field");
                 }
 
                 var listTypeToken = attributeDefinition.RelatedAsset.Token;
                 return queryBuilder.QueryPropertyValues(listTypeToken);
-            } catch(MetaException) {
+            }
+            catch (MetaException)
+            {
                 throw new VersionOneException("Invalid type or field name");
             }
         }
 
-        public IList<ValueId> GetWorkitemPriorities() {
-            try {
+        public IList<ValueId> GetWorkitemPriorities()
+        {
+            try
+            {
                 return queryBuilder.QueryPropertyValues(WorkitemPriorityType).ToList();
-            } catch (V1Exception ex) {
+            }
+            catch (V1Exception ex)
+            {
                 throw new VersionOneException(queryBuilder.Localize(ex.Message));
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new VersionOneException(ex.Message);
             }
         }
 
         // TODO get rid of it
-        public bool ProjectExists(string projectId) {
+        public bool ProjectExists(string projectId)
+        {
             return GetProjectById(projectId) != null;
         }
 
-        public bool AttributeExists(string typeName, string attributeName) {
-            try {
-                var type = metaModel.GetAssetType(typeName);
+        public bool AttributeExists(string typeName, string attributeName)
+        {
+            try
+            {
+                var type = services.Meta.GetAssetType(typeName);
                 var attributeDefinition = type.GetAttributeDefinition(attributeName);
                 return attributeDefinition != null;
-            } catch(MetaException) {
+            }
+            catch (MetaException)
+            {
                 return false;
             }
         }
 
-        public void AddProperty(string attr, string prefix, bool isList) {
+        public void AddProperty(string attr, string prefix, bool isList)
+        {
             queryBuilder.AddProperty(attr, prefix, isList);
         }
 
-        public void AddListProperty(string fieldName, string typeToken) {
+        public void AddListProperty(string fieldName, string typeToken)
+        {
             queryBuilder.AddListProperty(fieldName, typeToken);
         }
 
-        public void AddOptionalProperty(string attr, string prefix) {
-            if (!string.IsNullOrEmpty(attr)) {
+        public void AddOptionalProperty(string attr, string prefix)
+        {
+            if (!string.IsNullOrEmpty(attr))
+            {
                 queryBuilder.AddOptionalProperty(attr, prefix);
             }
         }
 
         // TODO use filters
-        private Asset GetProjectById(string projectId) {
-            var scopeType = metaModel.GetAssetType(Workitem.ScopeProperty);
+        private Asset GetProjectById(string projectId)
+        {
+            var scopeType = services.Meta.GetAssetType(Workitem.ScopeProperty);
             var scopeState = scopeType.GetAttributeDefinition(AssetStateAttribute);
 
             var scopeStateTerm = new FilterTerm(scopeState);
             scopeStateTerm.NotEqual(AssetState.Closed);
 
-            var query = new Query(Oid.FromToken(projectId, metaModel)) {Filter = scopeStateTerm};
+            var query = new Query(services.GetOid(projectId)) { Filter = scopeStateTerm };
             var result = services.Retrieve(query);
 
             return result.Assets.FirstOrDefault();
         }
 
-        private List<Asset> GetAssetLinks(Oid assetOid, IFilter filter) {
+        private List<Asset> GetAssetLinks(Oid assetOid, IFilter filter)
+        {
             var fullFilter = GroupFilter.And(filter, Filter.Equal(AssetAttribute, assetOid.Momentless));
             return queryBuilder.Query(LinkType, fullFilter);
         }
 
-        public List<Link> GetWorkitemLinks(Workitem workitem, IFilter filter) {
-            return GetAssetLinks(Oid.FromToken(workitem.Id, metaModel), filter).Select(x => new Link(x)).ToList();
+        public List<Link> GetWorkitemLinks(Workitem workitem, IFilter filter)
+        {
+            return GetAssetLinks(services.GetOid(workitem.Id), filter).Select(x => new Link(x)).ToList();
         }
 
-        public void AddLinkToEntity(BaseEntity entity, Link link) {
-            try {
-                if (link != null && !string.IsNullOrEmpty(link.Url)) {
+        public void AddLinkToEntity(BaseEntity entity, Link link)
+        {
+            try
+            {
+                if (link != null && !string.IsNullOrEmpty(link.Url))
+                {
                     AddLinkToAsset(entity.Asset, link);
                 }
-            } catch (V1Exception ex) {
+            }
+            catch (V1Exception ex)
+            {
                 throw new VersionOneException(queryBuilder.Localize(ex.Message));
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new VersionOneException(ex.Message);
             }
         }
 
-        private void AddLinkToAsset(Asset asset, Link link) {
-            if (asset == null) {
+        private void AddLinkToAsset(Asset asset, Link link)
+        {
+            if (asset == null)
+            {
                 return;
             }
 
-            var linkType = metaModel.GetAssetType(LinkType);
+            var linkType = services.Meta.GetAssetType(LinkType);
 
             var existingLinks = GetAssetLinks(asset.Oid, Filter.Equal(Link.UrlProperty, link.Url));
 
-            if(existingLinks.Count > 0) {
+            if (existingLinks.Count > 0)
+            {
                 logger.MaybeLog(LogMessage.SeverityType.Debug, string.Format("No need to create link - it already exists."));
                 return;
             }
@@ -338,55 +451,62 @@ namespace VersionOne.ServerConnector {
             logger.MaybeLog(LogMessage.SeverityType.Info, string.Format("{0} link saved", link.Title));
         }
 
-        public IList<BuildProject> GetBuildProjects(IFilter filter) {
-            var buildProjectType = metaModel.GetAssetType(BuildProjectType);
+        public IList<BuildProject> GetBuildProjects(IFilter filter)
+        {
+            var buildProjectType = services.Meta.GetAssetType(BuildProjectType);
             var terms = filter.GetFilter(buildProjectType);
 
             return queryBuilder.Query(BuildProjectType, terms).Select(asset => new BuildProject(asset)).ToList();
-        } 
+        }
 
-        public IList<BuildRun> GetBuildRuns(IFilter filter) {
-            var buildRunType = metaModel.GetAssetType(BuildRunType);
+        public IList<BuildRun> GetBuildRuns(IFilter filter)
+        {
+            var buildRunType = services.Meta.GetAssetType(BuildRunType);
             var terms = filter.GetFilter(buildRunType);
 
             return queryBuilder.Query(BuildRunType, terms).Select(asset => new BuildRun(asset, queryBuilder.ListPropertyValues, queryBuilder.TypeResolver)).ToList();
-        } 
+        }
 
-        public IList<ChangeSet> GetChangeSets(IFilter filter) {
-            var changeSetType = metaModel.GetAssetType(ChangeSetType);
+        public IList<ChangeSet> GetChangeSets(IFilter filter)
+        {
+            var changeSetType = services.Meta.GetAssetType(ChangeSetType);
             var terms = filter.GetFilter(changeSetType);
 
             return queryBuilder.Query(ChangeSetType, terms).Select(asset => new ChangeSet(asset)).ToList();
-        } 
+        }
 
-        public IList<PrimaryWorkitem> GetPrimaryWorkitems(IFilter filter, SortBy sortBy = null) {
-            var workitemType = metaModel.GetAssetType(PrimaryWorkitemType);
+        public IList<PrimaryWorkitem> GetPrimaryWorkitems(IFilter filter, SortBy sortBy = null)
+        {
+            var workitemType = services.Meta.GetAssetType(PrimaryWorkitemType);
             var terms = filter.GetFilter(workitemType);
 
             var allMembers = GetMembers(Filter.Empty());
-            
+
             return queryBuilder.Query(PrimaryWorkitemType, terms)
                 .Select(asset => PrimaryWorkitem.Create(asset, ListPropertyValues, queryBuilder.TypeResolver, ChooseOwners(asset, allMembers)))
                 .ToList();
         }
 
-        public IList<Workitem> GetWorkitems(string type, IFilter filter, SortBy sortBy = null) {
-            var workitemType = metaModel.GetAssetType(type);
+        public IList<Workitem> GetWorkitems(string type, IFilter filter, SortBy sortBy = null)
+        {
+            var workitemType = services.Meta.GetAssetType(type);
             var terms = filter.GetFilter(workitemType);
 
             var allMembers = GetMembers(Filter.Empty());
-            
+
             return queryBuilder.Query(type, terms)
                 .Select(asset => Workitem.Create(asset, ListPropertyValues, queryBuilder.TypeResolver, ChooseOwners(asset, allMembers)))
                 .ToList();
         }
 
         // TODO see if this method should really fail as it does now if Owners attribute is unavailable
-        private static IList<Member> ChooseOwners(Asset asset, IEnumerable<Member> allMembers) {
+        private static IList<Member> ChooseOwners(Asset asset, IEnumerable<Member> allMembers)
+        {
             var ownersDef = asset.AssetType.GetAttributeDefinition(OwnersAttribute);
             var ownersAttribute = asset.GetAttribute(ownersDef);
 
-            if(ownersDef == null) {
+            if (ownersDef == null)
+            {
                 throw new V1Exception("Cannot set Owners of workitem, corresponding attribute not enlisted for asset type " + asset.AssetType.Token);
             }
 
@@ -395,14 +515,16 @@ namespace VersionOne.ServerConnector {
         }
 
         //TODO refactor
-        public Workitem CreateWorkitem(string assetType, string title, string description, string projectToken, 
-                                       string externalFieldName, string externalId, string externalSystemName, 
-                                       string priorityId, string owners) {
-            if(string.IsNullOrEmpty(title)) {
+        public Workitem CreateWorkitem(string assetType, string title, string description, string projectToken,
+                                       string externalFieldName, string externalId, string externalSystemName,
+                                       string priorityId, string owners)
+        {
+            if (string.IsNullOrEmpty(title))
+            {
                 throw new ArgumentException("Empty title");
             }
 
-            var projectOid = Oid.FromToken(projectToken, metaModel);
+            var projectOid = services.GetOid(projectToken);
             var source = GetSourceByName(externalSystemName);
             var sourceOid = source.Oid.Momentless;
 
@@ -414,9 +536,10 @@ namespace VersionOne.ServerConnector {
                 AttributeValue.Single(externalFieldName, externalId),
                 AttributeValue.Multi("Owners", GetOwnerOids(owners).ToArray())
             };
-            
-            if(!string.IsNullOrEmpty(priorityId)) {
-                attributeValues.Add(AttributeValue.Single("Priority", Oid.FromToken(priorityId, metaModel)));
+
+            if (!string.IsNullOrEmpty(priorityId))
+            {
+                attributeValues.Add(AttributeValue.Single("Priority", services.GetOid(priorityId)));
             }
 
             var workitemAsset = GetEntityFactory().Create(assetType, attributeValues);
@@ -426,7 +549,8 @@ namespace VersionOne.ServerConnector {
             return GetWorkitems(workitemAsset.AssetType.Token, Filter.Equal("ID", workitemAsset.Oid.Momentless.Token)).FirstOrDefault();
         }
 
-        public BuildRun CreateBuildRun(BuildProject buildProject, string name, DateTime date, double elapsed) {
+        public BuildRun CreateBuildRun(BuildProject buildProject, string name, DateTime date, double elapsed)
+        {
             var asset = GetEntityFactory().Create(BuildRunType, new[] {
                 AttributeValue.Single(BuildRun.BuildProjectProperty, buildProject.Asset.Oid.Momentless),
                 AttributeValue.Single(Entity.NameProperty, name),
@@ -436,7 +560,8 @@ namespace VersionOne.ServerConnector {
             return new BuildRun(asset, ListPropertyValues, queryBuilder.TypeResolver);
         }
 
-        public ChangeSet CreateChangeSet(string name, string reference, string description) {
+        public ChangeSet CreateChangeSet(string name, string reference, string description)
+        {
             var asset = GetEntityFactory().Create(ChangeSetType, new[] {
                 AttributeValue.Single(Entity.NameProperty, name),
                 AttributeValue.Single(BaseEntity.ReferenceProperty, reference),
@@ -445,24 +570,28 @@ namespace VersionOne.ServerConnector {
             return new ChangeSet(asset);
         }
 
-        private ValueId GetSourceByName(string externalSystemName) {
+        private ValueId GetSourceByName(string externalSystemName)
+        {
             var sourceValues = queryBuilder.QueryPropertyValues(WorkitemSourceType);
             var source = sourceValues.FirstOrDefault(item => string.Equals(item.Name, externalSystemName));
 
-            if(source == null) {
+            if (source == null)
+            {
                 throw new ArgumentException("Can't find proper source");
             }
 
             return source;
         }
 
-        public string GetProjectTokenByName(string projectName) {
+        public string GetProjectTokenByName(string projectName)
+        {
             var project = GetProjectByName(projectName);
             return project != null ? project.Oid.Momentless.Token : null;
         }
 
-        private Asset GetProjectByName(string projectName) {
-            var scopeType = metaModel.GetAssetType(Workitem.ScopeProperty);
+        private Asset GetProjectByName(string projectName)
+        {
+            var scopeType = services.Meta.GetAssetType(Workitem.ScopeProperty);
             var scopeName = scopeType.GetAttributeDefinition(Entity.NameProperty);
 
             var filter = GroupFilter.And(
@@ -478,14 +607,16 @@ namespace VersionOne.ServerConnector {
             return result.FirstOrDefault();
         }
 
-        public string GetRootProjectToken() {
+        public string GetRootProjectToken()
+        {
             var project = GetRootProject();
             return project == null ? null : project.Oid.Momentless.Token;
         }
 
         //TODO refactor
-        private Asset GetRootProject() {
-            var scopeType = metaModel.GetAssetType(Workitem.ScopeProperty);
+        private Asset GetRootProject()
+        {
+            var scopeType = services.Meta.GetAssetType(Workitem.ScopeProperty);
             var scopeName = scopeType.GetAttributeDefinition(Entity.NameProperty);
 
             var scopeState = scopeType.GetAttributeDefinition(AssetStateAttribute);
@@ -506,16 +637,19 @@ namespace VersionOne.ServerConnector {
         /// <param name="ownerNames">Comma seperated list of usernames.</param>
         /// <returns>Oids of matching users in VersionOne.</returns>
         //TODO refactor
-        private IEnumerable<Oid> GetOwnerOids(string ownerNames) {
+        private IEnumerable<Oid> GetOwnerOids(string ownerNames)
+        {
             var result = new List<Oid>();
 
-            if(!string.IsNullOrEmpty(ownerNames)) {
-                var memberType = metaModel.GetAssetType("Member");
+            if (!string.IsNullOrEmpty(ownerNames))
+            {
+                var memberType = services.Meta.GetAssetType("Member");
                 var ownerQuery = new Query(memberType);
 
                 var terms = new List<IFilterTerm>();
 
-                foreach(var ownerName in ownerNames.Split(',')) {
+                foreach (var ownerName in ownerNames.Split(','))
+                {
                     var term = new FilterTerm(memberType.GetAttributeDefinition("Username"));
                     term.Equal(ownerName);
                     terms.Add(term);
@@ -530,16 +664,17 @@ namespace VersionOne.ServerConnector {
             return result.ToArray();
         }
 
-        public ICollection<Scope> LookupProjects(string term) {
-            var projectType = metaModel.GetAssetType(ScopeType);
+        public ICollection<Scope> LookupProjects(string term)
+        {
+            var projectType = services.Meta.GetAssetType(ScopeType);
             var parentDef = projectType.GetAttributeDefinition("Parent");
             var nameDef = projectType.GetAttributeDefinition(Entity.NameProperty);
             var stateDef = projectType.GetAttributeDefinition(AssetStateAttribute);
 
             var filter = new FilterTerm(stateDef);
             filter.NotEqual(AssetState.Closed);
-            
-            var query = new Query(projectType, parentDef) {Filter = filter };
+
+            var query = new Query(projectType, parentDef) { Filter = filter };
             query.Selection.Add(nameDef);
             query.OrderBy.MajorSort(projectType.DefaultOrderBy, OrderBy.Order.Ascending);
 
@@ -552,11 +687,13 @@ namespace VersionOne.ServerConnector {
                 .ToList();
         }
 
-        private EntityFactory GetEntityFactory() {
-            return new EntityFactory(metaModel, services, queryBuilder.AttributesToQuery);
+        private EntityFactory GetEntityFactory()
+        {
+            return new EntityFactory(services, queryBuilder.AttributesToQuery);
         }
 
-        public Scope CreateProject(string name) {
+        public Scope CreateProject(string name)
+        {
             var rootProjectOid = GetRootProjectToken();
             var newProject = GetEntityFactory().Create(ScopeType,
                                                        new[] {
@@ -567,8 +704,9 @@ namespace VersionOne.ServerConnector {
             return new Scope(newProject);
         }
 
-        public IList<ListValue> GetCustomTextFields(string typeName) {
-            try 
+        public IList<ListValue> GetCustomTextFields(string typeName)
+        {
+            try
             {
                 var fields = GetCustomFields(typeName, FieldType.Text);
                 return fields.Select(x => new ListValue(ConvertFromCamelCase(x), x)).ToList();
@@ -579,9 +717,10 @@ namespace VersionOne.ServerConnector {
             }
         }
 
-        private IEnumerable<string> GetCustomFields(string assetTypeName, FieldType fieldType) {
-            var attrType = metaModel.GetAssetType(AttributeDefinitionType);
-            var assetType = metaModel.GetAssetType(assetTypeName);
+        private IEnumerable<string> GetCustomFields(string assetTypeName, FieldType fieldType)
+        {
+            var attrType = services.Meta.GetAssetType(AttributeDefinitionType);
+            var assetType = services.Meta.GetAssetType(assetTypeName);
             var isCustomAttributeDef = attrType.GetAttributeDefinition("IsCustom");
             var nameAttrDef = attrType.GetAttributeDefinition(Entity.NameProperty);
 
@@ -591,7 +730,8 @@ namespace VersionOne.ServerConnector {
             IAttributeDefinition inactiveDef;
             FilterTerm termState = null;
 
-            if(assetType.TryGetAttributeDefinition("Inactive", out inactiveDef)) {
+            if (assetType.TryGetAttributeDefinition("Inactive", out inactiveDef))
+            {
                 termState = new FilterTerm(inactiveDef);
                 termState.Equal("False");
             }
@@ -599,7 +739,8 @@ namespace VersionOne.ServerConnector {
             var fieldTypeName = string.Empty;
             var attributeTypeName = string.Empty;
 
-            switch(fieldType) {
+            switch (fieldType)
+            {
                 case FieldType.List:
                     fieldTypeName = "OneToManyRelationDefinition";
                     attributeTypeName = "Relation";
@@ -632,11 +773,13 @@ namespace VersionOne.ServerConnector {
             return fieldList;
         }
 
-        private AssetList GetFieldList(IFilterTerm filter, IEnumerable<IAttributeDefinition> selection) {
-            var attributeDefinitionAssetType = metaModel.GetAssetType(AttributeDefinitionType);
+        private AssetList GetFieldList(IFilterTerm filter, IEnumerable<IAttributeDefinition> selection)
+        {
+            var attributeDefinitionAssetType = services.Meta.GetAssetType(AttributeDefinitionType);
 
             var query = new Query(attributeDefinitionAssetType);
-            foreach(var attribute in selection) {
+            foreach (var attribute in selection)
+            {
                 query.Selection.Add(attribute);
             }
 
@@ -644,10 +787,12 @@ namespace VersionOne.ServerConnector {
             return services.Retrieve(query).Assets;
         }
 
-        private static string ConvertFromCamelCase(string camelCasedString) {
+        private static string ConvertFromCamelCase(string camelCasedString)
+        {
             const string customPrefix = "Custom_";
 
-            if(camelCasedString.StartsWith(customPrefix)) {
+            if (camelCasedString.StartsWith(customPrefix))
+            {
                 camelCasedString = camelCasedString.Remove(0, customPrefix.Length);
             }
 
@@ -655,17 +800,22 @@ namespace VersionOne.ServerConnector {
                 @"(?<a>(?<!^)((?:[A-Z][a-z])|(?:(?<!^[A-Z]+)[A-Z0-9]+(?:(?=[A-Z][a-z])|$))|(?:[0-9]+)))", @" ${a}");
         }
 
-        public void LogConnectionConfiguration() {
+        public void LogConnectionConfiguration()
+        {
             logger.LogVersionOneConfiguration(LogMessage.SeverityType.Info, configuration);
         }
 
-        public void LogConnectionInformation() {
-            try {
-                var metaVersion = ((MetaModel) metaModel).Version;
+        public void LogConnectionInformation()
+        {
+            try
+            {
+                var metaVersion = ((MetaModel) services.Meta).Version;
                 var loggedInMember = GetLoggedInMember();
-                var defaultRole = localizer.Resolve(loggedInMember.DefaultRole);
+                var defaultRole = services.Localization(loggedInMember.DefaultRole);
                 logger.LogVersionOneConnectionInformation(LogMessage.SeverityType.Info, metaVersion.ToString(), services.LoggedIn.ToString(), defaultRole);
-            } catch(Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 logger.Log(LogMessage.SeverityType.Warning, "Failed to log VersionOne connection information.", ex);
             }
         }

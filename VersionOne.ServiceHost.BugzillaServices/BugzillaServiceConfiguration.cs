@@ -30,10 +30,7 @@ namespace VersionOne.ServiceHost.BugzillaServices {
 
         [ConfigFileValue("CreateFieldValue")]
         public string OnCreateFieldValue;
-
-        [ConfigFileValue("CreateAccept", "false", true)]
-        public bool OnCreateAccept;
-
+        
         [ConfigFileValue("CreateResolveValue")]
         public string OnCreateResolveValue;
 

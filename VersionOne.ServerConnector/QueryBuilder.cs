@@ -6,36 +6,37 @@ using VersionOne.ServerConnector.Entities;
 using VersionOne.ServerConnector.Filters;
 using SdkOrder = VersionOne.SDK.APIClient.OrderBy.Order;
 
-namespace VersionOne.ServerConnector {
-    public class QueryBuilder : IQueryBuilder {
+namespace VersionOne.ServerConnector
+{
+    public class QueryBuilder : IQueryBuilder
+    {
         private IServices services;
-        private IMetaModel metaModel;
-        private ILocalizer localizer;
 
         private SortBy sortBy = null;
-        
+
         private readonly LinkedList<AttributeInfo> attributesToQuery = new LinkedList<AttributeInfo>();
         private readonly EntityFieldTypeResolver typeResolver = new EntityFieldTypeResolver();
-        
+
         public IDictionary<string, PropertyValues> ListPropertyValues { get; private set; }
         public IEntityFieldTypeResolver TypeResolver { get { return typeResolver; } }
-        public IEnumerable<AttributeInfo> AttributesToQuery { get { return attributesToQuery; } } 
+        public IEnumerable<AttributeInfo> AttributesToQuery { get { return attributesToQuery; } }
 
-        public void Setup(IServices services, IMetaModel metaModel, ILocalizer localizer) {
+        public void Setup(IServices services)
+        {
             this.services = services;
-            this.metaModel = metaModel;
-            this.localizer = localizer;
             TypeResolver.Reset();
             ListPropertyValues = GetListPropertyValues();
         }
 
         //TODO why we can't add property(if it's list) to typeResolver?
-        public void AddProperty(string attr, string prefix, bool isList) {
+        public void AddProperty(string attr, string prefix, bool isList)
+        {
             attributesToQuery.AddLast(new AttributeInfo(attr, prefix, isList, false));
         }
 
         //TODO why we can't add property also to attributesToQuery collection?
-        public void AddListProperty(string fieldName, string typeToken) {
+        public void AddListProperty(string fieldName, string typeToken)
+        {
             typeResolver.AddMapping(typeToken, fieldName, null);
         }
 
@@ -44,45 +45,59 @@ namespace VersionOne.ServerConnector {
         /// </summary>
         /// <param name="attr">Attribute name</param>
         /// <param name="prefix">Prefix, usually matching attribute type</param>
-        public void AddOptionalProperty(string attr, string prefix) {
+        public void AddOptionalProperty(string attr, string prefix)
+        {
             attributesToQuery.AddLast(new AttributeInfo(attr, prefix, false, true));
         }
 
-        public IQueryBuilder SortBy(SortBy sort) {
+        public IQueryBuilder SortBy(SortBy sort)
+        {
             sortBy = sort;
             return this;
         }
 
-        public AssetList Query(string workitemTypeName, IFilterTerm filter) {
-            try {
-                var workitemType = metaModel.GetAssetType(workitemTypeName);
-                var query = new Query(workitemType) { Filter = filter};
+        public AssetList Query(string workitemTypeName, IFilterTerm filter)
+        {
+            try
+            {
+                var workitemType = services.Meta.GetAssetType(workitemTypeName);
+                var query = new Query(workitemType) { Filter = filter };
 
-                if(sortBy != null) {
+                if (sortBy != null)
+                {
                     var order = sortBy.Order == Order.Ascending ? OrderBy.Order.Ascending : OrderBy.Order.Descending;
                     query.OrderBy.MajorSort(workitemType.GetAttributeDefinition(sortBy.Attribute), order);
                 }
 
                 AddSelection(query, workitemTypeName, workitemType);
                 return services.Retrieve(query).Assets;
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 throw new VersionOneException(ex.Message);
             }
         }
 
-        public AssetList Query(string workitemTypeName, IFilter filter) {
-            return Query(workitemTypeName, filter.GetFilter(metaModel.GetAssetType(workitemTypeName)));
+        public AssetList Query(string workitemTypeName, IFilter filter)
+        {
+            return Query(workitemTypeName, filter.GetFilter(services.Meta.GetAssetType(workitemTypeName)));
         }
 
-        private void AddSelection(Query query, string typePrefix, IAssetType type) {
-            foreach (var attrInfo in attributesToQuery.Where(attrInfo => attrInfo.Prefix == typePrefix)) {
+        private void AddSelection(Query query, string typePrefix, IAssetType type)
+        {
+            foreach (var attrInfo in attributesToQuery.Where(attrInfo => attrInfo.Prefix == typePrefix))
+            {
                 IAttributeDefinition def;
-                
-                if (attrInfo.IsOptional) {
-                    if (!type.TryGetAttributeDefinition(attrInfo.Attr, out def)) {
+
+                if (attrInfo.IsOptional)
+                {
+                    if (!type.TryGetAttributeDefinition(attrInfo.Attr, out def))
+                    {
                         continue;
                     }
-                } else {
+                }
+                else
+                {
                     def = type.GetAttributeDefinition(attrInfo.Attr);
                 }
 
@@ -90,38 +105,47 @@ namespace VersionOne.ServerConnector {
             }
         }
 
-        private IDictionary<string, PropertyValues> GetListPropertyValues() {
+        private IDictionary<string, PropertyValues> GetListPropertyValues()
+        {
             ProcessUnresolvedTypeMappings();
 
             var res = new Dictionary<string, PropertyValues>(attributesToQuery.Count);
 
-            foreach(var attrInfo in attributesToQuery) {
-                if(!attrInfo.IsList) {
+            foreach (var attrInfo in attributesToQuery)
+            {
+                if (!attrInfo.IsList)
+                {
                     continue;
                 }
 
                 var propertyAlias = attrInfo.Attr;
-                
-                if(!attrInfo.Attr.StartsWith(Entity.CustomPrefix)) {
+
+                if (!attrInfo.Attr.StartsWith(Entity.CustomPrefix))
+                {
                     propertyAlias = attrInfo.Prefix + propertyAlias;
                 }
-                
-                if(res.ContainsKey(propertyAlias)) {
+
+                if (res.ContainsKey(propertyAlias))
+                {
                     continue;
                 }
-                
+
                 var propertyName = ResolvePropertyKey(propertyAlias);
 
                 PropertyValues values;
-                
-                if(res.ContainsKey(propertyName)) {
+
+                if (res.ContainsKey(propertyName))
+                {
                     values = res[propertyName];
-                } else {
+                }
+                else
+                {
                     values = QueryPropertyValues(propertyName);
                     res.Add(propertyName, values);
                 }
 
-                if(!res.ContainsKey(propertyAlias)) {
+                if (!res.ContainsKey(propertyAlias))
+                {
                     res.Add(propertyAlias, values);
                 }
             }
@@ -129,9 +153,12 @@ namespace VersionOne.ServerConnector {
             return res;
         }
 
-        private void ProcessUnresolvedTypeMappings() {
-            foreach(var fieldMapping in typeResolver.FieldMappings.ToList()) {
-                if(fieldMapping.Value == null) {
+        private void ProcessUnresolvedTypeMappings()
+        {
+            foreach (var fieldMapping in typeResolver.FieldMappings.ToList())
+            {
+                if (fieldMapping.Value == null)
+                {
                     var attributeParts = fieldMapping.Key.Split('.');
                     var typeName = attributeParts[0];
                     var fieldName = attributeParts[1];
@@ -142,23 +169,27 @@ namespace VersionOne.ServerConnector {
             }
         }
 
-        private string GetFieldType(string typeToken, string fieldName) {
-            var type = metaModel.GetAssetType(typeToken);
+        private string GetFieldType(string typeToken, string fieldName)
+        {
+            var type = services.Meta.GetAssetType(typeToken);
             var attributeDefinition = type.GetAttributeDefinition(fieldName);
-                
-            if(attributeDefinition.AttributeType != AttributeType.Relation) {
+
+            if (attributeDefinition.AttributeType != AttributeType.Relation)
+            {
                 throw new VersionOneException("Not a Relation field");
             }
 
             return attributeDefinition.RelatedAsset.Token;
         }
 
-        public PropertyValues QueryPropertyValues(string propertyName) {
+        public PropertyValues QueryPropertyValues(string propertyName)
+        {
             var res = new PropertyValues();
             IAttributeDefinition nameDef;
             var query = GetPropertyValuesQuery(propertyName, out nameDef);
 
-            foreach (var asset in services.Retrieve(query).Assets) {
+            foreach (var asset in services.Retrieve(query).Assets)
+            {
                 var name = asset.GetAttribute(nameDef).Value as string;
                 res.Add(new ValueId(asset.Oid, name));
             }
@@ -166,12 +197,14 @@ namespace VersionOne.ServerConnector {
             return res;
         }
 
-        public string Localize(string text) {
-            return text == null ? "" : localizer.Resolve(text);
+        public string Localize(string text)
+        {
+            return text == null ? "" : services.Localization(text);
         }
 
-        private Query GetPropertyValuesQuery(string propertyName, out IAttributeDefinition nameDef) {
-            var assetType = metaModel.GetAssetType(propertyName);
+        private Query GetPropertyValuesQuery(string propertyName, out IAttributeDefinition nameDef)
+        {
+            var assetType = services.Meta.GetAssetType(propertyName);
             nameDef = assetType.GetAttributeDefinition(Entity.NameProperty);
 
             IAttributeDefinition inactiveDef;
@@ -179,7 +212,8 @@ namespace VersionOne.ServerConnector {
             var query = new Query(assetType);
             query.Selection.Add(nameDef);
 
-            if (assetType.TryGetAttributeDefinition(Entity.InactiveProperty, out inactiveDef)) {
+            if (assetType.TryGetAttributeDefinition(Entity.InactiveProperty, out inactiveDef))
+            {
                 var filter = new FilterTerm(inactiveDef);
                 filter.Equal("False");
                 query.Filter = filter;
@@ -189,8 +223,10 @@ namespace VersionOne.ServerConnector {
             return query;
         }
 
-        private static string ResolvePropertyKey(string propertyAlias) {
-            switch (propertyAlias) {
+        private static string ResolvePropertyKey(string propertyAlias)
+        {
+            switch (propertyAlias)
+            {
                 case "DefectStatus":
                 case "PrimaryWorkitemStatus":
                     return "StoryStatus";
@@ -204,7 +240,7 @@ namespace VersionOne.ServerConnector {
                 case "TestOwners":
                 case "ThemeOwners":
                     return "Member";
-                case "PrimaryWorkitemPriority":                      
+                case "PrimaryWorkitemPriority":
                     return "WorkitemPriority";
                 case "BuildRunStatus":
                     return "BuildStatus";

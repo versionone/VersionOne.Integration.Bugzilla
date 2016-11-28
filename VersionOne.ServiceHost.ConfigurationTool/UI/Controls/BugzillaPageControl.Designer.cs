@@ -48,7 +48,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.pnlTagOrAssign = new System.Windows.Forms.Panel();
             this.grpUpdateBugs = new System.Windows.Forms.GroupBox();
             this.chkCloseAccept = new System.Windows.Forms.CheckBox();
-            this.chkCreateAccept = new System.Windows.Forms.CheckBox();
             this.txtCreateResolveValue = new System.Windows.Forms.TextBox();
             this.lblCreateResolveValue = new System.Windows.Forms.Label();
             this.txtCloseResolveValue = new System.Windows.Forms.TextBox();
@@ -248,7 +247,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.lblSearchName.Name = "lblSearchName";
             this.lblSearchName.Size = new System.Drawing.Size(72, 13);
             this.lblSearchName.TabIndex = 0;
-            this.lblSearchName.Text = "Search Name";
+            this.lblSearchName.Text = "Search Query";
             // 
             // txtDefectLinkFieldId
             // 
@@ -309,7 +308,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             // grpUpdateBugs
             // 
             this.grpUpdateBugs.Controls.Add(this.chkCloseAccept);
-            this.grpUpdateBugs.Controls.Add(this.chkCreateAccept);
             this.grpUpdateBugs.Controls.Add(this.rbAssign);
             this.grpUpdateBugs.Controls.Add(this.txtCreateResolveValue);
             this.grpUpdateBugs.Controls.Add(this.lblCreateResolveValue);
@@ -326,31 +324,9 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             this.grpUpdateBugs.TabStop = false;
             this.grpUpdateBugs.Text = "Update Bugzilla Bugs";
             // 
-            // chkCloseAccept
-            // 
-            this.chkCloseAccept.AutoSize = true;
-            this.chkCloseAccept.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkCloseAccept.Location = new System.Drawing.Point(181, 47);
-            this.chkCloseAccept.Name = "chkCloseAccept";
-            this.chkCloseAccept.Size = new System.Drawing.Size(116, 17);
-            this.chkCloseAccept.TabIndex = 3;
-            this.chkCloseAccept.Text = "Close Accept         ";
-            this.chkCloseAccept.UseVisualStyleBackColor = true;
-            // 
-            // chkCreateAccept
-            // 
-            this.chkCreateAccept.AutoSize = true;
-            this.chkCreateAccept.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chkCreateAccept.Location = new System.Drawing.Point(9, 47);
-            this.chkCreateAccept.Name = "chkCreateAccept";
-            this.chkCreateAccept.Size = new System.Drawing.Size(121, 17);
-            this.chkCreateAccept.TabIndex = 2;
-            this.chkCreateAccept.Text = "Create Accept         ";
-            this.chkCreateAccept.UseVisualStyleBackColor = true;
-            // 
             // txtCreateResolveValue
             // 
-            this.txtCreateResolveValue.Location = new System.Drawing.Point(152, 70);
+            this.txtCreateResolveValue.Location = new System.Drawing.Point(152, 47);
             this.txtCreateResolveValue.Name = "txtCreateResolveValue";
             this.txtCreateResolveValue.Size = new System.Drawing.Size(301, 20);
             this.txtCreateResolveValue.TabIndex = 5;
@@ -358,11 +334,22 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             // lblCreateResolveValue
             // 
             this.lblCreateResolveValue.AutoSize = true;
-            this.lblCreateResolveValue.Location = new System.Drawing.Point(10, 73);
+            this.lblCreateResolveValue.Location = new System.Drawing.Point(10, 50);
             this.lblCreateResolveValue.Name = "lblCreateResolveValue";
             this.lblCreateResolveValue.Size = new System.Drawing.Size(110, 13);
             this.lblCreateResolveValue.TabIndex = 4;
             this.lblCreateResolveValue.Text = "Create Resolve Value";
+            // 
+            // chkCloseAccept
+            // 
+            this.chkCloseAccept.AutoSize = true;
+            this.chkCloseAccept.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkCloseAccept.Location = new System.Drawing.Point(9, 75);
+            this.chkCloseAccept.Name = "chkCloseAccept";
+            this.chkCloseAccept.Size = new System.Drawing.Size(121, 17);
+            this.chkCloseAccept.TabIndex = 3;
+            this.chkCloseAccept.Text = "Close Accept         ";
+            this.chkCloseAccept.UseVisualStyleBackColor = true;
             // 
             // txtCloseResolveValue
             // 
@@ -615,7 +602,7 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
 }
         #endregion
 
-private System.Windows.Forms.GroupBox grpConnection;
+        private System.Windows.Forms.GroupBox grpConnection;
         private System.Windows.Forms.Button btnVerify;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Label lblPassword;
@@ -642,7 +629,6 @@ private System.Windows.Forms.GroupBox grpConnection;
         private System.Windows.Forms.TextBox txtCloseResolveValue;
         private System.Windows.Forms.Label lblCloseResolveValue;
         private System.Windows.Forms.CheckBox chkCloseAccept;
-        private System.Windows.Forms.CheckBox chkCreateAccept;
         private System.Windows.Forms.GroupBox grpVersionOne;
         private System.Windows.Forms.ComboBox cboSourceFieldValue;
         private System.Windows.Forms.TextBox txtUrlTitle;

@@ -92,9 +92,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml" />
-    <Reference Include="VersionOne.SDK.APIClient, Version=8.0.588.0, Culture=neutral, PublicKeyToken=e0f410c10d2e7630, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependencies\VersionOne.SDK.APIClient.dll</HintPath>
+    <Reference Include="VersionOne.SDK.APIClient, Version=15.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VersionOne.SDK.APIClient.15.1.0.0\lib\net451\VersionOne.SDK.APIClient.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +105,7 @@
       <Link>Properties\AssemblyInfoProduct.cs</Link>
     </Compile>
     <Compile Include="CommonModeFactory.cs" />
+    <Compile Include="Configuration\AuthenticationTypes.cs" />
     <Compile Include="Configuration\InstallerConfiguration.cs" />
     <Compile Include="Configuration\ProxySettings.cs" />
     <Compile Include="Configuration\VersionOneSettings.cs" />

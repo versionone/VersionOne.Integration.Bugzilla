@@ -73,6 +73,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -106,9 +110,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VersionOne.Bugzilla.XmlRpcProxy\VersionOne.Bugzilla.XmlRpcProxy.csproj">
-      <Project>{9f8c4aa1-00cb-4640-9764-7691230c1ee5}</Project>
-      <Name>VersionOne.Bugzilla.XmlRpcProxy</Name>
+    <ProjectReference Include="..\VersionOne.Bugzilla.BugzillaAPI\VersionOne.Bugzilla.BugzillaAPI.csproj">
+      <Project>{bf7d1a4e-ca52-4263-b7b9-403396613490}</Project>
+      <Name>VersionOne.Bugzilla.BugzillaAPI</Name>
     </ProjectReference>
     <ProjectReference Include="..\VersionOne.ServiceHost.Core\VersionOne.ServiceHost.Core.csproj">
       <Project>{f432bac8-27ed-4c2c-8e06-ef806a5b0d79}</Project>
@@ -118,6 +122,10 @@
       <Project>{76b6d3f1-16f8-43a9-a2b7-ddadafe70d0d}</Project>
       <Name>VersionOne.ServiceHost.WorkitemServices</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

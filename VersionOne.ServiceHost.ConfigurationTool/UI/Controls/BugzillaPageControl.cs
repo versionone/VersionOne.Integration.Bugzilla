@@ -63,7 +63,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             AddSimpleComboboxBinding(cboSourceFieldValue, Model, BugzillaServiceEntity.SourceNameProperty);
             AddControlBinding(txtDefectLinkFieldId, Model, BugzillaServiceEntity.LinkFieldProperty);
             AddControlBinding(nmdInterval, Model.Timer, TimerEntity.TimerProperty);
-            AddControlBinding(chkCreateAccept, Model.CreateAccept, NullableBool.BoolValueProperty);
             AddControlBinding(txtCreateResolveValue, Model, BugzillaServiceEntity.CreateResolveValueProperty);
             AddControlBinding(chkCloseAccept, Model.CloseAccept, NullableBool.BoolValueProperty);
             AddControlBinding(txtCloseResolveValue, Model, BugzillaServiceEntity.CloseResolveValueProperty);
@@ -108,7 +107,6 @@ namespace VersionOne.ServiceHost.ConfigurationTool.UI.Controls {
             AddHelpSupport(txtUrlTempl, Model, BugzillaServiceEntity.UrlTemplateProperty);
             AddHelpSupport(txtSearchName, Model, BugzillaServiceEntity.SearchNameProperty);
             AddHelpSupport(txtDefectLinkFieldId, Model, BugzillaServiceEntity.LinkFieldProperty);
-            AddHelpSupport(chkCreateAccept, Model, BugzillaServiceEntity.CreateAcceptProperty);
             AddHelpSupport(chkCloseAccept, Model, BugzillaServiceEntity.CloseAcceptProperty);
             AddHelpSupport(txtCreateResolveValue, Model, BugzillaServiceEntity.CreateResolveValueProperty);
             AddHelpSupport(txtCloseResolveValue, Model, BugzillaServiceEntity.CloseResolveValueProperty);

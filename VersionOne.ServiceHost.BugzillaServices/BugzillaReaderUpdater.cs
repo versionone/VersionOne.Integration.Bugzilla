@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using VersionOne.Bugzilla.XmlRpcProxy;
+using VersionOne.Bugzilla.BugzillaAPI;
 using VersionOne.ServiceHost.Core.Logging;
+
 using VersionOne.ServiceHost.WorkitemServices;
 using MappingInfo = VersionOne.ServiceHost.Core.Configuration.MappingInfo;
 
@@ -23,26 +25,28 @@ namespace VersionOne.ServiceHost.BugzillaServices
 
         public List<Defect> GetBugs() 
         {
-            var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
+            var bugzillaClient = bugzillaClientFactory.CreateNew();
 
-            var ids = bugzillaClient.LoginSearch(configuration.UserName, configuration.Password, true, configuration.OpenIssueFilterId, configuration.IgnoreCert);
-            var defects = new List<Defect>(ids.Count);
+            bugzillaClient.Login();
 
-            foreach (var id in ids) 
+            var ids = bugzillaClient.Search(configuration.OpenIssueFilterId);
+
+            var defects = new List<Defect>(ids.Count());
+
+            foreach (int id in ids)
             {
                 var bug = bugzillaClient.GetBug(id);
-            	var product = bugzillaClient.GetProduct(bug.ProductID);
-            	var user = bugzillaClient.GetUser(bug.AssignedToID);
 
-                var projectMapping = ResolveVersionOneProjectMapping(product.Name);
+                var projectMapping = ResolveVersionOneProjectMapping(bug.Product);
+                
                 var priorityMapping = ResolveVersionOnePriorityMapping(bug.Priority);
 
-                var defect = new Defect(bug.Name, bug.Description, projectMapping.Name, user.Login) 
+                var defect = new Defect(bug.Name, bug.Description, bug.Product, bug.AssignedTo)
                     { ExternalId = bug.ID.ToString(CultureInfo.InvariantCulture),
                       ProjectId = projectMapping.Id };
 
                 // If the BugzillaBugUrlTemplate tag of the config file is set, then build a URL to the issue in Bugzilla.
-				if (!string.IsNullOrEmpty(configuration.UrlTemplateToIssue) && !string.IsNullOrEmpty(configuration.UrlTitleToIssue)) 
+                if (!string.IsNullOrEmpty(configuration.UrlTemplateToIssue) && !string.IsNullOrEmpty(configuration.UrlTitleToIssue)) 
                 {
 					defect.ExternalLink = new UrlToExternalSystem(configuration.UrlTemplateToIssue.Replace("#key#", bug.ID.ToString()), configuration.UrlTitleToIssue);
 				}
@@ -50,34 +54,36 @@ namespace VersionOne.ServiceHost.BugzillaServices
                 if (priorityMapping != null) 
                 {
                     defect.Priority = priorityMapping.Id;
-                } 
-                
-                logger.Log(string.Format("Product: ({0}) Bug: ({1}) Defect: ({2}) AssignedTo: ({3})", product, bug, defect, user));
-				defects.Add(defect);
+                }
+
+                logger.Log(string.Format("Product: ({0}) Bug: ({1}) Defect: ({2}) AssignedTo: ({3})", bug.Product, bug, defect, bug.AssignedTo));
+                defects.Add(defect);
             }
 
             bugzillaClient.Logout();
-			return defects;
+
+            return defects;
 		}
 
 		public void OnDefectCreated(WorkitemCreationResult createdResult) 
         {
 			var bugId = int.Parse(createdResult.Source.ExternalId);
-			var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
 
-            bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
+            var bugzillaClient = bugzillaClientFactory.CreateNew();
 
-			if (configuration.OnCreateAccept && !bugzillaClient.AcceptBug(bugId, configuration.OnCreateResolveValue)) 
+            bugzillaClient.Login();
+            
+            if (!bugzillaClient.AcceptBug(bugId, configuration.OnCreateResolveValue)) 
             {
 				logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to accept bug {0}.", bugId));
 			}
 
-			if (!string.IsNullOrEmpty(configuration.OnCreateFieldName) && !bugzillaClient.UpdateBug(bugId, configuration.OnCreateFieldName, configuration.OnCreateFieldValue)) 
+            if (!string.IsNullOrEmpty(configuration.OnCreateFieldName) && !bugzillaClient.UpdateBug(bugId, configuration.OnCreateFieldName, configuration.OnCreateFieldValue)) 
             {
     			logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to set {0} to {1}.", configuration.OnCreateFieldName, configuration.OnCreateFieldValue));
 			}
 
-			if (!string.IsNullOrEmpty(configuration.DefectLinkFieldName)) 
+            if (!string.IsNullOrEmpty(configuration.DefectLinkFieldName)) 
             {
 				if (!bugzillaClient.UpdateBug(bugId, configuration.DefectLinkFieldName, createdResult.Permalink)) 
                 {
@@ -85,53 +91,27 @@ namespace VersionOne.ServiceHost.BugzillaServices
 				}
 			}
 
-			if (!string.IsNullOrEmpty(configuration.OnCreateReassignValue)) 
+            if (!string.IsNullOrEmpty(configuration.OnCreateReassignValue)) 
             {
 				if (!bugzillaClient.ReassignBug(bugId, configuration.OnCreateReassignValue)) 
                 {
 					logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to reassign bug to {0}.", configuration.OnCreateReassignValue));
 				}
 			}
-
-            ResolveBugIfRequired(configuration.OnCreateResolveValue, bugId, bugzillaClient);
-			bugzillaClient.Logout();
+            bugzillaClient.Logout();
 		}
 
-        private void ResolveBugIfRequired(string resolution, int bugId, IBugzillaClient client) 
-        {
-            if(string.IsNullOrEmpty(resolution)) 
-            {
-                return;
-            }
-
-            try 
-            {
-                if(!client.ResolveBug(bugId, resolution, string.Empty)) 
-                {
-                    logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to resolve bug to {0}.", resolution));
-                }
-            } catch(BugzillaException ex) 
-            {
-                logger.Log(LogMessage.SeverityType.Error, "Failed to resolve bug: " + ex.InnerException.Message);
-            }
-        }
-
-		public bool OnDefectStateChange(WorkitemStateChangeResult stateChangeResult) 
+        public bool OnDefectStateChange(WorkitemStateChangeResult stateChangeResult) 
         {
 			logger.Log(LogMessage.SeverityType.Debug, stateChangeResult.ToString());
+
 			var bugId = int.Parse(stateChangeResult.ExternalId);
-			var bugzillaClient = bugzillaClientFactory.CreateNew(configuration.Url);
 
-            bugzillaClient.Login(configuration.UserName, configuration.Password, true, configuration.IgnoreCert);
+            var bugzillaClient = bugzillaClientFactory.CreateNew();
 
-            // We do not need to push changes to Defects that have been processed as we could break their state.
-            if(SkipCloseActions(bugId, bugzillaClient)) 
-            {
-                logger.Log(LogMessage.SeverityType.Info, string.Format("Defect {0} has already been processed, check CloseFieldId and CloseReassignValue.", bugId));
-                return true;
-            }
-
-			if (configuration.OnStateChangeAccept && !bugzillaClient.AcceptBug(bugId , configuration.OnCreateResolveValue)) 
+            bugzillaClient.Login();
+            
+            if (configuration.OnStateChangeAccept && !bugzillaClient.AcceptBug(bugId , configuration.OnCreateResolveValue))
             {
     			logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to accept bug {0}.", bugId));
 			}
@@ -153,36 +133,31 @@ namespace VersionOne.ServiceHost.BugzillaServices
 			}
 
             ResolveBugIfRequired(configuration.OnStateChangeResolveValue, bugId, bugzillaClient);
-			bugzillaClient.Logout();
-			return true;
+
+            bugzillaClient.Logout();
+
+            return true;
 		}
 
-        private bool SkipCloseActions(int bugId, IBugzillaClient client) 
+        private void ResolveBugIfRequired(string resolution, int bugId, IBugzillaClient client)
         {
-            if(!string.IsNullOrEmpty(configuration.OnStateChangeFieldName)) 
+            try
             {
-                var fieldValue = client.GetFieldValue(bugId, configuration.OnStateChangeFieldName);
-                
-                if(fieldValue.Equals(configuration.OnStateChangeFieldValue)) 
+
+                if (string.IsNullOrEmpty(resolution))
                 {
-                    return true;
+                    throw new Exception("There was an attempt to resolve a bug without having a configured resolution value.");
+                }
+
+                if (!client.ResolveBug(bugId, resolution))
+                {
+                    logger.Log(LogMessage.SeverityType.Error, string.Format("Failed to resolve bug to {0}.", resolution));
                 }
             }
-
-            var reassignValue = configuration.OnStateChangeReassignValue;
-            
-            if(!string.IsNullOrEmpty(reassignValue)) 
+            catch (Exception ex)
             {
-                var bug = client.GetBug(bugId);
-                var user = client.GetUser(bug.AssignedToID);
-                
-                if(!string.IsNullOrEmpty(user.Login) && user.Login.Equals(reassignValue)) 
-                {
-                    return true;
-                }
+                logger.Log(LogMessage.SeverityType.Error, "Failed to resolve bug: " + ex.InnerException.Message);
             }
-
-            return false;
         }
 
         /// <summary>
