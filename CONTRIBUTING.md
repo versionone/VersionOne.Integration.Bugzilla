@@ -21,7 +21,7 @@ After you made sure that you have found a new bug, here are some tips for creati
  
 ## Contributing Code
 
-Coming soon! We are still migrating this project from our private Subversion repository. If you are interested in contributing code to this project, please contact [Ian Buchanan](mailto:ian.buchanan@versionone.com).
+Coming soon! We are still migrating this project from our private Subversion repository. If you are interested in contributing code to this project, please contact the [VersionOne openAgile team in Gitter](https://gitter.im/openAgile).
 
 ## Quality Bands
 
