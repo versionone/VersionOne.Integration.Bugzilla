@@ -1,5 +1,5 @@
 # VersionOne Integration for Bugzilla
-Copyright (c) 2015 VersionOne, Inc.
+Copyright (c) 2016 VersionOne, Inc.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without 
