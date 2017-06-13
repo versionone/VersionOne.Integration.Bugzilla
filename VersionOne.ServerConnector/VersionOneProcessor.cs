@@ -100,7 +100,7 @@ namespace VersionOne.ServerConnector
 
             }
 
-            services = new Services(connectorWithAuth.Build());
+            services = new Services(connectorWithAuth.UseOAuthEndpoints().Build());
 
             queryBuilder.Setup(services);
         }
