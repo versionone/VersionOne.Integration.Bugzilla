@@ -31,6 +31,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	    public BugzillaClient(IBugzillaClientConfiguration configuration)
         {
             SetSslIgnoreErrorMode(configuration);
+            SetSecurityOptions();
             this._username = configuration.UserName;
             this._password = configuration.Password;
             Client = new RestClient(configuration.Url);
@@ -43,6 +44,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             }
         }
+
+	    public static void SetSecurityOptions()
+	    {
+	        ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls
+	                                               | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+	    }
 
         public string Login()
         {
