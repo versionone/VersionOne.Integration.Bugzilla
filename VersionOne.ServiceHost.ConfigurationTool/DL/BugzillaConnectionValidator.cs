@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using VersionOne.ServiceHost.ConfigurationTool.Entities;
 using VersionOne.Bugzilla.BugzillaAPI;
 
@@ -14,7 +15,9 @@ namespace VersionOne.ServiceHost.ConfigurationTool.DL {
         }
 
         public bool Validate() {
-            var bugzillaClientConfiguration = new BugzillaClientConfiguration {Password = entity.Password, UserName = entity.UserName, Url = entity.Url, IgnoreSSLCert = entity.IgnoreCertificate.BoolValue};
+	        System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+	        System.Net.ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Ssl3;
+			var bugzillaClientConfiguration = new BugzillaClientConfiguration {Password = entity.Password, UserName = entity.UserName, Url = entity.Url, IgnoreSSLCert = entity.IgnoreCertificate.BoolValue};
             IBugzillaClient client = new BugzillaClient(bugzillaClientConfiguration);
             try
             {
