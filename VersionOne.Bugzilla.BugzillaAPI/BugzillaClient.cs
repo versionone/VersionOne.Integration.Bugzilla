@@ -3,10 +3,8 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text;
-using System.Web.UI.WebControls;
 using VersionOne.ServiceHost.Core.Logging;
 
 namespace VersionOne.Bugzilla.BugzillaAPI
@@ -22,7 +20,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	    
         public BugzillaClient(IBugzillaClientConfiguration configuration, ILogger logger)
 	    {
-			SetTlsVersion();
             SetSslIgnoreErrorMode(configuration);
             this._logger = logger;
 	        this._username = configuration.UserName;
@@ -33,7 +30,6 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	    
 	    public BugzillaClient(IBugzillaClientConfiguration configuration)
         {
-			SetTlsVersion();
             SetSslIgnoreErrorMode(configuration);
             this._username = configuration.UserName;
             this._password = configuration.Password;
@@ -42,17 +38,11 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
         private static void SetSslIgnoreErrorMode(IBugzillaClientConfiguration configuration)
         {
-	        
-			if (configuration.IgnoreSSLCert)
+            if (configuration.IgnoreSSLCert)
             {
                 ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             }
         }
-
-		private static void SetTlsVersion()
-		{
-			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
-		}
 
         public string Login()
         {
@@ -60,7 +50,7 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 
             req.AddParameter("login", _username);
             req.AddParameter("password", _password);
-//	        req.AddHeader("Content-MaxLength", "0");
+
             var result = Client.Get(req);
 
             var response = JObject.Parse(result.Content);
