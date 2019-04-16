@@ -20,7 +20,7 @@ The binaries for this integration can be downloaded from the [VersionOne Applica
 
 # Documentation
 
-Please see the VersionOne Community Site for details:
+Please see the VersionOne Community site for details:
 
 * [VersionOne Integration for Bugzilla 5.0 and Above](https://community.versionone.com/VersionOne_Connect/Supported_Integrations/VersionOne_Integration_for_Bugzilla_5.0_and_Above)
 * [VersionOne Integration for Bugzilla (V4.4 and Below)](https://community.versionone.com/VersionOne_Connect/Community_Supported_Integrations/VersionOne_Integration_for_Bugzilla_(V4.4_and_Below))
