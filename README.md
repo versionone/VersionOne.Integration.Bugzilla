@@ -1,7 +1,7 @@
 # VersionOne Integration for Bugzilla
 
 Copyright (c) 2008-2016 [VersionOne](http://versionone.com/).
-All rights reserved.
+All rights reserved. 
 
 The VersionOne Integration for Bugzilla is a free and open0source integration that creates defects in VersionOne based on bugs found in Bugzilla. Using this integration, an organization can manage and triage bugs reported by customers and promote them to VersionOne once they determine a fix is necessary.
 
