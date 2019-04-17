@@ -7,7 +7,7 @@ The VersionOne Integration for Bugzilla is a free and open0source integration th
 
 ## System Requirements
 
-* .NET Framework 4.5.1
+* .NET Framework 4.5.1.
 
 # Integration Files
 
