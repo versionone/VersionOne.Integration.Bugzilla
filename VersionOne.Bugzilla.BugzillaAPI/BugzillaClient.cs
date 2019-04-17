@@ -20,7 +20,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	    
         public BugzillaClient(IBugzillaClientConfiguration configuration, ILogger logger)
 	    {
-            SetSslIgnoreErrorMode(configuration);
+		    SetTlsVersion();
+			SetSslIgnoreErrorMode(configuration);
             this._logger = logger;
 	        this._username = configuration.UserName;
 	        this._password = configuration.Password;
@@ -30,7 +31,8 @@ namespace VersionOne.Bugzilla.BugzillaAPI
 	    
 	    public BugzillaClient(IBugzillaClientConfiguration configuration)
         {
-            SetSslIgnoreErrorMode(configuration);
+	        SetTlsVersion();
+			SetSslIgnoreErrorMode(configuration);
             this._username = configuration.UserName;
             this._password = configuration.Password;
             Client = new RestClient(configuration.Url);
@@ -43,8 +45,12 @@ namespace VersionOne.Bugzilla.BugzillaAPI
                 ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             }
         }
+		private static void SetTlsVersion()
+		{
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+		}
 
-        public string Login()
+		public string Login()
         {
             var req = new RestRequest("login?", Method.GET);
 
