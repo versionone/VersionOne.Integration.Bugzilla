@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using Ninject;
@@ -67,8 +68,10 @@ namespace VersionOne.ServiceHost
         public void Startup()
         {
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+	//        System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+	        System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
 
-            foreach (var ss in services)
+			foreach (var ss in services)
             {
                 Logger.Log(string.Format("Initializing {0}", ss.Name));
                 ss.Service.Initialize(ss.Config, EventManager, profileStore[ss.Name]);
