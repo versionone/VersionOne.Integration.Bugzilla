@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("VersionOne.Bugzilla.XmlRpcProxy")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("VersionOne, LLC")]
+[assembly: AssemblyCompany("Digital.ai Software, Inc.")]
 [assembly: AssemblyProduct("VersionOne.Bugzilla.XmlRpcProxy")]
-[assembly: AssemblyCopyright("Copyright © VersionOne, LLC 2007")]
+[assembly: AssemblyCopyright("Copyright © 2020, Digital.ai Software, Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

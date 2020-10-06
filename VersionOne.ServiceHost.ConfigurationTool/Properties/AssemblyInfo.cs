@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("VersionOne.ServiceHost.ConfigurationTool")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("VersionOne, Inc.")]
-[assembly: AssemblyCopyright("Copyright © VersionOne 2009")]
+[assembly: AssemblyCompany("Digital.ai Software, Inc.")]
+[assembly: AssemblyCopyright("Copyright © 2020, Digital.ai Software, Inc.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

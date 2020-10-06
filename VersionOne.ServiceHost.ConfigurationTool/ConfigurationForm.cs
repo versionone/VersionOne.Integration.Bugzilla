@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using VersionOne.ServiceHost.ConfigurationTool.BZ;
 using VersionOne.ServiceHost.ConfigurationTool.UI.Interfaces;
@@ -159,7 +160,9 @@ namespace VersionOne.ServiceHost.ConfigurationTool {
         }
 
         private void miAbout_Click(object sender, EventArgs e) {
-            var description = string.Format("VersionOne ServiceHost configuration utility, version {0}. (c) {1}", controller.ApplicationVersion, Application.CompanyName);
+            var assembly = Assembly.GetEntryAssembly();
+            var copyrightAttribute = assembly.GetCustomAttribute<AssemblyCopyrightAttribute>();
+            var description = string.Format("VersionOne ServiceHost configuration utility, version {0}.\n{1}", controller.ApplicationVersion, copyrightAttribute.Copyright);
             MessageBox.Show(description);
         }
         #endregion

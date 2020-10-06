@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyCompany("VersionOne, Inc.")]
-[assembly: AssemblyCopyright("Copyright © 2015, VersionOne, Inc. All rights reserved.")]
+[assembly: AssemblyCompany("Digital.ai Software, Inc.")]
+[assembly: AssemblyCopyright("Copyright © 2020, Digital.ai Software, Inc.")]
 [assembly: AssemblyTrademark("")]
 
 #if DEBUG
