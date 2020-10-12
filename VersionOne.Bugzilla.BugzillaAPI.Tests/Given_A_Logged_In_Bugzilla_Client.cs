@@ -6,6 +6,7 @@ using Rhino.Mocks;
 
 namespace VersionOne.Bugzilla.BugzillaAPI.Tests
 {
+    [Ignore]
     [TestClass()]
     public class Given_A_Logged_In_Bugzilla_Client
     {
@@ -16,12 +17,13 @@ namespace VersionOne.Bugzilla.BugzillaAPI.Tests
         [TestInitialize()]
         public void SetContext()
         {
-            var liveInstanceOfBugzillaThatHasRestfulApi = "http://184.170.227.113/bugzilla/rest/";
+            // This URL is what is setup if using the docker container
+            var liveInstanceOfBugzillaThatHasRestfulApi = "http://localhost:8088/bugzilla/rest";
 
             IBugzillaClientConfiguration bugzillaClientConfiguration = new BugzillaClientConfiguration
             {
-                UserName = "terry.densmore@versionone.com",
-                Password = "admin1425",
+                UserName = "dev",
+                Password = "pass1234",
                 Url = liveInstanceOfBugzillaThatHasRestfulApi
             };
 
